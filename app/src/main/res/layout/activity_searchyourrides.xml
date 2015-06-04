@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#F2F2F2"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"
+        ></include>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#F2F2F2"
+        android:visibility="gone"
+        android:id="@+id/searchresults_form"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginLeft="25dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Click to search rides"
+            android:textColor="@color/teal"
+            android:id="@+id/textView2" />
+
+        <GridView android:id="@android:id/list"
+            style="@style/Widget.SampleDashboard.Grid"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingLeft="@dimen/horizontal_page_margin"
+            android:paddingRight="@dimen/horizontal_page_margin"
+            android:paddingBottom="@dimen/vertical_page_margin"
+            android:scrollbarStyle="outsideOverlay" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#F2F2F2"
+        android:visibility="gone"
+        android:id="@+id/noresults_form"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="160dp"
+            android:layout_marginLeft="25dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="No rides to Search. Please post a ride to Search"
+            android:textColor="@color/teal"
+            android:id="@+id/no_results_return" />
+
+        <Button
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="20dp"
+            android:id="@+id/postride_button"
+            android:background="#E80000"
+            android:textColor="#FFFFFF"
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:text="Post Ride Now"
+            />
+
+        </LinearLayout>
+    </LinearLayout>
+

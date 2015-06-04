@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#F2F2F2"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"
+        ></include>
+
+        <AutoCompleteTextView
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="@string/autocomplete_hint_source"
+            android:id="@+id/autocomplete_places_source"
+            android:background="@drawable/border_edittextbox"
+            android:textColor="@android:color/primary_text_light"
+            android:layout_gravity="center_horizontal"/>
+
+    <AutoCompleteTextView
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="@string/autocomplete_hint_destination"
+        android:background="@drawable/border_edittextbox"
+        android:id="@+id/autocomplete_places_destination"
+        android:textColor="@android:color/primary_text_light"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="25dp"
+        android:id="@+id/choose_a_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose a Date"
+        android:textColor="#A52A2A"
+        android:autoLink="web"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+    <Spinner
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/border_edittextbox"
+        android:id="@+id/spinner" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+    <Button
+        android:layout_marginLeft="10dp"
+
+        android:layout_marginTop="20dp"
+        android:id="@+id/choose_time_button"
+        android:background="#E80000"
+        android:textColor="#FFFFFF"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:onClick="showTimePickerDialog"
+        android:text="Choose Time"
+        />
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/time_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#A52A2A"
+        android:autoLink="web"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+
+    <EditText
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/border_edittextbox"
+        android:inputType="phone"
+        android:hint="Enter phone number"
+        android:ems="10"
+        android:id="@+id/enter_phone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:layout_marginLeft="10dp"
+
+            android:layout_marginTop="20dp"
+            android:id="@+id/choose_pickup_point"
+            android:background="#E80000"
+            android:textColor="#FFFFFF"
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:text="Choose Pickup Point"
+            />
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:id="@+id/latlong_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#A52A2A"
+            android:autoLink="web"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
+
+    <Button
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="45dp"
+        android:id="@+id/post_ride_button"
+        android:background="#F87217"
+        android:textColor="#FFFFFF"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="POST YOUR RIDE" />
+
+
+
+</LinearLayout>

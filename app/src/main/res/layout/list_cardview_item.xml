@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.SampleDashboard.Card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        style="@style/Widget.SampleDashboard.Item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/todayortomo_title"
+                style="@style/Widget.SampleDashboard.Item.MyRideTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/time_title"
+                style="@style/Widget.SampleDashboard.Item.MyRideTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="123dp"
+                />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/source_label"
+                style="@style/Widget.SampleDashboard.Item.Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Source"/>
+
+            <TextView
+                android:id="@+id/source_data"
+                style="@style/Widget.SampleDashboard.Item.Description"
+                android:layout_width="match_parent"
+                android:layout_weight="2"
+                android:layout_marginLeft="30dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/destination_label"
+                style="@style/Widget.SampleDashboard.Item.Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Destination"/>
+
+            <TextView
+                android:id="@+id/destination_data"
+                style="@style/Widget.SampleDashboard.Item.Description"
+                android:layout_width="match_parent"
+                android:layout_weight="2"
+                android:layout_marginLeft="6dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
+</FrameLayout>
