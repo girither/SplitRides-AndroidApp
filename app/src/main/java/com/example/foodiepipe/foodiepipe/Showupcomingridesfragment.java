@@ -1,18 +1,16 @@
 package com.example.foodiepipe.foodiepipe;
 
-import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
 
 import org.json.JSONArray;
@@ -23,15 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SwipeRefreshListFragmentFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SwipeRefreshListFragmentFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
+public class Showupcomingridesfragment extends SwipeRefreshListFragment {
 
     private static final String LOG_TAG = SwipeRefreshListFragmentFragment.class.getSimpleName();
     JSONParser jsonParser = new JSONParser();
@@ -42,12 +32,7 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String source = getArguments().getString("source");
-        String destination = getArguments().getString("destination");
-        EditText populatesource = (EditText)getActivity().findViewById(R.id.populate_source);
-        EditText populatedestination = (EditText)getActivity().findViewById(R.id.populate_destination);
-        populatesource.setText(source);
-        populatedestination.setText(destination);
+
         // Notify the system to allow an options menu for this fragment.
         setHasOptionsMenu(true);
     }
@@ -57,7 +42,7 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
         ridedata rideobj = (ridedata)getListAdapter().getItem(position);
         if(rideobj.getNoresults() == null)
         {
-            Intent getinduvidualrides = new Intent(getActivity(),searchshowinduvidualrides.class);
+            Intent getinduvidualrides = new Intent(getActivity(),showupcomingridedetails.class);
             getinduvidualrides.putExtra("rideId", rideobj.getRideId());
             getinduvidualrides.putExtra("rideFlag", rideobj.getRideFlag());
             getinduvidualrides.putExtra("ownercustomernumber", rideobj.getRideownercustomernumber());
@@ -70,18 +55,22 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ConnectionDetector cd = new ConnectionDetector(getActivity().getApplicationContext());
+        if (!cd.isConnectingToInternet()) {
+            List<ridedata> noresultsarray = new ArrayList<ridedata>();
+            ridedata info = new ridedata(null,null,null);
+            info.setNoresults("No Internet Available Currently");
+            noresultsarray.add(info);
+            adapter = new noresultsadapter(getActivity(),noresultsarray);
 
-        /**
-         * Create an ArrayAdapter to contain the data for the ListView. Each item in the ListView
-         * uses the system-defined simple_list_item_1 layout that contains one TextView.
-         */
+            // Set the adapter between the ListView and its backing data.
+            setListAdapter(adapter);
 
-
-        String source = getArguments().getString("source");
-        String destination = getArguments().getString("destination");
-        String timeChoice = getArguments().getString("timeChoice");
-        searchridetask = new DummyBackgroundTask(source,destination,timeChoice.trim().toLowerCase());
-        searchridetask.execute();
+        }
+        else {
+            searchridetask = new DummyBackgroundTask();
+            searchridetask.execute();
+        }
         // BEGIN_INCLUDE (setup_refreshlistener)
         /**
          * Implement {@link SwipeRefreshLayout.OnRefreshListener}. When users do the "swipe to
@@ -125,11 +114,23 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
      */
     private void initiateRefresh() {
         Log.i(LOG_TAG, "initiateRefresh");
+        ConnectionDetector cd = new ConnectionDetector(getActivity().getApplicationContext());
+        if (!cd.isConnectingToInternet()) {
+            List<ridedata> noresultsarray = new ArrayList<ridedata>();
+            ridedata info = new ridedata(null,null,null);
+            info.setNoresults("No Internet Available Currently");
+            noresultsarray.add(info);
+            adapter = new noresultsadapter(getActivity(),noresultsarray);
 
-        String source = getArguments().getString("source");
-        String destination = getArguments().getString("destination");
-        String timeChoice = getArguments().getString("timeChoice");
-        new DummyBackgroundTask(source,destination,timeChoice.trim().toLowerCase()).execute();
+            // Set the adapter between the ListView and its backing data.
+            setListAdapter(adapter);
+
+        }
+        else {
+            searchridetask = new DummyBackgroundTask();
+            searchridetask.execute();
+        }
+
     }
 
 
@@ -137,16 +138,7 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
      * Dummy {@link AsyncTask} which simulates a long running task to fetch new cheeses.
      */
     private class DummyBackgroundTask extends AsyncTask<Void, Void, List<ridedata>> {
-        private  String msource;
-        private String mdestination;
-        private  String mtimechoice;
 
-
-        DummyBackgroundTask(String source, String destination,String timeChoice) {
-            msource = source;
-            mdestination = destination;
-            mtimechoice = timeChoice;
-        }
 
         @Override
         protected List<ridedata> doInBackground(Void... param) {
@@ -163,7 +155,7 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
                 JSONObject params = new JSONObject();
 
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRides", "POST",
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getride_single", "POST",
                         params);
 
 

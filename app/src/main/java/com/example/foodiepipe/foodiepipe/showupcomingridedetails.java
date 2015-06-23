@@ -1,11 +1,17 @@
 package com.example.foodiepipe.foodiepipe;
 
+import android.app.Service;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,69 +34,157 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
-public class searchshowinduvidualrides extends ActionBarActivity implements View.OnClickListener {
+public class showupcomingridedetails extends ActionBarActivity implements View.OnClickListener {
+
 
     private getindividualriddetailsetask myrideTask = null;
     JSONParser jsonParser = new JSONParser();
-    TextView ridefromheader,todayortomorrowheader,timeofday,rideownernamevalue,rideowneremailvalue,rideownerphonevalue;
+    TextView ridefromheader, todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
     getindividualriddetailsetask individualridestask;
-    Button sendrequesttojoinride,requestalreadysent;
+    Button startride, endride, estimateride, exitride;
     ProgressBar bar;
     LinearLayout detailform;
     CustomerAdapter customerlistadapter;
     GridView mGridView;
+    private Location previousLocation = null;
+    StringBuilder locationstring = new StringBuilder();
+    LocationManager locationManager;
+    TimerTask hourlyTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_searchshowinduvidualrides);
+        setContentView(R.layout.activity_showupcomingridedetails);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ridefromheader = (TextView)findViewById(R.id.rideFromTextHeader);
-        todayortomorrowheader = (TextView)findViewById(R.id.rideday);
-        timeofday = (TextView)findViewById(R.id.ridetime);
-        rideownernamevalue = (TextView)findViewById(R.id.rideownernamevalue);
-        rideowneremailvalue = (TextView)findViewById(R.id.rideowneremailvalue);
-        rideownerphonevalue = (TextView)findViewById(R.id.rideownerphonenumbervalue);
-        bar = (ProgressBar)findViewById(R.id.searchindividualrides_progress);
-        detailform = (LinearLayout)findViewById(R.id.ridedatashow);
-        mGridView = (GridView)findViewById(android.R.id.list);
-        sendrequesttojoinride = (Button)findViewById(R.id.send_request_joinride);
-        sendrequesttojoinride.setOnClickListener(this);
-        requestalreadysent =(Button)findViewById(R.id.request_alreadysent);
+        ridefromheader = (TextView) findViewById(R.id.rideFromTextHeader);
+        todayortomorrowheader = (TextView) findViewById(R.id.rideday);
+        timeofday = (TextView) findViewById(R.id.ridetime);
+        rideownernamevalue = (TextView) findViewById(R.id.rideownernamevalue);
+        rideowneremailvalue = (TextView) findViewById(R.id.rideowneremailvalue);
+        rideownerphonevalue = (TextView) findViewById(R.id.rideownerphonenumbervalue);
+        bar = (ProgressBar) findViewById(R.id.searchindividualrides_progress);
+        detailform = (LinearLayout) findViewById(R.id.ridedatashow);
+        mGridView = (GridView) findViewById(android.R.id.list);
+        startride = (Button) findViewById(R.id.startride);
+        endride = (Button) findViewById(R.id.endride);
+        estimateride = (Button) findViewById(R.id.estimeateride);
+        exitride = (Button) findViewById(R.id.exitride);
+        startride.setOnClickListener(this);
+        endride.setOnClickListener(this);
+        estimateride.setOnClickListener(this);
+        exitride.setOnClickListener(this);
+
         Bundle extras = getIntent().getExtras();
         String rideId = extras.getString("rideId");
         String rideFlag = extras.getString("rideFlag");
-        new getindividualriddetailsetask(rideId,rideFlag).execute();
+        if(rideFlag.equals("ride"))
+        {
+            exitride.setVisibility(View.GONE);
+        }
+        new getindividualriddetailsetask(rideId, rideFlag).execute();
+        locationManager = (LocationManager) getSystemService(Service.LOCATION_SERVICE);
 
     }
+    public void timerstart()
+    {
+    Timer timer = new Timer();
+    hourlyTask = new TimerTask() {
+        @Override
+        public void run() {
+            ConnectionDetector cd = new ConnectionDetector(getApplicationContext());
+            if (!cd.isConnectingToInternet()) {
 
+            } else {
+                if (!locationstring.toString().isEmpty()) {
+                    locationstring.deleteCharAt(locationstring.length() - 1);
+                    new googledistancematrixapitask(locationstring.toString()).execute();
+                    locationstring = new StringBuilder();
+                }
+            }
+        }
+    };
+    timer.schedule(hourlyTask, 0l, 1000 * 3 * 60);
+    }
+
+    public void  timerstop()
+    {
+        if(hourlyTask !=null) {
+            hourlyTask.cancel();
+        }
+    }
 
     public void onClick(View view) {
-        ConnectionDetector cd = new ConnectionDetector(searchshowinduvidualrides.this.getApplicationContext());
+        ConnectionDetector cd = new ConnectionDetector(showupcomingridedetails.this.getApplicationContext());
 
         // Check if Internet present
         if (!cd.isConnectingToInternet()) {
             // Internet Connection is not present
-            Toast.makeText(searchshowinduvidualrides.this,
+            Toast.makeText(showupcomingridedetails.this,
                     "Internet Connection Error Please connect to working Internet connection", Toast.LENGTH_LONG).show();
             // stop executing code by return
             return;
         }
         switch(view.getId()) {
-            case R.id.send_request_joinride:
-                Bundle extras = getIntent().getExtras();
-                String rideId = extras.getString("rideId");
-                String rideFlag = extras.getString("rideFlag");
-                String rideOwnerCustomerNumber = extras.getString("ownercustomernumber");
-                detailform.setVisibility(View.GONE);
-                new sendrequesttojoinridetask(rideId,rideFlag,rideOwnerCustomerNumber,SharedPreferenceManager.getPreference("customerNumber"),SharedPreferenceManager.getPreference("myrideId")).execute();
+            case R.id.startride:
+                SharedPreferenceManager.setPreference("totaldistance", 0);
+                Toast.makeText(showupcomingridedetails.this,
+                        "Ride has started", Toast.LENGTH_LONG).show();
+                Boolean isGPSEnabled = locationManager
+                        .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+                Boolean isNetworkEnabled = locationManager
+                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                timerstart();
+                Criteria criteria = new Criteria();
+                criteria.setAccuracy(Criteria.ACCURACY_FINE);
+                locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria,true), 15000, 0, locationListener);
+                break;
+            case R.id.endride:
+                /*int totaldistance = SharedPreferenceManager.getIntPreference("totaldistance");
+                if(totaldistance != 0)
+                {
+                    locationstring.deleteCharAt(locationstring.length() - 1);
+                    new googledistancematrixapitask(locationstring.toString()).execute();
+                }*/
+
+                locationManager.removeUpdates(locationListener);
+                timerstop();
+                Toast.makeText(showupcomingridedetails.this,
+                        "Ride has ended", Toast.LENGTH_LONG).show();
+
+                break;
+            case R.id.estimeateride:
+                break;
+            case R.id.exitride:
                 break;
         }
     }
+
+    private LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location newLocation)
+        {
+            locationstring.append(newLocation.getLatitude()).append(",").append(newLocation.getLongitude()).append("|");
+            Log.v("location", "IN ON LOCATION CHANGE, lat=" + newLocation.getLatitude() + ", lon=" + newLocation.getLatitude());
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {}
+
+        @Override
+        public void onProviderEnabled(String provider) {}
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+    };
+
 
     private class CustomerAdapter extends BaseAdapter {
         private List<customer> mSamples;
@@ -117,7 +211,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         public View getView(int position, View convertView, ViewGroup container) {
             String todayortomorrow;
             if (convertView == null) {
-                convertView = searchshowinduvidualrides.this.getLayoutInflater().inflate(R.layout.customer_detail_list,
+                convertView = showupcomingridedetails.this.getLayoutInflater().inflate(R.layout.customer_detail_list,
                         container, false);
             }
 
@@ -209,7 +303,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         customerlistdata.add(customeradapterdata);
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata, ride.getString("rideId"));
                     }
-                  }
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -244,75 +338,61 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
             individualridestask = null;
         }
     }
-    public class sendrequesttojoinridetask extends AsyncTask<Void, Void, Boolean > {
 
-        private final String mRideId;
-        private final String mRideFlag;
-        private final String mownerCustomerNumber;
-        private final String mrequestingCustomerNumber;
-        private final String mrRideId;
+    public class googledistancematrixapitask extends AsyncTask<Void, Void, String> {
+        private String mlocationstring;
 
-        sendrequesttojoinridetask(String RideId, String RideFlag,String ownerCustomerNumber,String requestingCustomerNumber,String rRideId ) {
-            mRideId = RideId;
-            mRideFlag = RideFlag ;
-            mownerCustomerNumber= ownerCustomerNumber;
-            mrequestingCustomerNumber = requestingCustomerNumber;
-            mrRideId = rRideId;
+
+        googledistancematrixapitask(String locationstring) {
+            mlocationstring = locationstring;
         }
-
-
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            bar.setVisibility(View.VISIBLE);
         }
         @Override
-        protected Boolean doInBackground(Void... param) {
-            ridedata info = null;
+        protected String doInBackground(Void... param) {
+            String distance = null;
+            // Building Parameters
+            /*List<NameValuePair> params = new ArrayList<NameValuePair>();
 
+            // post album id, song id as GET parameters
+            params.add(new BasicNameValuePair("name", mName));
+            params.add(new BasicNameValuePair("email", mEmail));
+            params.add(new BasicNameValuePair("password", mPassword));
+            params.add(new BasicNameValuePair("profile", mProfile));*/
             try {
                 JSONObject params = new JSONObject();
-                params.put("rideId", mRideId);
-                params.put("rideFlag", mRideFlag);
-                params.put("ownerCustomerNumber", mownerCustomerNumber);
-                params.put("requestingCustomerNumber", mrequestingCustomerNumber);
-                params.put("rRideId", mrRideId);
+                params.put("sourcelatlong", mlocationstring);
+                params.put("destinationlatlong", mlocationstring);
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/sendRequestToJoinTheRideOrJoinedRide", "POST",
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/googledistancematrixapicalculation", "POST",
                         params);
 
+                // Check your log cat for JSON reponse
+                Log.d("response from post rides ", json);
 
 
                 JSONObject jObj = new JSONObject(json);
-                if(jObj != null) {
-                    String message = jObj.getString("message");
-                    return true;
+                if(jObj != null){
+                    distance = jObj.getString("totaldistance");
+
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            return false;
+            return distance;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
-            individualridestask = null;
-            bar.setVisibility(View.GONE);
-            detailform.setVisibility(View.VISIBLE);
-            if (success) {
-                requestalreadysent.setVisibility(View.VISIBLE);
-                sendrequesttojoinride.setVisibility(View.GONE);
-                Toast.makeText(searchshowinduvidualrides.this,
-                        "Request is sent succesfully", Toast.LENGTH_LONG).show();
-            } else {
-                requestalreadysent.setVisibility(View.GONE);
-                sendrequesttojoinride.setVisibility(View.VISIBLE);
-                Toast.makeText(searchshowinduvidualrides.this,
-                        "Something went wrong while sending request. Please try again", Toast.LENGTH_LONG).show();
-            }
+        protected void onPostExecute(final String distance) {
+            int totaldistance = SharedPreferenceManager.getIntPreference("totaldistance");
+            totaldistance = totaldistance + Integer.parseInt(distance);
+            SharedPreferenceManager.setPreference("totaldistance", totaldistance);
+            Toast.makeText(showupcomingridedetails.this,
+                    Integer.toString(totaldistance/1000), Toast.LENGTH_LONG).show();
 
         }
 

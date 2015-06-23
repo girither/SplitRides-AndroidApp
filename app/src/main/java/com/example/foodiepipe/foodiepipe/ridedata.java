@@ -1,5 +1,7 @@
 package com.example.foodiepipe.foodiepipe;
 
+import java.util.List;
+
 /**
  * Created by gbm on 5/18/15.
  */
@@ -7,10 +9,16 @@ public class ridedata {
     String destination;
     String source;
     String date;
-    String rideownerName;
-    String rideOwneremail;
-    String rideownerPhoneNumber;
 
+    public List<customer> getCustomerlistdata() {
+        return customerlistdata;
+    }
+
+    public void setCustomerlistdata(List<customer> customerlistdata) {
+        this.customerlistdata = customerlistdata;
+    }
+
+    List<customer> customerlistdata;
     public String getRideownercustomernumber() {
         return rideownercustomernumber;
     }
@@ -24,29 +32,6 @@ public class ridedata {
     String rideId;
     String rideFlag;
 
-    public String getRideownerPhoneNumber() {
-        return rideownerPhoneNumber;
-    }
-
-    public void setRideownerPhoneNumber(String rideownerPhoneNumber) {
-        this.rideownerPhoneNumber = rideownerPhoneNumber;
-    }
-
-    public String getRideownerName() {
-        return rideownerName;
-    }
-
-    public void setRideownerName(String rideownerName) {
-        this.rideownerName = rideownerName;
-    }
-
-    public String getRideOwneremail() {
-        return rideOwneremail;
-    }
-
-    public void setRideOwneremail(String rideOwneremail) {
-        this.rideOwneremail = rideOwneremail;
-    }
 
     public String getPickUpLocation() {
         return pickUpLocation;
@@ -105,20 +90,24 @@ public class ridedata {
         return destination;
     }
 
-    public ridedata(String source,String destination,String date,String rideownerName,String rideownerPhoneNumber, String rideOwneremail,String rideId) {
+    public ridedata(String source,String destination,String date,List<customer> customerlistdata,String rideId) {
         this.source = source;
         this.destination = destination;
         this.date = date;
-        this.rideownerName = rideownerName;
-        this.rideOwneremail = rideOwneremail;
-        this.rideownerPhoneNumber = rideownerPhoneNumber;
+        this.customerlistdata = customerlistdata;
         this.rideId = rideId;
+    }
+    public ridedata(String source,String destination,String date,String rideId) {
+        this.source = source;
+        this.destination = destination;
+        this.date = date;
+        this.rideId = rideId;
+
     }
     public ridedata(String source,String destination,String date) {
         this.source = source;
         this.destination = destination;
         this.date = date;
-
     }
     public ridedata(String source,String destination,String date,String rideId,String rideFlag,String rideownercustomernumber) {
         this.source = source;

@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,12 @@ public class homepage extends Fragment implements AdapterView.OnItemClickListene
         mGridView = (GridView)view.findViewById(android.R.id.list);
         mGridView.setAdapter(new SampleAdapter());
         mGridView.setOnItemClickListener(this);
+        if (savedInstanceState == null) {
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            Showupcomingridesfragment fragment = new Showupcomingridesfragment();
+            transaction.replace(R.id.show_upcomingrides_fragment, fragment);
+            transaction.commit();
+        }
         return view;
     }
 

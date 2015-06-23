@@ -1,7 +1,9 @@
 package com.example.foodiepipe.foodiepipe;
 
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.os.AsyncTask;
@@ -63,6 +65,7 @@ public class MainActivity extends ActionBarActivity
     private static final String SAVED_PROGRESS = "sign_in_progress";
     private String personName="";
     private String email="";
+    private String gender="";
     private UserLoginTask mAuthTask = null;
     private Retrieveauthtokengoogle mTokenTask = null;
     private ProgressDialog pDialog;
@@ -85,10 +88,9 @@ public class MainActivity extends ActionBarActivity
     private CharSequence mTitle;
     private boolean mIntentInProgress;
     private Fragment[] fragments = new Fragment[FRAGMENT_COUNT];
-    private ConnectionResult mConnectionResult;
     JSONParser jsonParser = new JSONParser();
     private static final int REQ_SIGN_IN_REQUIRED = 55664;
-
+    MenuItem hidemenuitem;
 
     private boolean mSignInClicked;
     CallbackManager callbackManager;
@@ -187,7 +189,7 @@ public class MainActivity extends ActionBarActivity
             // perform the user login attempt.
 
 
-            mAuthTask = new UserLoginTask(Email,Password,Name,"local","");
+            mAuthTask = new UserLoginTask(Email,Password,Name,"local","","male");
             mAuthTask.execute((Void) null);
         }
     }
@@ -238,7 +240,7 @@ public class MainActivity extends ActionBarActivity
             // perform the user login attempt.
 
 
-            mAuthTask = new UserLoginTask(Email,Password,"","local","");
+            mAuthTask = new UserLoginTask(Email,Password,"","local","","");
             mAuthTask.execute((Void) null);
         }
     }
@@ -267,8 +269,9 @@ public class MainActivity extends ActionBarActivity
                                             GraphResponse response) {
                                         try {
                                             email = jsonObject.getString("email");
+                                            gender = jsonObject.getString("gender");
                                             if (mAuthTask == null) {
-                                                mAuthTask = new UserLoginTask(email, "", profile.getName(), "facebook", loginResult.getAccessToken().getToken());
+                                                mAuthTask = new UserLoginTask(email, "", profile.getName(), "facebook", loginResult.getAccessToken().getToken(),gender);
                                                 Log.v("token", loginResult.getAccessToken().getToken());
                                                 mAuthTask.execute((Void) null);
                                             }
@@ -349,7 +352,7 @@ public class MainActivity extends ActionBarActivity
             case 1:
 
                 fragmentManager.beginTransaction()
-                        .replace(R.id.containernavigation, new ordersactivity())
+                        .replace(R.id.containernavigation, new myridedetail())
                         .commit();
                 break;
         }
@@ -385,11 +388,23 @@ public class MainActivity extends ActionBarActivity
         if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
             personName = currentPerson.getDisplayName();
+            if(currentPerson.getGender() == 0)
+            {
+               gender = "male";
+            }
+            else if(currentPerson.getGender() == 1)
+            {
+                gender = "female";
+            }
+            else
+            {
+                gender = "other";
+            }
             email = Plus.AccountApi.getAccountName(mGoogleApiClient);
         }
         mSignInProgress = STATE_DEFAULT;
         if(mTokenTask == null) {
-            mTokenTask = new Retrieveauthtokengoogle(Plus.AccountApi.getAccountName(mGoogleApiClient), personName, email);
+            mTokenTask = new Retrieveauthtokengoogle(Plus.AccountApi.getAccountName(mGoogleApiClient), personName, email,gender);
             mTokenTask.execute((Void) null);
         }
 
@@ -455,6 +470,8 @@ public class MainActivity extends ActionBarActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        hidemenuitem = menu.findItem(R.id.action_signout);
+
         return true;
     }
 
@@ -464,7 +481,8 @@ public class MainActivity extends ActionBarActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_signout) {
+            singoutfromapp();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -574,6 +592,37 @@ public class MainActivity extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         mNavigationDrawerFragment.setUserDetails(SharedPreferenceManager.getPreference("name"),SharedPreferenceManager.getPreference("email"),SharedPreferenceManager.getPreference("id"));
     }
+    public void singoutfromapp()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage("Do You want to logout?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        showFragment(LOGINPAGE, false);
+                        hidemenuitem.setVisible(false);
+
+                        SharedPreferenceManager.setPreference("mIsSignedIn", false);
+                        String profile = SharedPreferenceManager.getPreference("profile");
+
+                        if (profile.equals("facebook"))
+                        {
+                            LoginManager.getInstance().logOut();
+                        }
+                        else if (profile.equals("google"))
+                        {
+                            mGoogleApiClient.disconnect();
+                        }
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
@@ -581,13 +630,15 @@ public class MainActivity extends ActionBarActivity
         private final String mName;
         private final String mProfile;
         private final String accessToken;
+        private final String mgender;
 
-        UserLoginTask(String email, String password,String name,String profile,String accesstoken) {
+        UserLoginTask(String email, String password,String name,String profile,String accesstoken,String gender) {
             mEmail = email;
             mPassword = password;
             mName = name;
             mProfile = profile;
             accessToken = accesstoken;
+            mgender = gender;
         }
         @Override
         protected void onPreExecute() {
@@ -615,6 +666,7 @@ public class MainActivity extends ActionBarActivity
             params.put("profile", mProfile);
                 params.put("password", mPassword);
                 params.put("token", accessToken);
+                params.put("gender",mgender);
 
 
 
@@ -638,6 +690,7 @@ public class MainActivity extends ActionBarActivity
                     SharedPreferenceManager.setPreference("name",name);
                     SharedPreferenceManager.setPreference("customerNumber",customerNumber);
                     SharedPreferenceManager.setPreference("email",email);
+                    SharedPreferenceManager.setPreference("profile",mProfile);
                     return true;
                 }
 
@@ -656,6 +709,7 @@ public class MainActivity extends ActionBarActivity
             if (success) {
                 //finish();
                 SharedPreferenceManager.setPreference("mIsSignedIn",true);
+                hidemenuitem.setVisible(true);
                 OnLoginAuthenticated();
             } else {
                 if(mProfile.equals("facebook")||mProfile.equals("google"))
@@ -692,12 +746,14 @@ public class MainActivity extends ActionBarActivity
         private final String maccountName;
         private final String mEmail;
         private final String mName;
+        private final String mGender;
 
 
-        Retrieveauthtokengoogle(String accountName,String name,String email) {
+        Retrieveauthtokengoogle(String accountName,String name,String email,String gender) {
           maccountName = accountName;
           mEmail = email;
           mName = name;
+          mGender = gender;
         }
         @Override
         protected void onPreExecute() {
@@ -731,7 +787,7 @@ public class MainActivity extends ActionBarActivity
             Log.d("google+ token",result);
             if(result!=null)
             {
-                mAuthTask = new UserLoginTask(mEmail,"",mName,"google",result);
+                mAuthTask = new UserLoginTask(mEmail,"",mName,"google",result,mGender);
                 mAuthTask.execute((Void) null);
             }
             else

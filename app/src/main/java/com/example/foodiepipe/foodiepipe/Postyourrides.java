@@ -93,6 +93,7 @@ public class Postyourrides extends ActionBarActivity
         setContentView(R.layout.activity_postyourrides);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Retrieve the AutoCompleteTextView that will display Place suggestions.
         mAutocompleteView = (AutoCompleteTextView)
                 findViewById(R.id.autocomplete_places_source);
@@ -118,11 +119,22 @@ public class Postyourrides extends ActionBarActivity
         spinner.setOnItemSelectedListener(this);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, 15);
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat sdfdate = new SimpleDateFormat("yyyy-MM-dd");
+        String currentDate = sdfdate.format(cal.getTime());
+        Calendar nextdaycal = Calendar.getInstance();
+        nextdaycal.add(Calendar.DATE, 1);
+        SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
+        String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
+        if(tomorrowDate.equals(currentDate))
+        {
+            spinner.setSelection(1);
+        }
         settimetextView = (TextView)
                 findViewById(R.id.time_data);
         setlatlongtextView = (TextView)
                 findViewById(R.id.latlong_data);
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+
         String currenttime = sdf.format(cal.getTime());
         settimetextView.setText(currenttime);
         SimpleDateFormat sdfhidden = new SimpleDateFormat("HH:mm:ss");
@@ -358,6 +370,7 @@ public class Postyourrides extends ActionBarActivity
         String destination = mAutocompleteView_destination.getText().toString();
         String phonenumber = mPhonenumber.getText().toString();
         String timeclock = settimetextViewhidden.getText().toString();
+        String latlong = setlatlongtextView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -379,6 +392,13 @@ public class Postyourrides extends ActionBarActivity
             mPhonenumber.setError(getString(R.string.error_field_required));
             focusView = mPhonenumber;
             cancel = true;
+        }
+        if(latlong.isEmpty())
+        {
+            Toast.makeText(Postyourrides.this,
+                    "Please select a pickup point", Toast.LENGTH_LONG).show();
+            cancel = true;
+            focusView = setlatlongtextView;
         }
         if (cancel) {
             // There was an error; don't attempt login and focus the first

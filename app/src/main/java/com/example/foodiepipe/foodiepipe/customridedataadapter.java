@@ -33,6 +33,15 @@ public class customridedataadapter extends ArrayAdapter<ridedata> {
         TextView timeofride = (TextView) convertView.findViewById(R.id.time_title);
         TextView source = (TextView) convertView.findViewById(R.id.source_data);
         TextView destination = (TextView) convertView.findViewById(R.id.destination_data);
+        TextView joinedride_label = (TextView) convertView.findViewById(R.id.joinedride_title);
+        if(Ridedata.getRideFlag().equals("jride"))
+        {
+             joinedride_label.setText("JOINED RIDE");
+        }
+        else
+        {
+             joinedride_label.setText("SINGLE RIDE");
+        }
         // Populate the data into the template view using the data object
         source.setText(Ridedata.getSource());
         destination.setText(Ridedata.getDestination());
@@ -43,13 +52,21 @@ public class customridedataadapter extends ArrayAdapter<ridedata> {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String currentDate = sdf.format(cal.getTime());
+        Calendar nextdaycal = Calendar.getInstance();
+        nextdaycal.add(Calendar.DATE, 1);
+        SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
+        String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
         if(currentDate.equals(dateOfRides))
         {
             todayortomorrow = "Today        ";
         }
-        else
+        else if(tomorrowDate.equals(dateOfRides))
         {
             todayortomorrow = "Tomorrow";
+        }
+        else
+        {
+            todayortomorrow = dateOfRides;
         }
         ridetodayortomo.setText(todayortomorrow);
         timeofride.setText(timeofrides);

@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
 
 
 public class Searchridessourcedestination extends ActionBarActivity {
@@ -16,6 +15,7 @@ public class Searchridessourcedestination extends ActionBarActivity {
         setContentView(R.layout.activity_searchridessourcedestination);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             SwipeRefreshListFragmentFragment fragment = new SwipeRefreshListFragmentFragment();
@@ -41,18 +41,4 @@ public class Searchridessourcedestination extends ActionBarActivity {
         overridePendingTransition(R.animator.back_in, R.animator.back_out);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

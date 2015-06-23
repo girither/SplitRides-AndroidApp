@@ -30,7 +30,7 @@
                 style="@style/Widget.SampleDashboard.Item.MyRideTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="123dp"
+                android:layout_marginLeft="153dp"
                 />
 
 
@@ -76,6 +76,21 @@
                 android:layout_weight="2"
                 android:layout_marginLeft="6dp"
                 android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/joinedride_title"
+                style="@style/Widget.SampleDashboard.Item.MyRideTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="208dp"
+                />
         </LinearLayout>
 
 

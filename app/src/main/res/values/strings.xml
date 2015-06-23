@@ -11,6 +11,7 @@
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
+    <string name="action_signout">Sign out</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -44,5 +45,7 @@
     <string name="common_signin_button_text_long">SIGN IN WITH GOOGLE+</string>
     <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
     <string name="title_activity_searchshowinduvidualrides">searchshowinduvidualrides</string>
+    <string name="title_activity_startrides">startrides</string>
+    <string name="title_activity_showupcomingridedetails">showupcomingridedetails</string>
 
 </resources>

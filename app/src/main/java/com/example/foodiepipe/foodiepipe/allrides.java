@@ -1,12 +1,10 @@
 package com.example.foodiepipe.foodiepipe;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,10 +12,9 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
 
 import org.json.JSONArray;
@@ -30,72 +27,53 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class Searchyourrides extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
-    private ProgressDialog pDialog;
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link allrides.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link allrides#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class allrides extends Fragment implements AdapterView.OnItemClickListener {
+
     JSONParser jsonParser = new JSONParser();
     private GridView mGridView;
-    private getmyridetask mMyrideTask = null;
-    private LinearLayout searchresultsform;
+    private getallridetask mallrideTask = null;
+    private LinearLayout allridesform;
     private LinearLayout noresultsform;
-    private Button postridebutton;
-    SampleAdapter myridedataadapter;
+    SampleAdapter myallridedataadapter;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    private ProgressBar bar;
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_searchyourrides);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mGridView = (GridView)findViewById(android.R.id.list);
-        mMyrideTask = new getmyridetask();
-        mMyrideTask.execute((Void) null);
-        searchresultsform = (LinearLayout)findViewById(R.id.searchresults_form);
-        noresultsform = (LinearLayout)findViewById(R.id.noresults_form);
-        postridebutton = (Button)findViewById(R.id.postride_button);
-        postridebutton.setOnClickListener(this);
-        mGridView.setOnItemClickListener(this);
 
-
-        // specify an adapter (see also next example)
-    }
-
-    @Override
-    public void onClick(View view) {
-        ConnectionDetector cd = new ConnectionDetector(Searchyourrides.this.getApplicationContext());
-
-        // Check if Internet present
-        if (!cd.isConnectingToInternet()) {
-            // Internet Connection is not present
-            Toast.makeText(Searchyourrides.this,
-                    "Internet Connection Error Please connect to working Internet connection", Toast.LENGTH_LONG).show();
-            // stop executing code by return
-            return;
-        }
-        switch(view.getId()) {
-            case R.id.postride_button:
-                Intent postrides = new Intent(Searchyourrides.this,Postyourrides.class);
-                startActivity(postrides);
-                break;
-        }
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_searchyourrides, menu);
-        return true;
     }
 
     @Override
     public void onItemClick(AdapterView<?> container, View view, int position, long id) {
-        Intent searchrides = new Intent(Searchyourrides.this,Searchridessourcedestination.class);
-        ridedata Ridedata = (ridedata)myridedataadapter.getItem(position);
-        searchrides.putExtra("source",Ridedata.getSource());
-        searchrides.putExtra("destination",Ridedata.getDestination());
-        searchrides.putExtra("timeChoice",Ridedata.getTodayortomorrow().toLowerCase().trim());
-        SharedPreferenceManager.setPreference("myrideId", Ridedata.getRideId());
-        startActivity(searchrides);
-        overridePendingTransition(R.animator.activity_in, R.animator.activity_out);
+        ridedata rideobj = (ridedata)myallridedataadapter.getItem(position);
+        Intent getinduvidualrides = new Intent(getActivity(),searchshowinduvidualrides.class);
+        getinduvidualrides.putExtra("rideId", rideobj.getRideId());
+        getinduvidualrides.putExtra("rideFlag", rideobj.getRideFlag());
+        getinduvidualrides.putExtra("ownercustomernumber", rideobj.getRideownercustomernumber());
+        startActivity(getinduvidualrides);
+        getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.fragment_allrides,container, false);
+        bar = (ProgressBar) rootView.findViewById(R.id.allrides_progress);
+        mallrideTask = new getallridetask();
+        mallrideTask.execute((Void) null);
+        mGridView = (GridView)rootView.findViewById(android.R.id.list);
+        mGridView.setOnItemClickListener(this);
+        allridesform = (LinearLayout)rootView.findViewById(R.id.show_all_rides);
+        noresultsform = (LinearLayout)rootView.findViewById(R.id.noridestoshow_form);
+        return rootView;
     }
 
     private class SampleAdapter extends BaseAdapter {
@@ -123,7 +101,7 @@ public class Searchyourrides extends ActionBarActivity implements AdapterView.On
         public View getView(int position, View convertView, ViewGroup container) {
             String todayortomorrow;
             if (convertView == null) {
-                convertView = Searchyourrides.this.getLayoutInflater().inflate(R.layout.myride_details,
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.myride_details,
                         container, false);
             }
             String datetimeOfRides = mSamples.get(position).getDate();
@@ -133,13 +111,21 @@ public class Searchyourrides extends ActionBarActivity implements AdapterView.On
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String currentDate = sdf.format(cal.getTime());
+            Calendar nextdaycal = Calendar.getInstance();
+            nextdaycal.add(Calendar.DATE, 1);
+            SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
+            String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
             if(currentDate.equals(dateOfRides))
             {
                 todayortomorrow = "Today        ";
             }
-            else
+            else if(tomorrowDate.equals(dateOfRides))
             {
                 todayortomorrow = "Tomorrow";
+            }
+            else
+            {
+                todayortomorrow = dateOfRides;
             }
             mSamples.get(position).setTodayortomorrow(todayortomorrow);
             ((TextView) convertView.findViewById(android.R.id.content)).setText(timeofrides);
@@ -152,25 +138,13 @@ public class Searchyourrides extends ActionBarActivity implements AdapterView.On
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        // finish() is called in super: we only override this method to be able to override the transition
-        super.onBackPressed();
-
-        overridePendingTransition(R.animator.back_in, R.animator.back_out);
-    }
-
-
-    public class getmyridetask extends AsyncTask<Void, Void, List<ridedata>> {
+    public class getallridetask extends AsyncTask<Void, Void, List<ridedata>> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(Searchyourrides.this);
-            pDialog.setMessage("fetching your rides...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
-            pDialog.show();
+            bar.setVisibility(View.VISIBLE);
+
         }
         @Override
         protected List<ridedata> doInBackground(Void... param) {
@@ -187,7 +161,7 @@ public class Searchyourrides extends ActionBarActivity implements AdapterView.On
                 JSONObject params = new JSONObject();
 
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getMyRides", "POST",
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getride_single", "POST",
                         params);
 
 
@@ -197,7 +171,7 @@ public class Searchyourrides extends ActionBarActivity implements AdapterView.On
                     JSONArray rides = jObj.getJSONArray("rides");
                     for(int i=0; i<rides.length(); i++){
                         JSONObject rideindividualdata = rides.getJSONObject(i);
-                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("rideId"));
+                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("rideId"),"ride",rideindividualdata.getString("customerNumber"));
                         ridedataArray.add(info);
                     }
                 }
@@ -211,19 +185,20 @@ public class Searchyourrides extends ActionBarActivity implements AdapterView.On
 
         @Override
         protected void onPostExecute(final List<ridedata> ridedataArray) {
-            mMyrideTask = null;
-            pDialog.dismiss();
-            searchresultsform.setVisibility(!ridedataArray.isEmpty()?View.VISIBLE:View.GONE);
+            mallrideTask = null;
+            bar.setVisibility(View.GONE);
+            allridesform.setVisibility(!ridedataArray.isEmpty()?View.VISIBLE:View.GONE);
             noresultsform.setVisibility(!ridedataArray.isEmpty()?View.GONE:View.VISIBLE);
             if(!ridedataArray.isEmpty()){
-                myridedataadapter = new SampleAdapter(ridedataArray);
-               mGridView.setAdapter(myridedataadapter);
+                myallridedataadapter = new SampleAdapter(ridedataArray);
+                mGridView.setAdapter(myallridedataadapter);
             }
         }
 
         @Override
         protected void onCancelled() {
-            mMyrideTask = null;
+            mallrideTask = null;
         }
     }
+
 }
