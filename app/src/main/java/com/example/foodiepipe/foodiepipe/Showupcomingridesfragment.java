@@ -45,6 +45,7 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
             Intent getinduvidualrides = new Intent(getActivity(),showupcomingridedetails.class);
             getinduvidualrides.putExtra("rideId", rideobj.getRideId());
             getinduvidualrides.putExtra("rideFlag", rideobj.getRideFlag());
+            getinduvidualrides.putExtra("rideDate",rideobj.getDate());
             getinduvidualrides.putExtra("ownercustomernumber", rideobj.getRideownercustomernumber());
             startActivity(getinduvidualrides);
         }
@@ -155,7 +156,7 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
                 JSONObject params = new JSONObject();
 
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getride_single", "POST",
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getMyRidesUpcoming", "POST",
                         params);
 
 

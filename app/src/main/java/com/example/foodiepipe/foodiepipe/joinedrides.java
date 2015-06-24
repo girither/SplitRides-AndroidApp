@@ -43,9 +43,10 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
     @Override
     public void onItemClick(AdapterView<?> container, View view, int position, long id) {
         ridedata rideobj = (ridedata)myjoinedridedataadapter.getItem(position);
-        Intent getinduvidualrides = new Intent(getActivity(),searchshowinduvidualrides.class);
+        Intent getinduvidualrides = new Intent(getActivity(),showupcomingridedetails.class);
         getinduvidualrides.putExtra("rideId", rideobj.getRideId());
         getinduvidualrides.putExtra("rideFlag", rideobj.getRideFlag());
+        getinduvidualrides.putExtra("rideDate",rideobj.getDate());
         getinduvidualrides.putExtra("ownercustomernumber", rideobj.getRideownercustomernumber());
         startActivity(getinduvidualrides);
         getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);

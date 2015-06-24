@@ -133,6 +133,7 @@
 
                 <TableRow
                     android:layout_width="match_parent"
+                    android:paddingBottom="20dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal">
 

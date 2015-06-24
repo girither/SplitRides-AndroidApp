@@ -35,7 +35,7 @@ public class myridedetail extends Fragment {
         mTabHost = (FragmentTabHost)rootView.findViewById(android.R.id.tabhost);
         mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.realtabcontent);
 
-        mTabHost.addTab(mTabHost.newTabSpec("ALL RIDES").setIndicator("ALL RIDES "),
+        mTabHost.addTab(mTabHost.newTabSpec("SINGLE RIDES").setIndicator("SINGLE RIDES "),
                 allrides.class, null);
         mTabHost.addTab(mTabHost.newTabSpec("JOINED RIDES").setIndicator("JOINED RIDES "),
                 joinedrides.class, null);

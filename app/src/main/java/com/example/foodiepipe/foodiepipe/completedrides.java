@@ -54,7 +54,7 @@ public class completedrides extends android.support.v4.app.Fragment implements A
     @Override
     public void onItemClick(AdapterView<?> container, View view, int position, long id) {
         ridedata rideobj = (ridedata)mycompletedridedataadapter.getItem(position);
-        Intent getinduvidualrides = new Intent(getActivity(),searchshowinduvidualrides.class);
+        Intent getinduvidualrides = new Intent(getActivity(),showupcomingridedetails.class);
         getinduvidualrides.putExtra("rideId", rideobj.getRideId());
         getinduvidualrides.putExtra("rideFlag", rideobj.getRideFlag());
         getinduvidualrides.putExtra("ownercustomernumber", rideobj.getRideownercustomernumber());

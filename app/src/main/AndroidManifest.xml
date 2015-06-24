@@ -126,6 +126,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity
+            android:name=".cabproviderselction"
+            android:label="@string/title_activity_cabproviderselction" >
+        </activity>
     </application>
 
 </manifest>

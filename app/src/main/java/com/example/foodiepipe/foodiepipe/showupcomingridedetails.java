@@ -54,6 +54,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     StringBuilder locationstring = new StringBuilder();
     LocationManager locationManager;
     TimerTask hourlyTask;
+    static final int PICK_CABPROVIDER_RESULT = 1;
 
 
     @Override
@@ -88,6 +89,35 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         {
             exitride.setVisibility(View.GONE);
         }
+        String datetimeOfRides = extras.getString("rideDate") , todayortomorrow;
+        String dateOfRides = datetimeOfRides.split("T")[0];
+        String timeofrides = datetimeOfRides.split("T")[1];
+        timeofrides = timeofrides.split(".000Z")[0];
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String currentDate = sdf.format(cal.getTime());
+        Calendar nextdaycal = Calendar.getInstance();
+        nextdaycal.add(Calendar.DATE, 1);
+        SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
+        String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
+        if(currentDate.equals(dateOfRides))
+        {
+            todayortomorrow = "Today";
+        }
+        else if(tomorrowDate.equals(dateOfRides))
+        {
+            todayortomorrow = "Tomorrow";
+        }
+        else
+        {
+            todayortomorrow = dateOfRides;
+        }
+        if(!(todayortomorrow.equals("Today")||todayortomorrow.equals("Tomorrow")))
+        {
+            startride.setVisibility(View.GONE);
+            endride.setVisibility(View.GONE);
+            estimateride.setVisibility(View.GONE);
+        }
         new getindividualriddetailsetask(rideId, rideFlag).execute();
         locationManager = (LocationManager) getSystemService(Service.LOCATION_SERVICE);
 
@@ -104,7 +134,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             } else {
                 if (!locationstring.toString().isEmpty()) {
                     locationstring.deleteCharAt(locationstring.length() - 1);
-                    new googledistancematrixapitask(locationstring.toString()).execute();
+                    new googledistancematrixapitask(locationstring.toString(),false).execute();
                     locationstring = new StringBuilder();
                 }
             }
@@ -117,6 +147,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     {
         if(hourlyTask !=null) {
             hourlyTask.cancel();
+            new googledistancematrixapitask(locationstring.toString(),true).execute();
         }
     }
 
@@ -133,6 +164,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         }
         switch(view.getId()) {
             case R.id.startride:
+                Intent selectcabprovider = new Intent(showupcomingridedetails.this,cabproviderselction.class);
+                startActivityForResult(selectcabprovider,PICK_CABPROVIDER_RESULT);
                 SharedPreferenceManager.setPreference("totaldistance", 0);
                 Toast.makeText(showupcomingridedetails.this,
                         "Ride has started", Toast.LENGTH_LONG).show();
@@ -243,6 +276,16 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         overridePendingTransition(R.animator.back_in, R.animator.back_out);
     }
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == PICK_CABPROVIDER_RESULT) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+
+            }
+        }
+    }
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_searchshowinduvidualrides, menu);
@@ -341,10 +384,12 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
     public class googledistancematrixapitask extends AsyncTask<Void, Void, String> {
         private String mlocationstring;
+        private Boolean mstopRides;
 
 
-        googledistancematrixapitask(String locationstring) {
+        googledistancematrixapitask(String locationstring,Boolean stopRide) {
             mlocationstring = locationstring;
+            mstopRides = stopRide;
         }
         @Override
         protected void onPreExecute() {
@@ -391,8 +436,11 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             int totaldistance = SharedPreferenceManager.getIntPreference("totaldistance");
             totaldistance = totaldistance + Integer.parseInt(distance);
             SharedPreferenceManager.setPreference("totaldistance", totaldistance);
-            Toast.makeText(showupcomingridedetails.this,
-                    Integer.toString(totaldistance/1000), Toast.LENGTH_LONG).show();
+            if(mstopRides){
+                Toast.makeText(showupcomingridedetails.this,
+                   Integer.toString(totaldistance/1000), Toast.LENGTH_LONG).show();
+            }
+
 
         }
 
