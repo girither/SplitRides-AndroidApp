@@ -45,6 +45,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     JSONParser jsonParser = new JSONParser();
     TextView ridefromheader, todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
     getindividualriddetailsetask individualridestask;
+    startridetask startride_task;
     Button startride, endride, estimateride, exitride;
     ProgressBar bar;
     LinearLayout detailform;
@@ -165,27 +166,14 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         switch(view.getId()) {
             case R.id.startride:
                 Intent selectcabprovider = new Intent(showupcomingridedetails.this,cabproviderselction.class);
-                startActivityForResult(selectcabprovider,PICK_CABPROVIDER_RESULT);
-                SharedPreferenceManager.setPreference("totaldistance", 0);
-                Toast.makeText(showupcomingridedetails.this,
-                        "Ride has started", Toast.LENGTH_LONG).show();
-                Boolean isGPSEnabled = locationManager
-                        .isProviderEnabled(LocationManager.GPS_PROVIDER);
+                startActivityForResult(selectcabprovider, PICK_CABPROVIDER_RESULT);
 
-                Boolean isNetworkEnabled = locationManager
-                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-                timerstart();
-                Criteria criteria = new Criteria();
-                criteria.setAccuracy(Criteria.ACCURACY_FINE);
-                locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria,true), 15000, 0, locationListener);
                 break;
             case R.id.endride:
-                /*int totaldistance = SharedPreferenceManager.getIntPreference("totaldistance");
-                if(totaldistance != 0)
-                {
+                if (!locationstring.toString().isEmpty()) {
                     locationstring.deleteCharAt(locationstring.length() - 1);
-                    new googledistancematrixapitask(locationstring.toString()).execute();
-                }*/
+                    new googledistancematrixapitask(locationstring.toString(),true).execute();
+                }
 
                 locationManager.removeUpdates(locationListener);
                 timerstop();
@@ -281,7 +269,18 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         if (requestCode == PICK_CABPROVIDER_RESULT) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
+                SharedPreferenceManager.setPreference("totaldistance", 0);
+                Toast.makeText(showupcomingridedetails.this,
+                        "Ride has started", Toast.LENGTH_LONG).show();
+                Boolean isGPSEnabled = locationManager
+                        .isProviderEnabled(LocationManager.GPS_PROVIDER);
 
+                Boolean isNetworkEnabled = locationManager
+                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                timerstart();
+                Criteria criteria = new Criteria();
+                criteria.setAccuracy(Criteria.ACCURACY_FINE);
+                locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria,true), 15000, 0, locationListener);
             }
         }
     }
@@ -290,6 +289,65 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_searchshowinduvidualrides, menu);
         return true;
+    }
+
+    public class startridetask extends AsyncTask<Void, Void,String > {
+
+        private final String mRideId;
+        private final String mRideFlag;
+
+
+
+        startridetask(String RideId, String RideFlag ) {
+            mRideId = RideId;
+            mRideFlag = RideFlag ;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            bar.setVisibility(View.VISIBLE);
+
+        }
+        @Override
+        protected String doInBackground(Void... param) {
+            String data = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("rideId", mRideId);
+                params.put("rideFlag", mRideFlag);
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/startRide", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                     data = jObj.getString("success");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(final String success) {
+            individualridestask = null;
+            bar.setVisibility(View.GONE);
+            detailform.setVisibility(View.VISIBLE);
+            if(success != null){
+
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            individualridestask = null;
+        }
     }
 
 
@@ -438,7 +496,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             SharedPreferenceManager.setPreference("totaldistance", totaldistance);
             if(mstopRides){
                 Toast.makeText(showupcomingridedetails.this,
-                   Integer.toString(totaldistance/1000), Toast.LENGTH_LONG).show();
+                 "The total distance travelled is"+Integer.toString(totaldistance/1000)+ "Km", Toast.LENGTH_LONG).show();
             }
 
 

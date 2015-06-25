@@ -1,17 +1,21 @@
 package com.example.foodiepipe.foodiepipe;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
 
-public class cabproviderselction extends ActionBarActivity {
+public class cabproviderselction extends ActionBarActivity implements AdapterView.OnItemClickListener {
 
     private Toolbar toolbar;
     private ListView mListView;
@@ -33,6 +37,7 @@ public class cabproviderselction extends ActionBarActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1,arrayStrings);
         mListView.setAdapter(adapter);
+        mListView.setOnItemClickListener(this);
     }
 
     @Override
@@ -40,6 +45,15 @@ public class cabproviderselction extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_cabproviderselction, menu);
         return true;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> container, View view, int position, long id) {
+        String cabprovidervalue = (String)container.getItemAtPosition(position);
+        Intent intent = new Intent();
+        intent.putExtra("cabprovider",cabprovidervalue);
+        setResult (Activity.RESULT_OK, intent);
+        finish();
     }
 
     @Override

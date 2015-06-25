@@ -42,6 +42,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.nullwire.trace.ExceptionHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -320,6 +321,7 @@ public class MainActivity extends ActionBarActivity
 
         mPasswordView_signup = (EditText) findViewById(R.id.enter_password_signup);
         mNameView_signup = (EditText) findViewById(R.id.enter_name_signup);
+        ExceptionHandler.register(this, "http://your.domain/path");
 
     }
     private GoogleApiClient buildGoogleApiClient() {
@@ -353,6 +355,12 @@ public class MainActivity extends ActionBarActivity
 
                 fragmentManager.beginTransaction()
                         .replace(R.id.containernavigation, new myridedetail())
+                        .commit();
+                break;
+            case 2:
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.containernavigation, new ratecard())
                         .commit();
                 break;
         }
