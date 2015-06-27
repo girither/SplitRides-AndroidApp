@@ -50,6 +50,10 @@ public class completedrides extends android.support.v4.app.Fragment implements A
         super.onCreate(savedInstanceState);
 
     }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public void onItemClick(AdapterView<?> container, View view, int position, long id) {

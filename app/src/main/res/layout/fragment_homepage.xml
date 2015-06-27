@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <GridView android:id="@android:id/list"
+        android:layout_marginTop="60dp"
         style="@style/Widget.SampleDashboard.Grid"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -16,7 +17,6 @@
         android:scrollbarStyle="outsideOverlay" />
 
     <View
-
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray" />

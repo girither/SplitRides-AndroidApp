@@ -47,6 +47,14 @@ public class SharedPreferenceManager {
         }
         return 0;
     }
+    public static float getFloatPreference(String key) {
+        try {
+            return sparrowPreferences.getFloat(key,0.0f);
+        } catch (NullPointerException npe) {
+            Log.e("Exception in getPreferences", "Context not set properly");
+        }
+        return 0;
+    }
 
     public static Long getLongPreference(String key) {
         try {
@@ -78,6 +86,11 @@ public class SharedPreferenceManager {
     public static void setPreference(String key, Long value) {
         SharedPreferences.Editor prefsEditor = sparrowPreferences.edit();
         prefsEditor.putLong(key, value);
+        prefsEditor.commit();
+    }
+    public static void setPreference(String key, float value) {
+        SharedPreferences.Editor prefsEditor = sparrowPreferences.edit();
+        prefsEditor.putFloat(key, value);
         prefsEditor.commit();
     }
 }

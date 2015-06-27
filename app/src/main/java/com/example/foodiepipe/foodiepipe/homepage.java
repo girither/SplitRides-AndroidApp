@@ -45,9 +45,14 @@ public class homepage extends Fragment implements AdapterView.OnItemClickListene
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             Showupcomingridesfragment fragment = new Showupcomingridesfragment();
             transaction.replace(R.id.show_upcomingrides_fragment, fragment);
-            transaction.commit();
+            transaction.commitAllowingStateLoss();
         }
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override

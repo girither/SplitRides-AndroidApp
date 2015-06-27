@@ -38,6 +38,11 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         ridedata rideobj = (ridedata)getListAdapter().getItem(position);
         if(rideobj.getNoresults() == null)

@@ -51,6 +51,11 @@ public class allrides extends Fragment implements AdapterView.OnItemClickListene
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> container, View view, int position, long id) {
         ridedata rideobj = (ridedata)myallridedataadapter.getItem(position);
         Intent getinduvidualrides = new Intent(getActivity(),showupcomingridedetails.class);

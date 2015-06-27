@@ -12,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.nullwire.trace.ExceptionHandler;
+
 import java.util.ArrayList;
 
 
@@ -38,6 +40,7 @@ public class cabproviderselction extends ActionBarActivity implements AdapterVie
                 android.R.layout.simple_list_item_1, android.R.id.text1,arrayStrings);
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(this);
+        ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
     }
 
     @Override

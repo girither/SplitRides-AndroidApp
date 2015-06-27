@@ -130,6 +130,10 @@
             android:name=".cabproviderselction"
             android:label="@string/title_activity_cabproviderselction" >
         </activity>
+        <activity
+            android:name=".notificationfragmentdetails"
+            android:label="@string/title_activity_notificationfragmentdetails" >
+        </activity>
     </application>
 
 </manifest>

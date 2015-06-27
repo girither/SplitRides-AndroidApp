@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
+import com.nullwire.trace.ExceptionHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,6 +56,7 @@ public class Searchyourrides extends ActionBarActivity implements AdapterView.On
         postridebutton = (Button)findViewById(R.id.postride_button);
         postridebutton.setOnClickListener(this);
         mGridView.setOnItemClickListener(this);
+        ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
 
 
         // specify an adapter (see also next example)

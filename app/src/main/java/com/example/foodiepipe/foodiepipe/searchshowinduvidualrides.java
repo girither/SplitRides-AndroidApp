@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
+import com.nullwire.trace.ExceptionHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,6 +66,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         String rideId = extras.getString("rideId");
         String rideFlag = extras.getString("rideFlag");
         new getindividualriddetailsetask(rideId,rideFlag).execute();
+        ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
 
     }
 

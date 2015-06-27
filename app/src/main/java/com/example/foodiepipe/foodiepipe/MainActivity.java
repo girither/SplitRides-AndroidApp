@@ -311,7 +311,7 @@ public class MainActivity extends ActionBarActivity
         for (int i = 0; i < fragments.length; i++) {
             transaction.hide(fragments[i]);
         }
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         mEmailView = (EditText) findViewById(R.id.enter_email);
@@ -321,7 +321,7 @@ public class MainActivity extends ActionBarActivity
 
         mPasswordView_signup = (EditText) findViewById(R.id.enter_password_signup);
         mNameView_signup = (EditText) findViewById(R.id.enter_name_signup);
-        ExceptionHandler.register(this, "http://your.domain/path");
+        ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
 
     }
     private GoogleApiClient buildGoogleApiClient() {
@@ -348,20 +348,20 @@ public class MainActivity extends ActionBarActivity
             case 0:
 
                 fragmentManager.beginTransaction()
-                    .replace(R.id.containernavigation, new homepage())
-                    .commit();
+                    .replace(R.id.containernavigation, new homepageX())
+                    .commitAllowingStateLoss();
                 break;
             case 1:
 
                 fragmentManager.beginTransaction()
                         .replace(R.id.containernavigation, new myridedetail())
-                        .commit();
+                        .commitAllowingStateLoss();
                 break;
             case 2:
 
                 fragmentManager.beginTransaction()
                         .replace(R.id.containernavigation, new ratecard())
-                        .commit();
+                        .commitAllowingStateLoss();
                 break;
         }
 
@@ -509,7 +509,7 @@ public class MainActivity extends ActionBarActivity
         if (addToBackStack) {
             transaction.addToBackStack(null);
         }
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
     @Override
     public void onResume() {

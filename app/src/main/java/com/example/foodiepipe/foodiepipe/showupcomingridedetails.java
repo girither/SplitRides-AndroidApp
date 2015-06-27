@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
+import com.nullwire.trace.ExceptionHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -121,6 +122,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         }
         new getindividualriddetailsetask(rideId, rideFlag).execute();
         locationManager = (LocationManager) getSystemService(Service.LOCATION_SERVICE);
+        ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
 
     }
     public void timerstart()
@@ -148,9 +150,9 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     {
         if(hourlyTask !=null) {
             hourlyTask.cancel();
-            new googledistancematrixapitask(locationstring.toString(),true).execute();
         }
     }
+
 
     public void onClick(View view) {
         ConnectionDetector cd = new ConnectionDetector(showupcomingridedetails.this.getApplicationContext());
@@ -173,6 +175,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 if (!locationstring.toString().isEmpty()) {
                     locationstring.deleteCharAt(locationstring.length() - 1);
                     new googledistancematrixapitask(locationstring.toString(),true).execute();
+                    locationstring = new StringBuilder();
                 }
 
                 locationManager.removeUpdates(locationListener);
@@ -269,7 +272,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         if (requestCode == PICK_CABPROVIDER_RESULT) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                SharedPreferenceManager.setPreference("totaldistance", 0);
+                SharedPreferenceManager.setPreference("totaldistance", 0.0f);
                 Toast.makeText(showupcomingridedetails.this,
                         "Ride has started", Toast.LENGTH_LONG).show();
                 Boolean isGPSEnabled = locationManager
@@ -491,12 +494,17 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
         @Override
         protected void onPostExecute(final String distance) {
-            int totaldistance = SharedPreferenceManager.getIntPreference("totaldistance");
-            totaldistance = totaldistance + Integer.parseInt(distance);
-            SharedPreferenceManager.setPreference("totaldistance", totaldistance);
+            float totaldistance = SharedPreferenceManager.getFloatPreference("totaldistance");
+            totaldistance = totaldistance + Float.parseFloat(distance);
+
             if(mstopRides){
                 Toast.makeText(showupcomingridedetails.this,
-                 "The total distance travelled is"+Integer.toString(totaldistance/1000)+ "Km", Toast.LENGTH_LONG).show();
+                 "The total distance travelled is "+ Float.toString(totaldistance/1000)+ "Km", Toast.LENGTH_LONG).show();
+                SharedPreferenceManager.setPreference("totaldistance", 0.0f);
+
+            }
+            else{
+                SharedPreferenceManager.setPreference("totaldistance", totaldistance);
             }
 
 

@@ -6,6 +6,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import com.nullwire.trace.ExceptionHandler;
+
 
 public class Searchridessourcedestination extends ActionBarActivity {
 
@@ -21,8 +23,9 @@ public class Searchridessourcedestination extends ActionBarActivity {
             SwipeRefreshListFragmentFragment fragment = new SwipeRefreshListFragmentFragment();
             fragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.sample_content_fragment, fragment);
-            transaction.commit();
+            transaction.commitAllowingStateLoss();
         }
+        ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
     }
 
     @Override

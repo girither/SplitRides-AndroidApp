@@ -39,6 +39,10 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
         super.onCreate(savedInstanceState);
 
     }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public void onItemClick(AdapterView<?> container, View view, int position, long id) {

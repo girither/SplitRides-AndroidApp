@@ -94,7 +94,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
 
 
-    public void setUserDetails(String usernamedetails,String email,String id)
+        public void setUserDetails(String usernamedetails,String email,String id)
     {
         username.setText(usernamedetails);
         useremail.setText(email);
@@ -267,6 +267,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         super.onDetach();
         mCallbacks = null;
     }
+
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {

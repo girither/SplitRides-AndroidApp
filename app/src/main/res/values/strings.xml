@@ -48,5 +48,6 @@
     <string name="title_activity_startrides">startrides</string>
     <string name="title_activity_showupcomingridedetails">showupcomingridedetails</string>
     <string name="title_activity_cabproviderselction">cabproviderselction</string>
+    <string name="title_activity_notificationfragmentdetails">notificationfragmentdetails</string>
 
 </resources>

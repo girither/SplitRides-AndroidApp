@@ -54,7 +54,10 @@ public class facebookloginFragment extends Fragment implements View.OnClickListe
         this.activity = activity;
     }
 
-
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
     @Override
     public void onClick(View view) {
         ConnectionDetector cd = new ConnectionDetector(getActivity().getApplicationContext());

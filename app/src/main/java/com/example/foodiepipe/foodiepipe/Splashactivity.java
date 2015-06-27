@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.Window;
 
+import com.nullwire.trace.ExceptionHandler;
+
 
 public class Splashactivity extends Activity {
 
@@ -27,6 +29,7 @@ public class Splashactivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_splashactivity);
         load();
+        ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
     }
 
     private void load() {
