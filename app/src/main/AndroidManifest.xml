@@ -18,6 +18,12 @@
     <uses-permission android:name="android.permission.ACCESS_GPS" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <permission android:name="com.example.gcm.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!-- PlacePicker also requires OpenGL ES version 2 -->
@@ -47,7 +53,34 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
+        <service android:name=".googleservice"></service>
+        <receiver android:name=".Alarmreciever"></receiver>
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.example.gcm" />
+            </intent-filter>
+        </receiver>
+        <!--service
+            android:name="com.example.MyGcmListenerService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.example.MyInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID"/>
+            </intent-filter>
+        </service-->
+
+
+    <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
@@ -119,6 +152,7 @@
             android:name=".showupcomingridedetails"
             android:label="@string/app_name"
             android:parentActivityName=".MainActivity"
+            android:noHistory="false"
             android:screenOrientation="portrait" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->

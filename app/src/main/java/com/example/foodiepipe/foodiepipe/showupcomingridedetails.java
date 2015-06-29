@@ -1,17 +1,15 @@
 package com.example.foodiepipe.foodiepipe;
 
-import android.app.Service;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +23,11 @@ import android.widget.Toast;
 
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.nullwire.trace.ExceptionHandler;
 
 import org.json.JSONArray;
@@ -35,28 +38,34 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class showupcomingridedetails extends ActionBarActivity implements View.OnClickListener {
+public class showupcomingridedetails extends ActionBarActivity implements View.OnClickListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
 
     private getindividualriddetailsetask myrideTask = null;
     JSONParser jsonParser = new JSONParser();
     TextView ridefromheader, todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
     getindividualriddetailsetask individualridestask;
+    protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
+    protected final static String LOCATION_KEY = "location-key";
+    protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
     startridetask startride_task;
     Button startride, endride, estimateride, exitride;
     ProgressBar bar;
     LinearLayout detailform;
     CustomerAdapter customerlistadapter;
     GridView mGridView;
-    private Location previousLocation = null;
-    StringBuilder locationstring = new StringBuilder();
-    LocationManager locationManager;
+    String locationstring;
+    protected GoogleApiClient mGoogleApiClient;
+    protected LocationRequest mLocationRequest;
+    protected Boolean mRequestingLocationUpdates;
+    protected Location mCurrentLocation;
     TimerTask hourlyTask;
+    protected String mLastUpdateTime;
     static final int PICK_CABPROVIDER_RESULT = 1;
+    private PendingIntent pendingIntent;
 
 
     @Override
@@ -83,7 +92,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         endride.setOnClickListener(this);
         estimateride.setOnClickListener(this);
         exitride.setOnClickListener(this);
-
+        mRequestingLocationUpdates = false;
         Bundle extras = getIntent().getExtras();
         String rideId = extras.getString("rideId");
         String rideFlag = extras.getString("rideFlag");
@@ -121,36 +130,100 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             estimateride.setVisibility(View.GONE);
         }
         new getindividualriddetailsetask(rideId, rideFlag).execute();
-        locationManager = (LocationManager) getSystemService(Service.LOCATION_SERVICE);
+        updateValuesFromBundle(savedInstanceState);
+
+        Intent alarmIntent = new Intent(showupcomingridedetails.this, Alarmreciever.class);
+        pendingIntent = PendingIntent.getBroadcast(showupcomingridedetails.this, 0, alarmIntent, 0);
+
+        // Kick off the process of building a GoogleApiClient and requesting the LocationServices
+        // API.
+        buildGoogleApiClient();
         ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
 
     }
-    public void timerstart()
-    {
-    Timer timer = new Timer();
-    hourlyTask = new TimerTask() {
-        @Override
-        public void run() {
-            ConnectionDetector cd = new ConnectionDetector(getApplicationContext());
-            if (!cd.isConnectingToInternet()) {
 
-            } else {
-                if (!locationstring.toString().isEmpty()) {
-                    locationstring.deleteCharAt(locationstring.length() - 1);
-                    new googledistancematrixapitask(locationstring.toString(),false).execute();
-                    locationstring = new StringBuilder();
-                }
-            }
-        }
-    };
-    timer.schedule(hourlyTask, 0l, 1000 * 3 * 60);
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+
+        mGoogleApiClient.connect();
     }
 
-    public void  timerstop()
-    {
-        if(hourlyTask !=null) {
-            hourlyTask.cancel();
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+
+    }
+
+
+    /**
+     * Stores activity data in the Bundle.
+     */
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
+        savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
+        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
+        locationstring = SharedPreferenceManager.getPreference("locationstringdata");
+        if (locationstring != null && !locationstring.isEmpty()) {
+            savedInstanceState.putString("locationstringdata", locationstring);
         }
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+
+        // Sets the desired interval for active location updates. This interval is
+        // inexact. You may not receive updates at all if no location sources are available, or
+        // you may receive them slower than requested. You may also receive updates faster than
+        // requested if other applications are requesting location at a faster interval.
+        mLocationRequest.setInterval(15000);
+
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
+        mLocationRequest.setFastestInterval(7500);
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    protected void startLocationUpdates() {
+
+        // The final argument to {@code requestLocationUpdates()} is a LocationListener
+        // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+    }
+
+    protected void stopLocationUpdates() {
+        // It is a good practice to remove location requests when the activity is in a paused or
+        // stopped state. Doing so helps battery performance and is especially
+        // recommended in applications that request frequent location updates.
+
+        // The final argument to {@code requestLocationUpdates()} is a LocationListener
+        // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+    }
+
+    public void startalarm() {
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        int interval = 1000 * 3 * 60;
+        SharedPreferenceManager.setPreference("stoprides",false);
+        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+    }
+
+    public void stopalarm() {
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        manager.cancel(pendingIntent);
+        //Toast.makeText(this, "Alarm Canceled", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -172,14 +245,18 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
                 break;
             case R.id.endride:
-                if (!locationstring.toString().isEmpty()) {
-                    locationstring.deleteCharAt(locationstring.length() - 1);
-                    new googledistancematrixapitask(locationstring.toString(),true).execute();
-                    locationstring = new StringBuilder();
+                mRequestingLocationUpdates = false;
+                stopLocationUpdates();
+                stopalarm();
+                if(mGoogleApiClient != null) {
+                    mGoogleApiClient.disconnect();
                 }
-
-                locationManager.removeUpdates(locationListener);
-                timerstop();
+                SharedPreferenceManager.setPreference("stoprides",true);
+                locationstring = SharedPreferenceManager.getPreference("locationstringdata");
+                if(locationstring != null && !locationstring.isEmpty()) {
+                    Intent dailyUpdater = new Intent(this, googleservice.class);
+                    this.startService(dailyUpdater);
+                }
                 Toast.makeText(showupcomingridedetails.this,
                         "Ride has ended", Toast.LENGTH_LONG).show();
 
@@ -191,24 +268,44 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         }
     }
 
-    private LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location newLocation)
-        {
-            locationstring.append(newLocation.getLatitude()).append(",").append(newLocation.getLongitude()).append("|");
-            Log.v("location", "IN ON LOCATION CHANGE, lat=" + newLocation.getLatitude() + ", lon=" + newLocation.getLatitude());
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mCurrentLocation = location;
+        StringBuilder locationstringbuilder = new StringBuilder();
+        locationstring = SharedPreferenceManager.getPreference("locationstringdata");
+        if(locationstring != null) {
+            locationstringbuilder.append(locationstring).append(mCurrentLocation.getLatitude()).append(",").append(mCurrentLocation.getLongitude()).append("|");
+            SharedPreferenceManager.setPreference("locationstringdata", locationstringbuilder.toString());
+        }
+    }
+
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+
+
+        // If the initial location was never previously requested, we use
+        // FusedLocationApi.getLastLocation() to get it. If it was previously requested, we store
+        // its value in the Bundle and check for it in onCreate(). We
+        // do not request it again unless the user specifically requests location updates by pressing
+        // the Start Updates button.
+        //
+        // Because we cache the value of the initial location in the Bundle, it means that if the
+        // user launches the activity,
+        // moves to a new location, and then changes the device orientation, the original location
+        // is displayed as the activity is re-created.
+        if (mCurrentLocation == null) {
+            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }
 
-        @Override
-        public void onProviderDisabled(String provider) {}
-
-        @Override
-        public void onProviderEnabled(String provider) {}
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-    };
-
+        // If the user presses the Start Updates button before GoogleApiClient connects, we set
+        // mRequestingLocationUpdates to true (see startUpdatesButtonHandler()). Here, we check
+        // the value of mRequestingLocationUpdates and if it is true, we start location updates.
+        if (mRequestingLocationUpdates) {
+            startLocationUpdates();
+        }
+    }
 
     private class CustomerAdapter extends BaseAdapter {
         private List<customer> mSamples;
@@ -259,6 +356,47 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         }
     }
 
+    private void updateValuesFromBundle(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            // Update the value of mRequestingLocationUpdates from the Bundle, and make sure that
+            // the Start Updates and Stop Updates buttons are correctly enabled or disabled.
+            if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
+                mRequestingLocationUpdates = savedInstanceState.getBoolean(
+                        REQUESTING_LOCATION_UPDATES_KEY);
+            }
+
+            // Update the value of mCurrentLocation from the Bundle and update the UI to show the
+            // correct latitude and longitude.
+            if (savedInstanceState.keySet().contains(LOCATION_KEY)) {
+                // Since LOCATION_KEY was found in the Bundle, we can be sure that mCurrentLocation
+                // is not null.
+                mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
+            }
+            if (savedInstanceState.keySet().contains("locationstring"))
+            {
+                String locationstringdata = savedInstanceState.getString("locationstring");
+                if(locationstringdata!=null && !locationstringdata.isEmpty()){
+                    StringBuilder locationstringbuilder = new StringBuilder();
+                    if(mCurrentLocation  != null)
+                    {
+
+                        locationstringbuilder.append(locationstringdata).append(mCurrentLocation.getLatitude()).append(",").append(mCurrentLocation.getLongitude()).append("|");
+                    }
+                    else
+                    {
+                        locationstringbuilder.append(mCurrentLocation.getLatitude()).append(",").append(mCurrentLocation.getLongitude()).append("|");
+                    }
+                    SharedPreferenceManager.setPreference("locationstringdata",locationstringbuilder.toString());
+                }
+            }
+
+            // Update the value of mLastUpdateTime from the Bundle and update the UI.
+            if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
+                mLastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
         // finish() is called in super: we only override this method to be able to override the transition
@@ -275,17 +413,45 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 SharedPreferenceManager.setPreference("totaldistance", 0.0f);
                 Toast.makeText(showupcomingridedetails.this,
                         "Ride has started", Toast.LENGTH_LONG).show();
-                Boolean isGPSEnabled = locationManager
-                        .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-                Boolean isNetworkEnabled = locationManager
-                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-                timerstart();
-                Criteria criteria = new Criteria();
-                criteria.setAccuracy(Criteria.ACCURACY_FINE);
-                locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria,true), 15000, 0, locationListener);
+                createLocationRequest();
+                startalarm();
+                mRequestingLocationUpdates = true;
             }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Within {@code onPause()}, we pause location updates, but leave the
+        // connection to GoogleApiClient intact.  Here, we resume receiving
+        // location updates if the user has requested them.
+
+        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
+           // startLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
+        if (mGoogleApiClient.isConnected()) {
+           // stopLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+
+        super.onStop();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -440,79 +606,6 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         @Override
         protected void onCancelled() {
             individualridestask = null;
-        }
-    }
-
-    public class googledistancematrixapitask extends AsyncTask<Void, Void, String> {
-        private String mlocationstring;
-        private Boolean mstopRides;
-
-
-        googledistancematrixapitask(String locationstring,Boolean stopRide) {
-            mlocationstring = locationstring;
-            mstopRides = stopRide;
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-        @Override
-        protected String doInBackground(Void... param) {
-            String distance = null;
-            // Building Parameters
-            /*List<NameValuePair> params = new ArrayList<NameValuePair>();
-
-            // post album id, song id as GET parameters
-            params.add(new BasicNameValuePair("name", mName));
-            params.add(new BasicNameValuePair("email", mEmail));
-            params.add(new BasicNameValuePair("password", mPassword));
-            params.add(new BasicNameValuePair("profile", mProfile));*/
-            try {
-                JSONObject params = new JSONObject();
-                params.put("sourcelatlong", mlocationstring);
-                params.put("destinationlatlong", mlocationstring);
-                // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/googledistancematrixapicalculation", "POST",
-                        params);
-
-                // Check your log cat for JSON reponse
-                Log.d("response from post rides ", json);
-
-
-                JSONObject jObj = new JSONObject(json);
-                if(jObj != null){
-                    distance = jObj.getString("totaldistance");
-
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return distance;
-        }
-
-        @Override
-        protected void onPostExecute(final String distance) {
-            float totaldistance = SharedPreferenceManager.getFloatPreference("totaldistance");
-            totaldistance = totaldistance + Float.parseFloat(distance);
-
-            if(mstopRides){
-                Toast.makeText(showupcomingridedetails.this,
-                 "The total distance travelled is "+ Float.toString(totaldistance/1000)+ "Km", Toast.LENGTH_LONG).show();
-                SharedPreferenceManager.setPreference("totaldistance", 0.0f);
-
-            }
-            else{
-                SharedPreferenceManager.setPreference("totaldistance", totaldistance);
-            }
-
-
-        }
-
-        @Override
-        protected void onCancelled() {
-
         }
     }
 }

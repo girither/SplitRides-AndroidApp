@@ -582,12 +582,12 @@ public class MainActivity extends ActionBarActivity
         } else {
             // otherwise present the splash screen
             // and ask the person to login.
-            if (getSupportFragmentManager().getBackStackEntryCount() > 0){
-                showFragment(SIGNUPPAGE, false);
-            }
-            else{
+           // if (getSupportFragmentManager().getBackStackEntryCount() > 0){
+             //   showFragment(SIGNUPPAGE, false);
+           // }
+           // else{
                 showFragment(LOGINPAGE, false);
-            }
+            //}
 
         }
     }
