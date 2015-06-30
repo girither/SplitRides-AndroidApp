@@ -54,30 +54,18 @@
             android:screenOrientation="portrait" >
         </activity>
         <service android:name=".googleservice"></service>
+        <service android:name=".Locationservice"></service>
         <receiver android:name=".Alarmreciever"></receiver>
         <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
+            android:name=".Gcmbroadcastreciever"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
+                <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.example.gcm" />
+                <category android:name="com.google.android.gcm.demo.app" />
             </intent-filter>
         </receiver>
-        <!--service
-            android:name="com.example.MyGcmListenerService"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-        <service
-            android:name="com.example.MyInstanceIDListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
-            </intent-filter>
-        </service-->
+        <service android:name=".GcmIntentService" />
 
 
     <activity
@@ -151,6 +139,7 @@
         <activity
             android:name=".showupcomingridedetails"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"
             android:noHistory="false"
             android:screenOrientation="portrait" >

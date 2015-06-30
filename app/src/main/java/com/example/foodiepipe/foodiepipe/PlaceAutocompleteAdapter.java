@@ -197,7 +197,7 @@ public class PlaceAutocompleteAdapter
      * @return Results from the autocomplete API or null if the query was not successful.
      * @see Places#GEO_DATA_API#getAutocomplete(CharSequence)
      */
-    private ArrayList<PlaceAutocomplete> getAutocomplete(CharSequence constraint) {
+    public ArrayList<PlaceAutocomplete> getAutocomplete(CharSequence constraint) {
         if (mGoogleApiClient != null) {
             Log.i(TAG, "Starting autocomplete query for: " + constraint);
 
@@ -250,7 +250,7 @@ public class PlaceAutocompleteAdapter
     /**
      * Holder for Places Geo Data Autocomplete API results.
      */
-    class PlaceAutocomplete {
+    public class PlaceAutocomplete {
 
         public CharSequence placeId;
         public CharSequence description;

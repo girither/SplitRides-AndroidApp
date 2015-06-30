@@ -41,7 +41,7 @@ public class Locationservice extends Service implements LocationListener,
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mGoogleApiClient.connect();
-        Toast.makeText(this, "Location services started", Toast.LENGTH_SHORT).show();
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -52,9 +52,13 @@ public class Locationservice extends Service implements LocationListener,
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-        System.out.println("MyLocationService.onLocationChanged");
-        // do your work here with location
+    public void onLocationChanged(Location mCurrentLocation) {
+        StringBuilder locationstringbuilder = new StringBuilder();
+        String locationstring = SharedPreferenceManager.getPreference("locationstringdata");
+        if(locationstring != null) {
+            locationstringbuilder.append(locationstring).append(mCurrentLocation.getLatitude()).append(",").append(mCurrentLocation.getLongitude()).append("|");
+            SharedPreferenceManager.setPreference("locationstringdata", locationstringbuilder.toString());
+        }
     }
 
     @Override
@@ -62,7 +66,11 @@ public class Locationservice extends Service implements LocationListener,
 
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(1000); // Update location every second
+        mLocationRequest.setInterval(15000);
+
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
+        mLocationRequest.setFastestInterval(7500);
 
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);

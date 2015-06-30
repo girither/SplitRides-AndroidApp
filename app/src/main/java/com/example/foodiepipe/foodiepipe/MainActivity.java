@@ -290,11 +290,13 @@ public class MainActivity extends ActionBarActivity
 
                     @Override
                     public void onCancel() {
+                        LoginManager.getInstance().logOut();
                         Log.v("LoginActivity", "cancel");
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
+                        LoginManager.getInstance().logOut();
                         Log.v("LoginActivity", exception.getCause().toString());
                     }
                 });
