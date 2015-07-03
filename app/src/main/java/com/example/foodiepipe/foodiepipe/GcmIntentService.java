@@ -12,6 +12,9 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by gbm on 6/30/15.
  */
@@ -73,23 +76,49 @@ public class GcmIntentService extends IntentService {
     // This is just one simple example of what you might choose to do with
     // a GCM message.
     private void sendNotification(String msg) {
-        Log.i(TAG,"inside the sendNotification method");
-        mNotificationManager = (NotificationManager)
-                this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, showupcomingridedetails.class), 0);
+        try {
+        JSONObject jObj = new JSONObject(msg);
+        if(jObj != null){
+            String data = jObj.getString("NotificationType");
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_cart)
-                        .setContentTitle("GCM Notification")
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(msg))
-                        .setContentText(msg);
+            if(data.equals("StartRideDistanceTravelled")){
 
-        mBuilder.setContentIntent(contentIntent);
-        Log.i(TAG,"in the penultimate line");
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+            }
+            else if(data.equals("EndRideDistanceTravelled")){
+
+            }
+            else if(data.equals("requestToJoinTheRide")){
+                String requestID = jObj.getString("requestId");
+                mNotificationManager = (NotificationManager)
+                        this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                Intent getnotificationdetails = new Intent(this,notificationfragmentdetails.class);
+                getnotificationdetails.putExtra("requestId", requestID);
+                PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getnotificationdetails, 0);
+
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(this)
+                                .setSmallIcon(R.drawable.ic_cart)
+                                .setContentTitle("Request To Join Ride")
+                                .setStyle(new NotificationCompat.BigTextStyle()
+                                        .bigText(msg))
+                                .setContentText(msg);
+
+                mBuilder.setContentIntent(contentIntent);
+                Log.i(TAG,"in the penultimate line");
+                mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+            }
+            else if(data.equals("acceptedByTheOwner")){
+
+            }
+            else if(data.equals("rejectedByTheOwner")){
+
+            }
+        }
+
+      } catch (JSONException e) {
+        e.printStackTrace();
+     }
     }
 }

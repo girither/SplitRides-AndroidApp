@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#F2F2F2"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"
+        ></include>
+
+<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp"
+    android:layout_marginLeft="25dp"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:text="Upcoming Rides"
+    android:textColor="@color/teal"
+    android:id="@+id/textView2" />
+
+    <FrameLayout
+     android:layout_marginTop="10dp"
+     android:id="@+id/show_upcomingrides_fragment"
+     android:layout_weight="2"
+     android:layout_width="match_parent"
+        android:layout_height="0px" />
+    </LinearLayout>

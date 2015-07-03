@@ -59,6 +59,10 @@ public class Locationservice extends Service implements LocationListener,
             locationstringbuilder.append(locationstring).append(mCurrentLocation.getLatitude()).append(",").append(mCurrentLocation.getLongitude()).append("|");
             SharedPreferenceManager.setPreference("locationstringdata", locationstringbuilder.toString());
         }
+        else{
+            locationstringbuilder.append(mCurrentLocation.getLatitude()).append(",").append(mCurrentLocation.getLongitude()).append("|");
+            SharedPreferenceManager.setPreference("locationstringdata", locationstringbuilder.toString());
+        }
     }
 
     @Override

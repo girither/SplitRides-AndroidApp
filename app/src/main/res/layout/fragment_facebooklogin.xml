@@ -5,141 +5,153 @@
     android:background="#F2F2F2"
     android:orientation="vertical">
 
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical" >
 
-        <TextView
-            android:layout_marginTop="25dp"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/login_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="LOGIN"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+         <ImageView android:id="@+id/login_logo" android:layout_width="wrap_content"
+       android:layout_height="fill_parent"
+             android:layout_marginTop="100dp"
+       android:src="@drawable/splitrides_logo"
+       android:layout_gravity="center"/>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-    </LinearLayout>
+   <!--LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+       <TextView
+           android:layout_marginTop="25dp"
+           android:layout_marginLeft="10dp"
+           android:id="@+id/login_label"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="LOGIN"
+           android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <EditText
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:id="@+id/enter_email"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@drawable/border_edittextbox"
-            android:hint="Enter your email id"
-            android:ems="10"
-            android:inputType="textEmailAddress" >
+   </LinearLayout>
 
-            <requestFocus />
-        </EditText>
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical" >
+   </LinearLayout>
 
-    </LinearLayout>
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+       <EditText
+           android:paddingLeft="10dp"
+           android:paddingRight="10dp"
+           android:layout_marginTop="30dp"
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp"
+           android:id="@+id/enter_email"
+           android:layout_width="match_parent"
+           android:layout_height="40dp"
+           android:background="@drawable/border_edittextbox"
+           android:hint="Enter your email id"
+           android:ems="10"
+           android:inputType="textEmailAddress" >
 
-        <EditText
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:id="@+id/enter_password"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@drawable/border_edittextbox"
-            android:hint="Password"
-            android:ems="10"
-            android:inputType="textPassword" />
+           <requestFocus />
+       </EditText>
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical" >
 
-        <CheckBox
-            android:id="@+id/show_password"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="2dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Show Password" />
+       <EditText
+           android:paddingLeft="10dp"
+           android:paddingRight="10dp"
+           android:layout_marginTop="20dp"
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp"
+           android:id="@+id/enter_password"
+           android:layout_width="match_parent"
+           android:layout_height="40dp"
+           android:background="@drawable/border_edittextbox"
+           android:hint="Password"
+           android:ems="10"
+           android:inputType="textPassword" />
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical" >
 
-        <Button
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="15dp"
-            android:id="@+id/login_button"
-            android:background="#F87217"
-            android:textColor="#FFFFFF"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:text="LOGIN" />
+       <CheckBox
+           android:id="@+id/show_password"
+           android:layout_marginTop="20dp"
+           android:layout_marginLeft="2dp"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:textAppearance="?android:attr/textAppearanceSmall"
+           android:text="Show Password" />
 
-    </LinearLayout>
+   </LinearLayout>
 
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+       <Button
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp"
+           android:layout_marginTop="15dp"
+           android:id="@+id/login_button"
+           android:background="#F87217"
+           android:textColor="#FFFFFF"
+           android:layout_width="match_parent"
+           android:layout_height="30dp"
+           android:text="LOGIN" />
 
-        <TextView
-            android:layout_marginLeft="160dp"
-            android:layout_marginTop="20dp"
-            android:id="@+id/signup_link"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sign Up"
-            android:textColor="#A52A2A"
-            android:autoLink="web"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-
-    </LinearLayout>
+   </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-        <View
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#000000"/>
-    </LinearLayout>
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical" >
+
+       <TextView
+           android:layout_marginLeft="160dp"
+           android:layout_marginTop="20dp"
+           android:id="@+id/signup_link"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Sign Up"
+           android:textColor="#A52A2A"
+           android:autoLink="web"
+           android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+   </LinearLayout>
+
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical" >
+       <View
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp"
+           android:layout_marginTop="20dp"
+           android:layout_width="fill_parent"
+           android:layout_height="1dp"
+           android:background="#000000"/>
+   </LinearLayout-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -149,7 +161,7 @@
         <com.facebook.login.widget.LoginButton
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="100dp"
             android:id="@+id/facebook_button"
             android:layout_width="match_parent"
             android:layout_height="45dp"/>

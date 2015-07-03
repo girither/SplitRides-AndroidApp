@@ -21,8 +21,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-    <permission android:name="com.example.gcm.permission.C2D_MESSAGE"
+    <permission
+        android:name="com.example.gcm.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -41,8 +43,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:name=".Splitrideapplication"
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -53,22 +56,26 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
-        <service android:name=".googleservice"></service>
-        <service android:name=".Locationservice"></service>
-        <receiver android:name=".Alarmreciever"></receiver>
+
+        <service android:name=".googleservice" />
+        <service android:name=".Locationservice" />
+
+        <receiver android:name=".Alarmreciever" />
         <receiver
             android:name=".Gcmbroadcastreciever"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
+
                 <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="com.google.android.gcm.demo.app" />
             </intent-filter>
         </receiver>
+
         <service android:name=".GcmIntentService" />
 
-
-    <activity
+        <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
@@ -140,8 +147,8 @@
             android:name=".showupcomingridedetails"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity"
             android:noHistory="false"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -151,11 +158,19 @@
         </activity>
         <activity
             android:name=".cabproviderselction"
-            android:label="@string/title_activity_cabproviderselction" >
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".notificationfragmentdetails"
-            android:label="@string/title_activity_notificationfragmentdetails" >
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".showupcomingridesactivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:noHistory="false"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

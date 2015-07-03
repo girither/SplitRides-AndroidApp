@@ -1,5 +1,7 @@
 package com.example.foodiepipe.foodiepipe;
 
+import java.util.List;
+
 /**
  * Created by gbm on 6/26/15.
  */
@@ -11,6 +13,16 @@ public class notificationdata {
     String date;
     String requestId;
     String todayortomorrow;
+    List<customer> customerlistdata;
+
+    public List<customer> getCustomerlistdata() {
+        return customerlistdata;
+    }
+
+    public void setCustomerlistdata(List<customer> customerlistdata) {
+        this.customerlistdata = customerlistdata;
+    }
+
 
 
     public String getTodayortomorrow() {
@@ -42,6 +54,14 @@ public class notificationdata {
         this.destination = destination;
         this.source = source;
         this.date = date;
+        this.requestId = requestId;
+    }
+
+    public notificationdata(String destination, String source, String date,List<customer> customerlistdata,String requestId) {
+        this.destination = destination;
+        this.source = source;
+        this.date = date;
+        this.customerlistdata = customerlistdata;
         this.requestId = requestId;
     }
 

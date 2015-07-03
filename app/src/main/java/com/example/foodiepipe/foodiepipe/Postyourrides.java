@@ -38,7 +38,6 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.nullwire.trace.ExceptionHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +45,8 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+
 
 
 public class Postyourrides extends ActionBarActivity
@@ -67,7 +68,6 @@ public class Postyourrides extends ActionBarActivity
      * Request code passed to the PlacePicker intent to identify its result when it returns.
      */
     private static final int REQUEST_PLACE_PICKER = 1;
-
     TextView settimetextView;
     TextView settimetextViewhidden;
     TextView setlatlongtextView;
@@ -79,6 +79,7 @@ public class Postyourrides extends ActionBarActivity
     private EditText mPhonenumber;
     JSONParser jsonParser = new JSONParser();
     private String currentDate;
+
     private double sourcelat,sourcelong,destinationlat,destinationlong;
     //private TextView mPlaceDetailsText;
 
@@ -113,12 +114,10 @@ public class Postyourrides extends ActionBarActivity
         mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
         mAutocompleteView_destination.setOnItemClickListener(mAutocompleteClickListener_destination);
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
-
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.days_array, android.R.layout.simple_spinner_item);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
         Calendar cal = Calendar.getInstance();
@@ -138,14 +137,12 @@ public class Postyourrides extends ActionBarActivity
                 findViewById(R.id.time_data);
         setlatlongtextView = (TextView)
                 findViewById(R.id.latlong_data);
-
         String currenttime = sdf.format(cal.getTime());
         settimetextView.setText(currenttime);
         SimpleDateFormat sdfhidden = new SimpleDateFormat("HH:mm:ss");
         String currenttimehidden = sdfhidden.format(cal.getTime());
         settimetextViewhidden = new TextView(getApplicationContext());
         settimetextViewhidden.setText(currenttimehidden);
-
         // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
         // the entire world.
         mAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1,
@@ -153,7 +150,6 @@ public class Postyourrides extends ActionBarActivity
 
         mAutocompleteView.setAdapter(mAdapter);
         mAutocompleteView_destination.setAdapter(mAdapter);
-        ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
     }
 
     /**
@@ -231,7 +227,9 @@ public class Postyourrides extends ActionBarActivity
             if (attributions == null) {
                 attributions = "";
             }
-            setlatlongtextView.setText(name);
+            StringBuilder locationstringbuilder = new StringBuilder();
+            locationstringbuilder.append(Double.toString(latlongcord.latitude)).append(",").append(Double.toString(latlongcord.longitude));
+            setlatlongtextView.setText(locationstringbuilder.toString());
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -460,7 +458,7 @@ public class Postyourrides extends ActionBarActivity
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mvalidateplacesTask = new validateplacesapi(source,destination,phonenumber,currentDate,timeclock);
+            mvalidateplacesTask = new validateplacesapi(source,destination,phonenumber,currentDate,timeclock,Double.toString(sourcelat),Double.toString(sourcelong),Double.toString(destinationlat),Double.toString(destinationlong));
             mvalidateplacesTask.execute((Void) null);
 
         }
@@ -485,13 +483,21 @@ public class Postyourrides extends ActionBarActivity
         private final String mPhonenumber;
         private final String mDate;
         private final String mTime;
+        private final String msourcelat;
+        private final String msourcelong;
+        private final String mdestinationlat;
+        private final String mdestinationlong;
 
-        Postyouridetask(String source, String destination,String phonenumber,String date,String time) {
+        Postyouridetask(String source, String destination,String phonenumber,String date,String time,String sourcelat,String sourcelong,String destinationlat,String destinationlong) {
             mSource = source;
             mDestination = destination;
             mPhonenumber = phonenumber;
             mDate = date;
             mTime =time;
+            msourcelat =  sourcelat;
+            msourcelong = sourcelong;
+            mdestinationlat = destinationlat;
+            mdestinationlong = destinationlong;
         }
         @Override
         protected void onPreExecute() {
@@ -519,6 +525,10 @@ public class Postyourrides extends ActionBarActivity
                 params.put("phoneNumber", mPhonenumber);
                 params.put("date", mDate);
                 params.put("time", mTime);
+                params.put("sourceLat", msourcelat);
+                params.put("sourceLng", msourcelong);
+                params.put("destinationLat", mdestinationlat);
+                params.put("destinationLng", mdestinationlong);
                 Log.d("token data ",SharedPreferenceManager.getPreference("auth_token"));
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/postRide", "POST",
@@ -568,14 +578,24 @@ public class Postyourrides extends ActionBarActivity
         private final String mPhonenumber;
         private final String mDate;
         private final String mTime;
+        private final String msourcelat;
+        private final String msourcelong;
+        private final String mdestinationlat;
+        private final String mdestinationlong;
+
         String validityflag;
 
-        validateplacesapi(String source, String destination,String phonenumber,String date,String time) {
+        validateplacesapi(String source, String destination,String phonenumber,String date,String time,String sourcelat,String sourcelong,String destinationlat,String destinationlong) {
             mSource = source;
             mDestination = destination;
             mPhonenumber = phonenumber;
             mDate = date;
             mTime =time;
+            msourcelat =  sourcelat;
+            msourcelong = sourcelong;
+            mdestinationlat = destinationlat;
+            mdestinationlong = destinationlong;
+
         }
         @Override
         protected void onPreExecute() {
@@ -614,7 +634,7 @@ public class Postyourrides extends ActionBarActivity
             pDialog.dismiss();
             View focusView = null;
             if (success) {
-                mAuthTask = new Postyouridetask(mSource,mDestination,mPhonenumber,mDate,mTime);
+                mAuthTask = new Postyouridetask(mSource,mDestination,mPhonenumber,mDate,mTime,msourcelat,msourcelong,mdestinationlat,mdestinationlong);
                 mAuthTask.execute((Void) null);
             } else {
                 if(validityflag.equals("source")){

@@ -38,11 +38,12 @@ import java.util.List;
 public class allrides extends Fragment implements AdapterView.OnItemClickListener {
 
     JSONParser jsonParser = new JSONParser();
-    private GridView mGridView;
+    private GridView mGridView,mGridView_noresults;
     private getallridetask mallrideTask = null;
     private LinearLayout allridesform;
     private LinearLayout noresultsform;
     SampleAdapter myallridedataadapter;
+    SampleAdapter_noresults  myallridedataadapter_noresults;
 
     private ProgressBar bar;
     public void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class allrides extends Fragment implements AdapterView.OnItemClickListene
         mallrideTask = new getallridetask();
         mallrideTask.execute((Void) null);
         mGridView = (GridView)rootView.findViewById(android.R.id.list);
+        mGridView_noresults = (GridView)rootView.findViewById(R.id.no_results_return_list);
         mGridView.setOnItemClickListener(this);
         allridesform = (LinearLayout)rootView.findViewById(R.id.show_all_rides);
         noresultsform = (LinearLayout)rootView.findViewById(R.id.noridestoshow_form);
@@ -144,6 +146,41 @@ public class allrides extends Fragment implements AdapterView.OnItemClickListene
         }
     }
 
+    private class SampleAdapter_noresults extends BaseAdapter {
+        private List<ridedata> mSamples;
+        public SampleAdapter_noresults(List<ridedata> myDataset) {
+            mSamples = myDataset;
+        }
+
+        @Override
+        public int getCount() {
+            return mSamples.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mSamples.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return mSamples.get(position).hashCode();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup container) {
+            if (convertView == null) {
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.noresults_searchrides,
+                        container, false);
+            }
+            TextView noresultsview = (TextView) convertView.findViewById(R.id.text1);
+            noresultsview.setText(mSamples.get(position).getNoresults());
+            // Lookup view for data population
+
+            return convertView;
+        }
+    }
+
     public class getallridetask extends AsyncTask<Void, Void, List<ridedata>> {
 
         @Override
@@ -198,6 +235,15 @@ public class allrides extends Fragment implements AdapterView.OnItemClickListene
             if(!ridedataArray.isEmpty()){
                 myallridedataadapter = new SampleAdapter(ridedataArray);
                 mGridView.setAdapter(myallridedataadapter);
+            }
+            else
+            {
+                List<ridedata> noresultsarray = new ArrayList<ridedata>();
+                ridedata info = new ridedata(null,null,null);
+                info.setNoresults("No rides to show currently.");
+                noresultsarray.add(info);
+                myallridedataadapter_noresults = new SampleAdapter_noresults(noresultsarray);
+                mGridView_noresults.setAdapter(myallridedataadapter_noresults);
             }
         }
 

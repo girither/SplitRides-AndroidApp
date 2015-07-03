@@ -28,11 +28,12 @@ import java.util.List;
 
 public class joinedrides extends Fragment implements AdapterView.OnItemClickListener {
     JSONParser jsonParser = new JSONParser();
-    private GridView mGridView;
+    private GridView mGridView, mGridView_noresults;
     private getjoinedridetask mjoinedrideTask = null;
     private LinearLayout joinedridesform;
     private LinearLayout noresultsform;
     SampleAdapter myjoinedridedataadapter;
+    SampleAdapter_noresults  myallridedataadapter_noresults;
 
     private ProgressBar bar;
     public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
         mjoinedrideTask = new getjoinedridetask();
         mjoinedrideTask.execute((Void) null);
         mGridView = (GridView)rootView.findViewById(android.R.id.list);
+        mGridView_noresults = (GridView)rootView.findViewById(R.id.no_results_return_list);
         joinedridesform = (LinearLayout)rootView.findViewById(R.id.show_joined_rides);
         noresultsform = (LinearLayout)rootView.findViewById(R.id.noridestoshow_form);
         return rootView;
@@ -125,6 +127,42 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
         }
     }
 
+    private class SampleAdapter_noresults extends BaseAdapter {
+        private List<ridedata> mSamples;
+        public SampleAdapter_noresults(List<ridedata> myDataset) {
+            mSamples = myDataset;
+        }
+
+        @Override
+        public int getCount() {
+            return mSamples.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mSamples.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return mSamples.get(position).hashCode();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup container) {
+            if (convertView == null) {
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.noresults_searchrides,
+                        container, false);
+            }
+            TextView noresultsview = (TextView) convertView.findViewById(R.id.text1);
+            noresultsview.setText(mSamples.get(position).getNoresults());
+            // Lookup view for data population
+
+            return convertView;
+        }
+    }
+
+
     public class getjoinedridetask extends AsyncTask<Void, Void, List<ridedata>> {
 
         @Override
@@ -179,6 +217,14 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
             if(!ridedataArray.isEmpty()){
                 myjoinedridedataadapter = new SampleAdapter(ridedataArray);
                 mGridView.setAdapter(myjoinedridedataadapter);
+            }
+            else{
+                    List<ridedata> noresultsarray = new ArrayList<ridedata>();
+                    ridedata info = new ridedata(null,null,null);
+                    info.setNoresults("No rides to show currently.");
+                    noresultsarray.add(info);
+                    myallridedataadapter_noresults = new SampleAdapter_noresults(noresultsarray);
+                    mGridView_noresults.setAdapter(myallridedataadapter_noresults);
             }
         }
 

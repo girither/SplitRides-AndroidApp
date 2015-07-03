@@ -6,7 +6,7 @@
 
     <ImageView android:id="@+id/splashscreen" android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:src="@drawable/foodpipe_logo"
+        android:src="@drawable/splitrides_logo"
         android:layout_gravity="center"/>
 
 </LinearLayout>

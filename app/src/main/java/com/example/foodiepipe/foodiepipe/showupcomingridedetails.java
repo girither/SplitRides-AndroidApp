@@ -1,8 +1,10 @@
 package com.example.foodiepipe.foodiepipe;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -22,7 +24,6 @@ import android.widget.Toast;
 
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
-import com.nullwire.trace.ExceptionHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +52,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     CustomerAdapter customerlistadapter;
     GridView mGridView;
     static final int PICK_CABPROVIDER_RESULT = 1;
+    static final int PICK_CABPROVIDER_RESULT_FROMESIMATE = 2;
     private PendingIntent pendingIntent;
     Intent startlocationservice;
 
@@ -82,6 +84,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         Bundle extras = getIntent().getExtras();
         String rideId = extras.getString("rideId");
         String rideFlag = extras.getString("rideFlag");
+        SharedPreferenceManager.setPreference("currentride_rideid",rideId);
         if(rideFlag.equals("ride"))
         {
             exitride.setVisibility(View.GONE);
@@ -120,9 +123,6 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         startlocationservice = new Intent(this,Locationservice.class);
         Intent alarmIntent = new Intent(showupcomingridedetails.this, Alarmreciever.class);
         pendingIntent = PendingIntent.getBroadcast(showupcomingridedetails.this, 0, alarmIntent, 0);
-
-        ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
-
     }
     //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 
@@ -163,24 +163,44 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         }
         switch(view.getId()) {
             case R.id.startride:
-                Intent selectcabprovider = new Intent(showupcomingridedetails.this,cabproviderselction.class);
-                startActivityForResult(selectcabprovider, PICK_CABPROVIDER_RESULT);
+                if(SharedPreferenceManager.getBooleanPreference("stoprides")) {
+                    Intent selectcabprovider = new Intent(showupcomingridedetails.this, cabproviderselction.class);
+                    startActivityForResult(selectcabprovider, PICK_CABPROVIDER_RESULT);
+                }
 
                 break;
             case R.id.endride:
-                stopalarm();
-                SharedPreferenceManager.setPreference("stoprides",true);
-                String locationstring = SharedPreferenceManager.getPreference("locationstringdata");
-                if(locationstring != null && !locationstring.isEmpty()) {
-                    Intent dailyUpdater = new Intent(this, googleservice.class);
-                    this.startService(dailyUpdater);
-                }
-                stoplocationservice();
-                Toast.makeText(showupcomingridedetails.this,
-                        "Ride has ended", Toast.LENGTH_LONG).show();
+                if(SharedPreferenceManager.getBooleanPreference("startrides")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(showupcomingridedetails.this);
+                    builder.setMessage("Do You want to end the ride?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    SharedPreferenceManager.setPreference("startrides", false);
+                                    stopalarm();
+                                    SharedPreferenceManager.setPreference("stoprides", true);
+                                    String locationstring = SharedPreferenceManager.getPreference("locationstringdata");
+                                    if (locationstring != null && !locationstring.isEmpty()) {
+                                        Intent dailyUpdater = new Intent(getApplicationContext(), googleservice.class);
+                                        startService(dailyUpdater);
+                                    }
+                                    stoplocationservice();
+                                    Toast.makeText(showupcomingridedetails.this,
+                                            "Ride has ended", Toast.LENGTH_LONG).show();
 
+                                }
+                            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
                 break;
             case R.id.estimeateride:
+                Intent selectcabprovider_estimate = new Intent(showupcomingridedetails.this,cabproviderselction.class);
+                startActivityForResult(selectcabprovider_estimate,PICK_CABPROVIDER_RESULT_FROMESIMATE);
                 break;
             case R.id.exitride:
                 break;
@@ -249,12 +269,16 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         if (requestCode == PICK_CABPROVIDER_RESULT) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
+                SharedPreferenceManager.setPreference("startrides",true);
                 SharedPreferenceManager.setPreference("totaldistance", 0.0f);
                 Toast.makeText(showupcomingridedetails.this,
                         "Ride has started", Toast.LENGTH_LONG).show();
                 startalarm();
                 startlocationservice();
             }
+        }
+        else if(requestCode == PICK_CABPROVIDER_RESULT_FROMESIMATE){
+            new estimateridetask(SharedPreferenceManager.getPreference("currentride_rideid"),Integer.toString(0),"").execute();
         }
     }
 
@@ -310,7 +334,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
         @Override
         protected void onPostExecute(final String success) {
-            individualridestask = null;
+
             bar.setVisibility(View.GONE);
             detailform.setVisibility(View.VISIBLE);
             if(success != null){
@@ -320,7 +344,68 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
         @Override
         protected void onCancelled() {
-            individualridestask = null;
+
+        }
+    }
+
+    public class estimateridetask extends AsyncTask<Void, Void,String > {
+
+        private final String jrId;
+        private final String mestimateBeforeJoining;
+        private final String mrrideId;
+
+
+
+        estimateridetask(String joinedrideId, String estimateBeforeJoining,String rRideId) {
+            jrId=joinedrideId;
+            mestimateBeforeJoining =estimateBeforeJoining;
+            mrrideId = rRideId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            bar.setVisibility(View.VISIBLE);
+
+        }
+        @Override
+        protected String doInBackground(Void... param) {
+            String price = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("jrId", jrId);
+                params.put("estimateBeforeJoining", mestimateBeforeJoining);
+                params.put("rrideId", mrrideId);
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/estimateRide", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    price = jObj.getString("price");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return price;
+        }
+
+        @Override
+        protected void onPostExecute(final String price) {
+            bar.setVisibility(View.GONE);
+            detailform.setVisibility(View.VISIBLE);
+            if(price != null){
+
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+
         }
     }
 

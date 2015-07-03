@@ -1,6 +1,5 @@
 package com.example.foodiepipe.foodiepipe;
 
-
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,13 +19,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by gbm on 7/1/15.
+ */
+public class searchyourridesfragment extends SwipeRefreshListFragment {
 
-public class Showupcomingridesfragment extends SwipeRefreshListFragment {
-
-    private static final String LOG_TAG = SwipeRefreshListFragmentFragment.class.getSimpleName();
+    private static final String LOG_TAG = searchyourridesfragment.class.getSimpleName();
     JSONParser jsonParser = new JSONParser();
     private static final int LIST_ITEM_COUNT = 20;
-    DummyBackgroundTask searchridetask;
+    private getmyridetask mMyrideTask = null;
     ListAdapter adapter;
 
     @Override
@@ -47,12 +48,13 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
         ridedata rideobj = (ridedata)getListAdapter().getItem(position);
         if(rideobj.getNoresults() == null)
         {
-            Intent getinduvidualrides = new Intent(getActivity(),showupcomingridedetails.class);
-            getinduvidualrides.putExtra("rideId", rideobj.getRideId());
-            getinduvidualrides.putExtra("rideFlag", rideobj.getRideFlag());
-            getinduvidualrides.putExtra("rideDate",rideobj.getDate());
-            getinduvidualrides.putExtra("ownercustomernumber", rideobj.getRideownercustomernumber());
-            startActivity(getinduvidualrides);
+            Intent searchrides = new Intent(getActivity(),Searchridessourcedestination.class);
+
+            searchrides.putExtra("source", rideobj.getSource());
+            searchrides.putExtra("destination", rideobj.getDestination());
+            searchrides.putExtra("timeChoice", rideobj.getTodayortomorrow().toLowerCase().trim());
+            SharedPreferenceManager.setPreference("myrideId", rideobj.getRideId());
+            startActivity(searchrides);
         }
         getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);
     }
@@ -74,8 +76,8 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
 
         }
         else {
-            searchridetask = new DummyBackgroundTask();
-            searchridetask.execute();
+            mMyrideTask = new getmyridetask();
+            mMyrideTask.execute();
         }
         // BEGIN_INCLUDE (setup_refreshlistener)
         /**
@@ -133,17 +135,12 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
 
         }
         else {
-            searchridetask = new DummyBackgroundTask();
-            searchridetask.execute();
+            mMyrideTask = new getmyridetask();
+            mMyrideTask.execute();
         }
 
     }
-
-
-    /**
-     * Dummy {@link AsyncTask} which simulates a long running task to fetch new cheeses.
-     */
-    private class DummyBackgroundTask extends AsyncTask<Void, Void, List<ridedata>> {
+    public class getmyridetask extends AsyncTask<Void, Void, List<ridedata>> {
 
 
         @Override
@@ -161,7 +158,7 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
                 JSONObject params = new JSONObject();
 
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getMyRidesUpcoming", "POST",
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getMyRides", "POST",
                         params);
 
 
@@ -171,13 +168,7 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
                     JSONArray rides = jObj.getJSONArray("rides");
                     for(int i=0; i<rides.length(); i++){
                         JSONObject rideindividualdata = rides.getJSONObject(i);
-                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("rideId"),"ride",rideindividualdata.getString("customerNumber"));
-                        ridedataArray.add(info);
-                    }
-                    JSONArray jrides = jObj.getJSONArray("jRides");
-                    for(int i=0; i<jrides.length(); i++){
-                        JSONObject joinedrideindividualdata = rides.getJSONObject(i);
-                        ridedata info = new ridedata(joinedrideindividualdata.getString("source"),joinedrideindividualdata.getString("destination"),joinedrideindividualdata.getString("date"),joinedrideindividualdata.getString("jrId"), "jride", joinedrideindividualdata.getString("ownerCustomerNumber"));
+                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("rideId"));
                         ridedataArray.add(info);
                     }
                 }
@@ -190,11 +181,13 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
         }
 
         @Override
-        protected void onPostExecute(List<ridedata> result) {
-            super.onPostExecute(result);
+        protected void onPostExecute(final List<ridedata> ridedataArray) {
+            mMyrideTask = null;
+
+            super.onPostExecute(ridedataArray);
             setRefreshing(false);
-            if(!result.isEmpty()){
-                adapter = new customridedataadapter(getActivity(),result);
+            if(!ridedataArray.isEmpty()){
+                adapter = new customridedataadapter(getActivity(),ridedataArray);
 
                 // Set the adapter between the ListView and its backing data.
                 setListAdapter(adapter);
@@ -212,6 +205,10 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
             }
         }
 
+        @Override
+        protected void onCancelled() {
+            mMyrideTask = null;
+        }
     }
 
 }

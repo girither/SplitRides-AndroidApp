@@ -6,32 +6,31 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
-public class Searchridessourcedestination extends ActionBarActivity {
+
+public class showupcomingridesactivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_searchridessourcedestination);
+        setContentView(R.layout.activity_showupcomingridesactivity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            SwipeRefreshListFragmentFragment fragment = new SwipeRefreshListFragmentFragment();
-            fragment.setArguments(getIntent().getExtras());
-            transaction.replace(R.id.sample_content_fragment, fragment);
+            Showupcomingridesfragment fragment = new Showupcomingridesfragment();
+            transaction.replace(R.id.show_upcomingrides_fragment, fragment);
             transaction.commitAllowingStateLoss();
         }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_searchridessourcedestination, menu);
+        getMenuInflater().inflate(R.menu.menu_showupcomingridesactivity, menu);
         return true;
     }
-
-
     @Override
     public void onBackPressed() {
         // finish() is called in super: we only override this method to be able to override the transition
@@ -39,5 +38,4 @@ public class Searchridessourcedestination extends ActionBarActivity {
 
         overridePendingTransition(R.animator.back_in, R.animator.back_out);
     }
-
 }

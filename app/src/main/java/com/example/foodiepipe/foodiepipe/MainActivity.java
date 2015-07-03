@@ -3,9 +3,13 @@ package com.example.foodiepipe.foodiepipe;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -39,10 +43,11 @@ import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.nullwire.trace.ExceptionHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,10 +96,16 @@ public class MainActivity extends ActionBarActivity
     private Fragment[] fragments = new Fragment[FRAGMENT_COUNT];
     JSONParser jsonParser = new JSONParser();
     private static final int REQ_SIGN_IN_REQUIRED = 55664;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     MenuItem hidemenuitem;
+    String SENDER_ID = "544261498132";
 
     private boolean mSignInClicked;
     CallbackManager callbackManager;
+    GoogleCloudMessaging gcm;
+    //AtomicInteger msgId = new AtomicInteger();
+
+    String regid;
 
 
    @Override
@@ -105,6 +116,7 @@ public class MainActivity extends ActionBarActivity
    @Override
    public void onButtonClick()
    {
+       onregister();
        mSignInProgress = STATE_SIGN_IN;
        mGoogleApiClient.connect();
    }
@@ -124,7 +136,15 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onFacebookLoginButtonClicked()
     {
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email", "user_birthday"));
+        AccessToken token = AccessToken.getCurrentAccessToken();
+        onregister();
+        if(token != null){
+            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email", "user_birthday"));
+        }
+        else{
+            LoginManager.getInstance().logOut();
+        }
+
     }
 
    @Override
@@ -190,7 +210,7 @@ public class MainActivity extends ActionBarActivity
             // perform the user login attempt.
 
 
-            mAuthTask = new UserLoginTask(Email,Password,Name,"local","","male");
+            mAuthTask = new UserLoginTask(Email,Password,Name,"local","","male",getRegistrationId(getApplicationContext()));
             mAuthTask.execute((Void) null);
         }
     }
@@ -241,16 +261,53 @@ public class MainActivity extends ActionBarActivity
             // perform the user login attempt.
 
 
-            mAuthTask = new UserLoginTask(Email,Password,"","local","","");
+            mAuthTask = new UserLoginTask(Email,Password,"","local","","",getRegistrationId(getApplicationContext()));
             mAuthTask.execute((Void) null);
         }
     }
+
+    public void onregister(){
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+
+            try {
+                regid = getRegistrationId(getApplicationContext());
+
+                if (regid.isEmpty()) {
+                    Log.i(TAG,"inside the regid isEmpty Tag");
+                    registerInBackground();
+                }
+            } catch (Throwable e) {
+                Toast.makeText(getApplicationContext(),"exception happened: "+e.getClass().getName(),Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+
+
+        } else {
+            Log.i(TAG, "No valid Google Play Services APK found.");
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(this.getApplicationContext());
+        onregister();
+       /*try {
+
+            if (gcm == null) {
+                gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+            }
+            gcm.unregister();
+        } catch (IOException ex) {
+
+        }
+        final SharedPreferences prefs = getGcmPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("registrationid","");*/
+
+    FacebookSdk.sdkInitialize(this.getApplicationContext());
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -272,7 +329,7 @@ public class MainActivity extends ActionBarActivity
                                             email = jsonObject.getString("email");
                                             gender = jsonObject.getString("gender");
                                             if (mAuthTask == null) {
-                                                mAuthTask = new UserLoginTask(email, "", profile.getName(), "facebook", loginResult.getAccessToken().getToken(),gender);
+                                                mAuthTask = new UserLoginTask(email, "", profile.getName(), "facebook", loginResult.getAccessToken().getToken(),gender,getRegistrationId(getApplicationContext()));
                                                 Log.v("token", loginResult.getAccessToken().getToken());
                                                 mAuthTask.execute((Void) null);
                                             }
@@ -291,13 +348,11 @@ public class MainActivity extends ActionBarActivity
                     @Override
                     public void onCancel() {
                         LoginManager.getInstance().logOut();
-                        Log.v("LoginActivity", "cancel");
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         LoginManager.getInstance().logOut();
-                        Log.v("LoginActivity", exception.getCause().toString());
                     }
                 });
         mGoogleApiClient = buildGoogleApiClient();
@@ -316,16 +371,116 @@ public class MainActivity extends ActionBarActivity
         transaction.commitAllowingStateLoss();
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        mEmailView = (EditText) findViewById(R.id.enter_email);
+        //mEmailView = (EditText) findViewById(R.id.enter_email);
 
-        mPasswordView = (EditText) findViewById(R.id.enter_password);
+        //mPasswordView = (EditText) findViewById(R.id.enter_password);
         mEmailView_signup = (EditText) findViewById(R.id.enter_email_signup);
 
         mPasswordView_signup = (EditText) findViewById(R.id.enter_password_signup);
         mNameView_signup = (EditText) findViewById(R.id.enter_name_signup);
-        ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
 
     }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+
+    private static int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
+    private void storeRegistrationId(Context context, String regId) {
+        final SharedPreferences prefs = getGcmPreferences(context);
+        int appVersion = getAppVersion(context);
+        Log.i(TAG, "Saving regId on app version " + appVersion);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("registrationid", regId);
+        editor.putInt("appversion", appVersion);
+        editor.commit();
+    }
+
+    private String getRegistrationId(Context context) {
+        final SharedPreferences prefs = getGcmPreferences(context);
+        String registrationId = prefs.getString("registrationid", "");
+        if (registrationId.isEmpty()) {
+            Log.i(TAG, "Registration not found.");
+            return "";
+        }
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing regID is not guaranteed to work with the new
+        // app version.
+        int registeredVersion = prefs.getInt("appversion", Integer.MIN_VALUE);
+        int currentVersion = getAppVersion(context);
+        if (registeredVersion != currentVersion) {
+            Log.i(TAG, "App version changed.");
+            return "";
+        }
+        return registrationId;
+    }
+
+
+    /**
+     * Registers the application with GCM servers asynchronously.
+     * <p>
+     * Stores the registration ID and the app versionCode in the application's
+     * shared preferences.
+     */
+    private void registerInBackground() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                    }
+                    regid = gcm.register(SENDER_ID);
+                    msg = "Device registered, registration ID=" + regid;
+
+                    storeRegistrationId(getApplicationContext(), regid);
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+                    // If there is an error, don't just keep trying to register.
+                    // Require the user to click a button again, or perform
+                    // exponential back-off.
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+
+            }
+        }.execute(null, null, null);
+    }
+
+
+    private SharedPreferences getGcmPreferences(Context context) {
+        // This sample app persists the registration ID in shared preferences, but
+        // how you store the regID in your app is up to you.
+        return getSharedPreferences(MainActivity.class.getSimpleName(),
+                Context.MODE_PRIVATE);
+    }
+
     private GoogleApiClient buildGoogleApiClient() {
         // When we build the GoogleApiClient we specify where connected and
         // connection failed callbacks should be returned, which Google APIs our
@@ -481,7 +636,13 @@ public class MainActivity extends ActionBarActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         hidemenuitem = menu.findItem(R.id.action_signout);
-
+        if(mIsSignedIn)
+        {
+            hidemenuitem.setVisible(true);
+        }
+        else {
+            hidemenuitem.setVisible(false);
+        }
         return true;
     }
 
@@ -517,6 +678,7 @@ public class MainActivity extends ActionBarActivity
     public void onResume() {
         super.onResume();
         SharedPreferenceManager.setApplicationContext(getApplicationContext());
+        checkPlayServices();
         isResumed = true;
     }
 
@@ -573,6 +735,7 @@ public class MainActivity extends ActionBarActivity
             OnLoginAuthenticated();
             ConnectionDetector cd = new ConnectionDetector(getApplicationContext());
 
+
             // Check if Internet present
             if (!cd.isConnectingToInternet()) {
                 // Internet Connection is not present
@@ -588,7 +751,8 @@ public class MainActivity extends ActionBarActivity
              //   showFragment(SIGNUPPAGE, false);
            // }
            // else{
-                showFragment(LOGINPAGE, false);
+
+            showFragment(LOGINPAGE, false);
             //}
 
         }
@@ -641,14 +805,16 @@ public class MainActivity extends ActionBarActivity
         private final String mProfile;
         private final String accessToken;
         private final String mgender;
+        private final String mgcmid;
 
-        UserLoginTask(String email, String password,String name,String profile,String accesstoken,String gender) {
+        UserLoginTask(String email, String password,String name,String profile,String accesstoken,String gender,String gcmid) {
             mEmail = email;
             mPassword = password;
             mName = name;
             mProfile = profile;
             accessToken = accesstoken;
             mgender = gender;
+            mgcmid = gcmid;
         }
         @Override
         protected void onPreExecute() {
@@ -677,6 +843,7 @@ public class MainActivity extends ActionBarActivity
                 params.put("password", mPassword);
                 params.put("token", accessToken);
                 params.put("gender",mgender);
+                params.put("gcmId",mgcmid);
 
 
 
@@ -797,7 +964,7 @@ public class MainActivity extends ActionBarActivity
             Log.d("google+ token",result);
             if(result!=null)
             {
-                mAuthTask = new UserLoginTask(mEmail,"",mName,"google",result,mGender);
+                mAuthTask = new UserLoginTask(mEmail,"",mName,"google",result,mGender,getRegistrationId(getApplicationContext()));
                 mAuthTask.execute((Void) null);
             }
             else

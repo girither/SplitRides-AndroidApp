@@ -46,12 +46,25 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#F2F2F2"
+        android:layout_marginTop="60dp"
         android:visibility="gone"
         android:id="@+id/noridestoshow_form"
         android:orientation="vertical">
 
 
-        <TextView
+
+        <GridView android:id="@+id/no_results_return_list"
+            style="@style/Widget.SampleDashboard.Grid"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingLeft="@dimen/horizontal_page_margin"
+            android:paddingRight="@dimen/horizontal_page_margin"
+            android:paddingBottom="@dimen/vertical_page_margin"
+            android:scrollbarStyle="outsideOverlay" />
+
+        <!--TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="190dp"
@@ -59,7 +72,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="No notifications currently."
             android:textColor="@color/teal"
-            android:id="@+id/no_results_return" />
+            android:id="@+id/no_results_return" /-->
 
     </LinearLayout>
 </LinearLayout>

@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
-import com.nullwire.trace.ExceptionHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,7 +65,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         String rideId = extras.getString("rideId");
         String rideFlag = extras.getString("rideFlag");
         new getindividualriddetailsetask(rideId,rideFlag).execute();
-        ExceptionHandler.register(this, "http://radiant-peak-3095.herokuapp.com/remoteStackTrace");
+
 
     }
 
@@ -157,6 +156,67 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         return true;
     }
 
+    public class estimateridetask extends AsyncTask<Void, Void,String > {
+
+        private final String jrId;
+        private final String mestimateBeforeJoining;
+        private final String mrrideId;
+
+
+
+        estimateridetask(String joinedrideId, String estimateBeforeJoining,String rRideId) {
+            jrId=joinedrideId;
+            mestimateBeforeJoining =estimateBeforeJoining;
+            mrrideId = rRideId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            bar.setVisibility(View.VISIBLE);
+
+        }
+        @Override
+        protected String doInBackground(Void... param) {
+            String price = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("jrId", jrId);
+                params.put("estimateBeforeJoining", mestimateBeforeJoining);
+                params.put("rrideId", mrrideId);
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/estimateRide", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    price = jObj.getString("price");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return price;
+        }
+
+        @Override
+        protected void onPostExecute(final String price) {
+            individualridestask = null;
+            bar.setVisibility(View.GONE);
+            detailform.setVisibility(View.VISIBLE);
+            if(price != null){
+
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            individualridestask = null;
+        }
+    }
 
     public class getindividualriddetailsetask extends AsyncTask<Void, Void, ridedata > {
 

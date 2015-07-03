@@ -1,5 +1,6 @@
 package com.example.foodiepipe.foodiepipe;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,10 +29,11 @@ import java.util.List;
 public class notificationfragment extends Fragment implements AdapterView.OnItemClickListener {
 
         JSONParser jsonParser = new JSONParser();
-        private GridView mGridView;
+        private GridView mGridView,mGridView_noresults;
         private LinearLayout allnotificationform;
         private LinearLayout noresultsform;
         SampleAdapter myallnotificationdataadapter;
+        SampleAdapter_noresults  myallnotificationdataadapter_noresults;
         private getallnotificationtask mnotificationTask = null;
 
         private ProgressBar bar;
@@ -42,8 +44,11 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
 
         @Override
         public void onItemClick(AdapterView<?> container, View view, int position, long id) {
-
-                }
+               notificationdata notificationobj = (notificationdata)myallnotificationdataadapter.getItem(position);
+               Intent getnotificationdetails = new Intent(getActivity(),notificationfragmentdetails.class);
+               getnotificationdetails.putExtra("requestId", notificationobj.getRequestId());
+               startActivity(getnotificationdetails);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,7 +59,7 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
 
                 mGridView = (GridView)rootView.findViewById(android.R.id.list);
                 mGridView.setOnItemClickListener(this);
-
+                mGridView_noresults = (GridView)rootView.findViewById(R.id.no_results_return_list);
                 allnotificationform = (LinearLayout)rootView.findViewById(R.id.show_all_notification);
                 noresultsform = (LinearLayout)rootView.findViewById(R.id.noridestoshow_form);
                 mnotificationTask = new getallnotificationtask();
@@ -124,6 +129,41 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
             }
         }
 
+    private class SampleAdapter_noresults extends BaseAdapter {
+        private List<ridedata> mSamples;
+        public SampleAdapter_noresults(List<ridedata> myDataset) {
+            mSamples = myDataset;
+        }
+
+        @Override
+        public int getCount() {
+            return mSamples.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mSamples.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return mSamples.get(position).hashCode();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup container) {
+            if (convertView == null) {
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.noresults_searchrides,
+                        container, false);
+            }
+            TextView noresultsview = (TextView) convertView.findViewById(R.id.text1);
+            noresultsview.setText(mSamples.get(position).getNoresults());
+            // Lookup view for data population
+
+            return convertView;
+        }
+    }
+
         public class getallnotificationtask extends AsyncTask<Void, Void, List<notificationdata>> {
 
             @Override
@@ -178,6 +218,15 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
                 if(!notificationdataArray.isEmpty()){
                     myallnotificationdataadapter = new SampleAdapter(notificationdataArray);
                     mGridView.setAdapter(myallnotificationdataadapter);
+                }
+                else
+                {
+                    List<ridedata> noresultsarray = new ArrayList<ridedata>();
+                    ridedata info = new ridedata(null,null,null);
+                    info.setNoresults("No Notifications to show currently.");
+                    noresultsarray.add(info);
+                    myallnotificationdataadapter_noresults = new SampleAdapter_noresults(noresultsarray);
+                    mGridView_noresults.setAdapter(myallnotificationdataadapter_noresults);
                 }
             }
 

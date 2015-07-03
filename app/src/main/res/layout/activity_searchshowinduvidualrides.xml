@@ -96,6 +96,18 @@
         android:layout_height="1dp"
         android:background="@android:color/darker_gray" />
 
+            <Button
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/border_edittextbox"
+                android:textColor="#000000"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:id="@+id/estimate_ride_searchindividual"
+                android:text="ESTIMATE RIDE WITH PERSON/GROUP" />
+
     <Button
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
