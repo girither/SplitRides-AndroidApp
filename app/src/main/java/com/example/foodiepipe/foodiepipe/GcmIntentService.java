@@ -99,7 +99,7 @@ public class GcmIntentService extends IntentService {
 
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(this)
-                                .setSmallIcon(R.drawable.ic_cart)
+                                .setSmallIcon(R.drawable.ic_launcher)
                                 .setContentTitle("Request To Join Ride")
                                 .setStyle(new NotificationCompat.BigTextStyle()
                                         .bigText(msg))

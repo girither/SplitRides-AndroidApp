@@ -458,7 +458,7 @@ public class Postyourrides extends ActionBarActivity
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mvalidateplacesTask = new validateplacesapi(source,destination,phonenumber,currentDate,timeclock,Double.toString(sourcelat),Double.toString(sourcelong),Double.toString(destinationlat),Double.toString(destinationlong));
+            mvalidateplacesTask = new validateplacesapi(source,destination,phonenumber,currentDate,timeclock,Double.toString(sourcelat),Double.toString(sourcelong),Double.toString(destinationlat),Double.toString(destinationlong),latlong);
             mvalidateplacesTask.execute((Void) null);
 
         }
@@ -487,8 +487,9 @@ public class Postyourrides extends ActionBarActivity
         private final String msourcelong;
         private final String mdestinationlat;
         private final String mdestinationlong;
+        private final String mpickuppoint;
 
-        Postyouridetask(String source, String destination,String phonenumber,String date,String time,String sourcelat,String sourcelong,String destinationlat,String destinationlong) {
+        Postyouridetask(String source, String destination,String phonenumber,String date,String time,String pickuppoint,String sourcelat,String sourcelong,String destinationlat,String destinationlong) {
             mSource = source;
             mDestination = destination;
             mPhonenumber = phonenumber;
@@ -498,6 +499,7 @@ public class Postyourrides extends ActionBarActivity
             msourcelong = sourcelong;
             mdestinationlat = destinationlat;
             mdestinationlong = destinationlong;
+            mpickuppoint = pickuppoint;
         }
         @Override
         protected void onPreExecute() {
@@ -529,6 +531,8 @@ public class Postyourrides extends ActionBarActivity
                 params.put("sourceLng", msourcelong);
                 params.put("destinationLat", mdestinationlat);
                 params.put("destinationLng", mdestinationlong);
+                params.put("latlong", mpickuppoint);
+
                 Log.d("token data ",SharedPreferenceManager.getPreference("auth_token"));
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/postRide", "POST",
@@ -582,10 +586,11 @@ public class Postyourrides extends ActionBarActivity
         private final String msourcelong;
         private final String mdestinationlat;
         private final String mdestinationlong;
+        private final String mpickuppoint;
 
         String validityflag;
 
-        validateplacesapi(String source, String destination,String phonenumber,String date,String time,String sourcelat,String sourcelong,String destinationlat,String destinationlong) {
+        validateplacesapi(String source, String destination,String phonenumber,String date,String time,String sourcelat,String sourcelong,String destinationlat,String destinationlong,String pickuppoint) {
             mSource = source;
             mDestination = destination;
             mPhonenumber = phonenumber;
@@ -595,6 +600,7 @@ public class Postyourrides extends ActionBarActivity
             msourcelong = sourcelong;
             mdestinationlat = destinationlat;
             mdestinationlong = destinationlong;
+            mpickuppoint = pickuppoint;
 
         }
         @Override
@@ -634,7 +640,7 @@ public class Postyourrides extends ActionBarActivity
             pDialog.dismiss();
             View focusView = null;
             if (success) {
-                mAuthTask = new Postyouridetask(mSource,mDestination,mPhonenumber,mDate,mTime,msourcelat,msourcelong,mdestinationlat,mdestinationlong);
+                mAuthTask = new Postyouridetask(mSource,mDestination,mPhonenumber,mDate,mTime,mpickuppoint,msourcelat,msourcelong,mdestinationlat,mdestinationlong);
                 mAuthTask.execute((Void) null);
             } else {
                 if(validityflag.equals("source")){

@@ -68,6 +68,7 @@ public class customridedataadapter extends ArrayAdapter<ridedata> {
         {
             todayortomorrow = dateOfRides;
         }
+        Ridedata.setTodayortomorrow(todayortomorrow);
         ridetodayortomo.setText(todayortomorrow);
         timeofride.setText(timeofrides);
         // Return the completed view to render on screen

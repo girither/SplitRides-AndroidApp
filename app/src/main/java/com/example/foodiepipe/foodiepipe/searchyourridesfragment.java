@@ -168,7 +168,7 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
                     JSONArray rides = jObj.getJSONArray("rides");
                     for(int i=0; i<rides.length(); i++){
                         JSONObject rideindividualdata = rides.getJSONObject(i);
-                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("rideId"));
+                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("rideId"),"ride",rideindividualdata.getString("customerNumber"));
                         ridedataArray.add(info);
                     }
                 }

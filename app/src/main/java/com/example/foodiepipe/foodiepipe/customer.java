@@ -7,14 +7,25 @@ public class customer {
     private String customerName;
     private String customerEmail;
 
+    public String getLatLong() {
+        return latLong;
+    }
+
+    public void setLatLong(String latLong) {
+        this.latLong = latLong;
+    }
+
+    private String latLong;
+
     public String getCustomerPhoneNumber() {
         return customerPhoneNumber;
     }
 
-    public customer(String customerName, String customerEmail, String customerPhoneNumber) {
+    public customer(String customerName, String customerEmail, String customerPhoneNumber,String latLong) {
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.customerPhoneNumber = customerPhoneNumber;
+        this.latLong = latLong;
     }
 
     public void setCustomerPhoneNumber(String customerPhoneNumber) {
