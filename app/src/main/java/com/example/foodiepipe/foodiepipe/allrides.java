@@ -61,8 +61,6 @@ public class allrides extends Fragment implements AdapterView.OnItemClickListene
         ridedata rideobj = (ridedata)myallridedataadapter.getItem(position);
         Intent getinduvidualrides = new Intent(getActivity(),showupcomingridedetails.class);
         getinduvidualrides.putExtra("rideId", rideobj.getRideId());
-        getinduvidualrides.putExtra("rideFlag", rideobj.getRideFlag());
-        getinduvidualrides.putExtra("rideDate",rideobj.getDate());
         getinduvidualrides.putExtra("ownercustomernumber", rideobj.getRideownercustomernumber());
         startActivity(getinduvidualrides);
         getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);

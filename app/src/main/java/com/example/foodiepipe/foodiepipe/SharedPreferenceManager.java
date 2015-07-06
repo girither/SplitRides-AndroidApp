@@ -17,13 +17,14 @@ public class SharedPreferenceManager {
     private static void setPreferences() {
         if (sparrowPreferences == null) {
             sparrowPreferences = applicationContext.getSharedPreferences("naturalForms",
-                    Context.MODE_WORLD_READABLE);
+                    Context.MODE_PRIVATE);
         }
     }
 
     public static String getPreference(String key) {
         try {
-            return sparrowPreferences.getString(key, null);
+            setPreferences();
+            return sparrowPreferences.getString(key, "");
         } catch (NullPointerException npe) {
             Log.e("Exception in getPreferences", "Context not set properly");
         }
@@ -32,6 +33,7 @@ public class SharedPreferenceManager {
 
     public static boolean getBooleanPreference(String key) {
         try {
+            setPreferences();
             return sparrowPreferences.getBoolean(key, false);
         } catch (NullPointerException npe) {
             Log.e("Exception in getPreferences", "Context not set properly");
@@ -41,6 +43,7 @@ public class SharedPreferenceManager {
 
     public static int getIntPreference(String key) {
         try {
+            setPreferences();
             return sparrowPreferences.getInt(key, 0);
         } catch (NullPointerException npe) {
             Log.e("Exception in getPreferences", "Context not set properly");
@@ -49,6 +52,7 @@ public class SharedPreferenceManager {
     }
     public static float getFloatPreference(String key) {
         try {
+            setPreferences();
             return sparrowPreferences.getFloat(key,0.0f);
         } catch (NullPointerException npe) {
             Log.e("Exception in getPreferences", "Context not set properly");
@@ -58,6 +62,7 @@ public class SharedPreferenceManager {
 
     public static Long getLongPreference(String key) {
         try {
+            setPreferences();
             return sparrowPreferences.getLong(key, 0);
         } catch (NullPointerException npe) {
             Log.e("Exception in getPreferences", "Context not set properly");
@@ -66,29 +71,34 @@ public class SharedPreferenceManager {
     }
 
     public static void setPreference(String key, String value) {
+        setPreferences();
         SharedPreferences.Editor prefsEditor = sparrowPreferences.edit();
         prefsEditor.putString(key, value);
         prefsEditor.commit();
     }
 
     public static void setPreference(String key, boolean value) {
+        setPreferences();
         SharedPreferences.Editor prefsEditor = sparrowPreferences.edit();
         prefsEditor.putBoolean(key, value);
         prefsEditor.commit();
     }
 
     public static void setPreference(String key, int value) {
+        setPreferences();
         SharedPreferences.Editor prefsEditor = sparrowPreferences.edit();
         prefsEditor.putInt(key, value);
         prefsEditor.commit();
     }
 
     public static void setPreference(String key, Long value) {
+        setPreferences();
         SharedPreferences.Editor prefsEditor = sparrowPreferences.edit();
         prefsEditor.putLong(key, value);
         prefsEditor.commit();
     }
     public static void setPreference(String key, float value) {
+        setPreferences();
         SharedPreferences.Editor prefsEditor = sparrowPreferences.edit();
         prefsEditor.putFloat(key, value);
         prefsEditor.commit();

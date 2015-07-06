@@ -2,7 +2,9 @@ package com.example.foodiepipe.foodiepipe;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,6 +52,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     ProgressBar bar;
     LinearLayout detailform;
     CustomerAdapter customerlistadapter;
+    private ProgressDialog pDialog;
     GridView mGridView;
     static final int PICK_CABPROVIDER_RESULT = 1;
     static final int PICK_CABPROVIDER_RESULT_FROMESIMATE = 2;
@@ -82,43 +85,10 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         estimateride.setOnClickListener(this);
         exitride.setOnClickListener(this);
         Bundle extras = getIntent().getExtras();
-        String rideId = extras.getString("rideId");
-        String rideFlag = extras.getString("rideFlag");
+        String currentrideid = extras.getString("rideId");
+        String rideId = (currentrideid!= null && !currentrideid.isEmpty())?extras.getString("rideId"):SharedPreferenceManager.getPreference("currentride_rideid");
         SharedPreferenceManager.setPreference("currentride_rideid",rideId);
-        if(rideFlag.equals("ride"))
-        {
-            exitride.setVisibility(View.GONE);
-        }
-        String datetimeOfRides = extras.getString("rideDate") , todayortomorrow;
-        String dateOfRides = datetimeOfRides.split("T")[0];
-        String timeofrides = datetimeOfRides.split("T")[1];
-        timeofrides = timeofrides.split(".000Z")[0];
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String currentDate = sdf.format(cal.getTime());
-        Calendar nextdaycal = Calendar.getInstance();
-        nextdaycal.add(Calendar.DATE, 1);
-        SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
-        String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
-        if(currentDate.equals(dateOfRides))
-        {
-            todayortomorrow = "Today";
-        }
-        else if(tomorrowDate.equals(dateOfRides))
-        {
-            todayortomorrow = "Tomorrow";
-        }
-        else
-        {
-            todayortomorrow = dateOfRides;
-        }
-        if(!(todayortomorrow.equals("Today")||todayortomorrow.equals("Tomorrow")))
-        {
-            startride.setVisibility(View.GONE);
-            endride.setVisibility(View.GONE);
-            estimateride.setVisibility(View.GONE);
-        }
-        new getindividualriddetailsetask(rideId, rideFlag).execute();
+        new getindividualriddetailsetask(rideId).execute();
 
         startlocationservice = new Intent(this,Locationservice.class);
         Intent alarmIntent = new Intent(showupcomingridedetails.this, Alarmreciever.class);
@@ -295,19 +265,21 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     public class startridetask extends AsyncTask<Void, Void,String > {
 
         private final String mRideId;
-        private final String mRideFlag;
 
 
 
-        startridetask(String RideId, String RideFlag ) {
+        startridetask(String RideId) {
             mRideId = RideId;
-            mRideFlag = RideFlag ;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            bar.setVisibility(View.VISIBLE);
+            pDialog = new ProgressDialog(showupcomingridedetails.this);
+            pDialog.setMessage("Starting Ride...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
 
         }
         @Override
@@ -317,7 +289,6 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             try {
                 JSONObject params = new JSONObject();
                 params.put("rideId", mRideId);
-                params.put("rideFlag", mRideFlag);
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/startRide", "POST",
                         params);
@@ -338,8 +309,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         @Override
         protected void onPostExecute(final String success) {
 
-            bar.setVisibility(View.GONE);
-            detailform.setVisibility(View.VISIBLE);
+            pDialog.dismiss();
             if(success != null){
 
             }
@@ -368,8 +338,11 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            bar.setVisibility(View.VISIBLE);
-
+            pDialog = new ProgressDialog(showupcomingridedetails.this);
+            pDialog.setMessage("Estimating Ride...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
         }
         @Override
         protected String doInBackground(Void... param) {
@@ -399,10 +372,10 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
         @Override
         protected void onPostExecute(final String price) {
-            bar.setVisibility(View.GONE);
-            detailform.setVisibility(View.VISIBLE);
+            pDialog.dismiss();
             if(price != null){
-
+                DialogFragment rateFragment = new ratecardfragment("20");
+                rateFragment.show(getFragmentManager(), "ratepicker");
             }
         }
 
@@ -416,13 +389,11 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     public class getindividualriddetailsetask extends AsyncTask<Void, Void, ridedata > {
 
         private final String mRideId;
-        private final String mRideFlag;
 
 
 
-        getindividualriddetailsetask(String RideId, String RideFlag ) {
+        getindividualriddetailsetask(String RideId) {
             mRideId = RideId;
-            mRideFlag = RideFlag ;
         }
 
         @Override
@@ -438,7 +409,6 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             try {
                 JSONObject params = new JSONObject();
                 params.put("rideId", mRideId);
-                params.put("rideFlag", mRideFlag);
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRideDetails", "POST",
                         params);
@@ -447,24 +417,24 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
-                    if(mRideFlag.equals("jride")) {
-                        JSONObject ride = jObj.getJSONObject("ride");
-                        JSONArray customerdata = jObj.getJSONArray("customers");
+                    if(jObj.has("jride")) {
+                        JSONObject ride = jObj.getJSONObject("jride");
+                        JSONArray customerdata = jObj.getJSONArray("builtDetails");
                         List<customer> customerlistdata = new ArrayList<customer>();
-                        for(int i=0; i<customerdata.length(); i++){
+                        for (int i = 0; i < customerdata.length(); i++) {
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
-                            customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),customerindividualdata.getString("phoneNumber"),customerindividualdata.getString("latLng"));
+                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("latLng"));
                             customerlistdata.add(customeradapterdata);
                         }
-                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"));
+                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("rideId"));
                     }
-                    else{
+                    else if(jObj.has("ride")) {
                         JSONObject ride = jObj.getJSONObject("ride");
                         JSONObject customerdata = jObj.getJSONObject("owner");
-                        customer customeradapterdata = new customer(customerdata.getString("name"),customerdata.getString("email"),ride.getString("phoneNumber"),ride.getString("latlong"));
+                        customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"), ride.getString("phoneNumber"), ride.getString("latlong"));
                         List<customer> customerlistdata = new ArrayList<customer>();
                         customerlistdata.add(customeradapterdata);
-                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata, ride.getString("rideId"));
+                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"ride",ride.getString("rideId"));
                     }
                 }
             } catch (JSONException e) {
@@ -488,9 +458,35 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 String currentDate = sdf.format(cal.getTime());
-                String todayortomorrow = (currentDate.equals(dateOfRides))?"Today":"Tomorrow";
+                Calendar nextdaycal = Calendar.getInstance();
+                nextdaycal.add(Calendar.DATE, 1);
+                String todayortomorrow;
+                SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
+                String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
+                if(currentDate.equals(dateOfRides))
+                {
+                    todayortomorrow = "Today        ";
+                }
+                else if(tomorrowDate.equals(dateOfRides))
+                {
+                    todayortomorrow = "Tomorrow     ";
+                }
+                else
+                {
+                    todayortomorrow = dateOfRides;
+                }
+                if(!(todayortomorrow.trim().equals("Today") || todayortomorrow.trim().equals("Tomorrow")))
+                {
+                    startride.setVisibility(View.GONE);
+                    endride.setVisibility(View.GONE);
+                    estimateride.setVisibility(View.GONE);
+                }
                 todayortomorrowheader.setText(todayortomorrow);
                 timeofday.setText(timeofrides);
+                if(ridedataobject.getRideFlag().equals("ride"))
+                {
+                    exitride.setVisibility(View.GONE);
+                }
                 customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
                 mGridView.setAdapter(customerlistadapter);
             }

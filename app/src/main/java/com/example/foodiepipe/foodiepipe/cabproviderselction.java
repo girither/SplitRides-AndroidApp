@@ -31,8 +31,8 @@ public class cabproviderselction extends ActionBarActivity implements AdapterVie
         arrayStrings.add("Ola MINI");
         arrayStrings.add("Ola SEDAN");
         arrayStrings.add("Ola PRIME");
-        arrayStrings.add("UberX");
-        arrayStrings.add("UberGO");
+        arrayStrings.add("uberX");
+        arrayStrings.add("uberGO");
         arrayStrings.add("UberBLACK");
         mListView = (ListView) findViewById(R.id.listView);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,

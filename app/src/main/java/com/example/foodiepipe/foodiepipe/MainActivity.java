@@ -274,7 +274,6 @@ public class MainActivity extends ActionBarActivity
                 regid = getRegistrationId(getApplicationContext());
 
                 if (regid.isEmpty()) {
-                    Log.i(TAG,"inside the regid isEmpty Tag");
                     registerInBackground();
                 }
             } catch (Throwable e) {
@@ -284,7 +283,7 @@ public class MainActivity extends ActionBarActivity
 
 
         } else {
-            Log.i(TAG, "No valid Google Play Services APK found.");
+           // Log.i(TAG, "No valid Google Play Services APK found.");
         }
     }
 
@@ -294,18 +293,6 @@ public class MainActivity extends ActionBarActivity
 
         super.onCreate(savedInstanceState);
         onregister();
-       /*try {
-
-            if (gcm == null) {
-                gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
-            }
-            gcm.unregister();
-        } catch (IOException ex) {
-
-        }
-        final SharedPreferences prefs = getGcmPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("registrationid","");*/
 
     FacebookSdk.sdkInitialize(this.getApplicationContext());
 
@@ -411,7 +398,6 @@ public class MainActivity extends ActionBarActivity
     private void storeRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getGcmPreferences(context);
         int appVersion = getAppVersion(context);
-        Log.i(TAG, "Saving regId on app version " + appVersion);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("registrationid", regId);
         editor.putInt("appversion", appVersion);
@@ -498,7 +484,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        Log.d("position to", Integer.toString(position));
+        //Log.d("position to", Integer.toString(position));
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch(position) {
 
@@ -523,22 +509,6 @@ public class MainActivity extends ActionBarActivity
         }
 
     }
-
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
-    }
-
-
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
@@ -852,7 +822,7 @@ public class MainActivity extends ActionBarActivity
                     params);
 
             // Check your log cat for JSON reponse
-            Log.d("Single Track JSON: ", json);
+            //Log.d("Single Track JSON: ", json);
 
 
                 JSONObject jObj = new JSONObject(json);
@@ -961,7 +931,6 @@ public class MainActivity extends ActionBarActivity
         protected void onPostExecute(final String result) {
             mTokenTask = null;
             pDialog.dismiss();
-            Log.d("google+ token",result);
             if(result!=null)
             {
                 mAuthTask = new UserLoginTask(mEmail,"",mName,"google",result,mGender,getRegistrationId(getApplicationContext()));

@@ -1,5 +1,7 @@
 package com.example.foodiepipe.foodiepipe;
 
+import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -36,10 +38,12 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
     JSONParser jsonParser = new JSONParser();
     TextView ridefromheader,todayortomorrowheader,timeofday,rideownernamevalue,rideowneremailvalue,rideownerphonevalue;
     getindividualriddetailsetask individualridestask;
-    Button sendrequesttojoinride,requestalreadysent;
+    Button sendrequesttojoinride,requestalreadysent,estimaterideindividual;
     ProgressBar bar;
     LinearLayout detailform;
     CustomerAdapter customerlistadapter;
+    private ProgressDialog pDialog;
+    static final int PICK_CABPROVIDER_RESULT_FROMESIMATE = 2;
     GridView mGridView;
 
     @Override
@@ -59,12 +63,16 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         detailform = (LinearLayout)findViewById(R.id.ridedatashow);
         mGridView = (GridView)findViewById(android.R.id.list);
         sendrequesttojoinride = (Button)findViewById(R.id.send_request_joinride);
+        estimaterideindividual = (Button)findViewById(R.id.estimate_ride_searchindividual);
+        estimaterideindividual.setOnClickListener(this);
         sendrequesttojoinride.setOnClickListener(this);
         requestalreadysent =(Button)findViewById(R.id.request_alreadysent);
         Bundle extras = getIntent().getExtras();
-        String rideId = extras.getString("rideId");
-        String rideFlag = extras.getString("rideFlag");
-        new getindividualriddetailsetask(rideId,rideFlag).execute();
+        String rideOwnerCustomerNumber = (!extras.getString("ownercustomernumber").isEmpty())?extras.getString("ownercustomernumber"):SharedPreferenceManager.getPreference("ownercustomernumber");
+        SharedPreferenceManager.setPreference("ownercustomernumber",rideOwnerCustomerNumber);
+        String rideId = (!extras.getString("rideId").isEmpty())?extras.getString("rideId"):SharedPreferenceManager.getPreference("owner_rideid");
+        SharedPreferenceManager.setPreference("owner_rideid",rideId);
+        new getindividualriddetailsetask(rideId).execute();
 
 
     }
@@ -82,13 +90,12 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
             return;
         }
         switch(view.getId()) {
+            case R.id.estimate_ride_searchindividual:
+                Intent selectcabprovider_estimate = new Intent(searchshowinduvidualrides.this,cabproviderselction.class);
+                startActivityForResult(selectcabprovider_estimate,PICK_CABPROVIDER_RESULT_FROMESIMATE);
+                break;
             case R.id.send_request_joinride:
-                Bundle extras = getIntent().getExtras();
-                String rideId = extras.getString("rideId");
-                String rideFlag = extras.getString("rideFlag");
-                String rideOwnerCustomerNumber = extras.getString("ownercustomernumber");
-                detailform.setVisibility(View.GONE);
-                new sendrequesttojoinridetask(rideId,rideFlag,rideOwnerCustomerNumber,SharedPreferenceManager.getPreference("customerNumber"),SharedPreferenceManager.getPreference("myrideId")).execute();
+                new sendrequesttojoinridetask(SharedPreferenceManager.getPreference("owner_rideid"),SharedPreferenceManager.getPreference("ownercustomernumber"),SharedPreferenceManager.getPreference("customerNumber"),SharedPreferenceManager.getPreference("myrideId")).execute();
                 break;
         }
     }
@@ -126,10 +133,13 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
             ((TextView) convertView.findViewById(R.id.rideowneremailvalue)).setText(mSamples.get(position).getCustomerEmail());
             ((TextView) convertView.findViewById(R.id.rideownernamevalue)).setText(mSamples.get(position).getCustomerName());
             ((TextView) convertView.findViewById(R.id.rideownerphonenumbervalue)).setText(mSamples.get(position).getCustomerPhoneNumber());
+            final String latlongposition = mSamples.get(position).getLatLong();
             ((Button)convertView.findViewById(R.id.see_pickup_point)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194");
+                    StringBuilder latlongbuilder = new StringBuilder();
+                    latlongbuilder.append("geo:").append(latlongposition).append("?q=").append(latlongposition).append("(Pickuppoint)");
+                    Uri gmmIntentUri = Uri.parse(latlongbuilder.toString());
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
                     if (mapIntent.resolveActivity(getPackageManager()) != null) {
@@ -156,6 +166,15 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if(requestCode == PICK_CABPROVIDER_RESULT_FROMESIMATE){
+            new estimateridetask(SharedPreferenceManager.getPreference("owner_rideid"),Integer.toString(1),SharedPreferenceManager.getPreference("myrideId")).execute();
+        }
+    }
+
+
     public class estimateridetask extends AsyncTask<Void, Void,String > {
 
         private final String jrId;
@@ -173,7 +192,11 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            bar.setVisibility(View.VISIBLE);
+            pDialog = new ProgressDialog(searchshowinduvidualrides.this);
+            pDialog.setMessage("Estimating Ride...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
 
         }
         @Override
@@ -204,30 +227,27 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
 
         @Override
         protected void onPostExecute(final String price) {
-            individualridestask = null;
-            bar.setVisibility(View.GONE);
-            detailform.setVisibility(View.VISIBLE);
+            pDialog.dismiss();
             if(price != null){
-
+                DialogFragment rateFragment = new ratecardfragment(price);
+                rateFragment.show(getFragmentManager(), "ratepicker");
             }
         }
 
         @Override
         protected void onCancelled() {
-            individualridestask = null;
+
         }
     }
 
     public class getindividualriddetailsetask extends AsyncTask<Void, Void, ridedata > {
 
         private final String mRideId;
-        private final String mRideFlag;
 
 
 
-        getindividualriddetailsetask(String RideId, String RideFlag ) {
+        getindividualriddetailsetask(String RideId) {
             mRideId = RideId;
-            mRideFlag = RideFlag ;
         }
 
         @Override
@@ -243,7 +263,6 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
             try {
                 JSONObject params = new JSONObject();
                 params.put("rideId", mRideId);
-                params.put("rideFlag", mRideFlag);
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRideDetails", "POST",
                         params);
@@ -252,9 +271,9 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
-                    if(mRideFlag.equals("jride")) {
-                        JSONObject ride = jObj.getJSONObject("ride");
-                        JSONArray customerdata = jObj.getJSONArray("customers");
+                    if(jObj.has("jride")) {
+                        JSONObject ride = jObj.getJSONObject("jride");
+                        JSONArray customerdata = jObj.getJSONArray("builtDetails");
                         List<customer> customerlistdata = new ArrayList<customer>();
                         for(int i=0; i<customerdata.length(); i++){
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
@@ -263,7 +282,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         }
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"));
                     }
-                    else{
+                    else if(jObj.has("ride")){
                         JSONObject ride = jObj.getJSONObject("ride");
                         JSONObject customerdata = jObj.getJSONObject("owner");
                         customer customeradapterdata = new customer(customerdata.getString("name"),customerdata.getString("email"),ride.getString("phoneNumber"),ride.getString("latlong"));
@@ -309,14 +328,12 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
     public class sendrequesttojoinridetask extends AsyncTask<Void, Void, Boolean > {
 
         private final String mRideId;
-        private final String mRideFlag;
         private final String mownerCustomerNumber;
         private final String mrequestingCustomerNumber;
         private final String mrRideId;
 
-        sendrequesttojoinridetask(String RideId, String RideFlag,String ownerCustomerNumber,String requestingCustomerNumber,String rRideId ) {
+        sendrequesttojoinridetask(String RideId,String ownerCustomerNumber,String requestingCustomerNumber,String rRideId ) {
             mRideId = RideId;
-            mRideFlag = RideFlag ;
             mownerCustomerNumber= ownerCustomerNumber;
             mrequestingCustomerNumber = requestingCustomerNumber;
             mrRideId = rRideId;
@@ -327,7 +344,11 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            bar.setVisibility(View.VISIBLE);
+            pDialog = new ProgressDialog(searchshowinduvidualrides.this);
+            pDialog.setMessage("Sending request to join ride...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
         }
         @Override
         protected Boolean doInBackground(Void... param) {
@@ -336,7 +357,6 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
             try {
                 JSONObject params = new JSONObject();
                 params.put("rideId", mRideId);
-                params.put("rideFlag", mRideFlag);
                 params.put("ownerCustomerNumber", mownerCustomerNumber);
                 params.put("requestingCustomerNumber", mrequestingCustomerNumber);
                 params.put("rRideId", mrRideId);
@@ -361,9 +381,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            individualridestask = null;
-            bar.setVisibility(View.GONE);
-            detailform.setVisibility(View.VISIBLE);
+            pDialog.dismiss();
             if (success) {
                 requestalreadysent.setVisibility(View.VISIBLE);
                 sendrequesttojoinride.setVisibility(View.GONE);

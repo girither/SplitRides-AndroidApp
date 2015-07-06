@@ -59,7 +59,6 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
         {
             Intent getinduvidualrides = new Intent(getActivity(),searchshowinduvidualrides.class);
             getinduvidualrides.putExtra("rideId", rideobj.getRideId());
-            getinduvidualrides.putExtra("rideFlag", rideobj.getRideFlag());
             getinduvidualrides.putExtra("ownercustomernumber", rideobj.getRideownercustomernumber());
             startActivity(getinduvidualrides);
         }
@@ -170,17 +169,21 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
-                    JSONArray rides = jObj.getJSONArray("rides");
-                    for(int i=0; i<rides.length(); i++){
-                        JSONObject rideindividualdata = rides.getJSONObject(i);
-                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("rideId"),"ride",rideindividualdata.getString("customerNumber"));
-                        ridedataArray.add(info);
+                    if(jObj.has("rides")) {
+                        JSONArray rides = jObj.getJSONArray("rides");
+                        for (int i = 0; i < rides.length(); i++) {
+                            JSONObject rideindividualdata = rides.getJSONObject(i);
+                            ridedata info = new ridedata(rideindividualdata.getString("source"), rideindividualdata.getString("destination"), rideindividualdata.getString("date"), rideindividualdata.getString("rideId"), "ride", rideindividualdata.getString("customerNumber"));
+                            ridedataArray.add(info);
+                        }
                     }
-                    JSONArray jrides = jObj.getJSONArray("jRides");
-                    for(int i=0; i<jrides.length(); i++){
-                        JSONObject joinedrideindividualdata = rides.getJSONObject(i);
-                        ridedata info = new ridedata(joinedrideindividualdata.getString("source"),joinedrideindividualdata.getString("destination"),joinedrideindividualdata.getString("date"),joinedrideindividualdata.getString("jrId"), "jride", joinedrideindividualdata.getString("ownerCustomerNumber"));
-                        ridedataArray.add(info);
+                    else if(jObj.has("jRides")) {
+                        JSONArray jrides = jObj.getJSONArray("jRides");
+                        for (int i = 0; i < jrides.length(); i++) {
+                            JSONObject joinedrideindividualdata = jrides.getJSONObject(i);
+                            ridedata info = new ridedata(joinedrideindividualdata.getString("source"), joinedrideindividualdata.getString("destination"), joinedrideindividualdata.getString("date"), joinedrideindividualdata.getString("jrId"), "jride", joinedrideindividualdata.getString("ownerCustomerNumber"));
+                            ridedataArray.add(info);
+                        }
                     }
                 }
 

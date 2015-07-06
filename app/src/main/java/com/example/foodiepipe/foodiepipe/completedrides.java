@@ -61,7 +61,6 @@ public class completedrides extends android.support.v4.app.Fragment implements A
         ridedata rideobj = (ridedata)mycompletedridedataadapter.getItem(position);
         Intent getinduvidualrides = new Intent(getActivity(),showupcomingridedetails.class);
         getinduvidualrides.putExtra("rideId", rideobj.getRideId());
-        getinduvidualrides.putExtra("rideFlag", rideobj.getRideFlag());
         getinduvidualrides.putExtra("ownercustomernumber", rideobj.getRideownercustomernumber());
         startActivity(getinduvidualrides);
         getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);

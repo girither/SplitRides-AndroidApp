@@ -58,7 +58,7 @@ public class googleservice  extends IntentService {
                 params.put("sourcelatlong", mlocationstring);
                 params.put("destinationlatlong", mlocationstring);
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/googledistancematrixapicalculation", "POST",
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/calculatedistance", "POST",
                         params);
 
                 // Check your log cat for JSON reponse
@@ -86,7 +86,7 @@ public class googleservice  extends IntentService {
 
             if(mstopRides){
                 Toast.makeText(getApplicationContext(),
-                        "The total distance travelled is " + Float.toString(totaldistance / 1000) + "Km", Toast.LENGTH_LONG).show();
+                        "The total distance travelled is " + Float.toString(totaldistance) + "Km", Toast.LENGTH_LONG).show();
                 SharedPreferenceManager.setPreference("totaldistance", 0.0f);
 
             }

@@ -12,9 +12,6 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * Created by gbm on 6/30/15.
  */
@@ -46,10 +43,10 @@ public class GcmIntentService extends IntentService {
             Log.i(TAG,"inside the extras.isEmpty clause");
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
                 Log.i(TAG,"inside the first if clause");
-                sendNotification("Send error: " + extras.toString());
+                //sendNotification(extras.toString());
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
                 Log.i(TAG,"inside the first else if clause");
-                sendNotification("Deleted messages on server: " + extras.toString());
+               // sendNotification("Deleted messages on server: " + extras.toString());
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // This loop represents the service doing some work.
@@ -64,7 +61,7 @@ public class GcmIntentService extends IntentService {
                 }
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification("Received: " + extras.toString());
+                sendNotification(extras);
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
@@ -75,13 +72,8 @@ public class GcmIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(String msg) {
-
-        try {
-        JSONObject jObj = new JSONObject(msg);
-        if(jObj != null){
-            String data = jObj.getString("NotificationType");
-
+    private void sendNotification(Bundle msg) {
+        String data = msg.getString("NotificationType");
             if(data.equals("StartRideDistanceTravelled")){
 
             }
@@ -89,36 +81,83 @@ public class GcmIntentService extends IntentService {
 
             }
             else if(data.equals("requestToJoinTheRide")){
-                String requestID = jObj.getString("requestId");
+            String requestID = msg.getString("requestId");
+            mNotificationManager = (NotificationManager)
+                    this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            Intent getnotificationdetails = new Intent(this,notificationfragmentdetails.class);
+            getnotificationdetails.putExtra("requestId", requestID);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getnotificationdetails, 0);
+            String source = msg.getString("source");
+            String destination =msg.getString("destination");
+            String customername = msg.getString("requesterCustomerName");
+            String phonenumber = msg.getString("requesterCustomerPhoneNumber");
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.ic_launcher)
+                            .setContentTitle("")
+                            .setStyle(new NotificationCompat.InboxStyle()
+                                    .addLine("source :" + source)
+                                    .addLine("destination :" + destination)
+                                    .setBigContentTitle("Request To Join Ride From " + customername)
+                                    .setSummaryText("Phone Number :" + phonenumber));
+
+
+            mBuilder.setContentIntent(contentIntent);
+            Log.i(TAG,"in the penultimate line");
+            mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        }
+        else if(data.equals("acceptedByTheOwner")){
+                String ownerrideid = msg.getString("ownerrideid");
                 mNotificationManager = (NotificationManager)
                         this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-                Intent getnotificationdetails = new Intent(this,notificationfragmentdetails.class);
-                getnotificationdetails.putExtra("requestId", requestID);
-                PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getnotificationdetails, 0);
-
+                Intent getridedetails = new Intent(this,showupcomingridedetails.class);
+                getridedetails.putExtra("rideId",ownerrideid);
+                PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getridedetails, 0);
+                String emailId = msg.getString("requesteremailId");
+                String customername = msg.getString("requesterCustomerName");
+                String phonenumber = msg.getString("requesterCustomerPhoneNumber");
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_launcher)
-                                .setContentTitle("Request To Join Ride")
-                                .setStyle(new NotificationCompat.BigTextStyle()
-                                        .bigText(msg))
-                                .setContentText(msg);
+                                .setContentTitle("")
+                                .setStyle(new NotificationCompat.InboxStyle()
+                                        .addLine("email Id :" + emailId)
+                                        .setBigContentTitle("Ride Request accepted by" + customername)
+                                        .setSummaryText("Phone Number :"+phonenumber));
+
 
                 mBuilder.setContentIntent(contentIntent);
                 Log.i(TAG,"in the penultimate line");
                 mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
-            }
-            else if(data.equals("acceptedByTheOwner")){
-
-            }
-            else if(data.equals("rejectedByTheOwner")){
-
-            }
         }
+        else if(data.equals("rejectedByTheOwner")){
+                String ownerrideid = msg.getString("ownerrideid");
+                mNotificationManager = (NotificationManager)
+                        this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-      } catch (JSONException e) {
-        e.printStackTrace();
-     }
-    }
+                Intent getridedetails = new Intent(this,searchshowinduvidualrides.class);
+                getridedetails.putExtra("rideId",ownerrideid);
+                PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getridedetails, 0);
+                String source = msg.getString("source");
+                String destination =msg.getString("destination");
+                String customername = msg.getString("requesterCustomerName");
+                String phonenumber = msg.getString("requesterCustomerPhoneNumber");
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(this)
+                                .setSmallIcon(R.drawable.ic_launcher)
+                                .setContentTitle("")
+                                .setStyle(new NotificationCompat.InboxStyle()
+                                        .addLine("source :" + source)
+                                        .addLine("destination :" + destination)
+                                        .setBigContentTitle("Request To Join Ride From " + customername)
+                                        .setSummaryText("Phone Number :"+phonenumber));
+
+
+                mBuilder.setContentIntent(contentIntent);
+                Log.i(TAG,"in the penultimate line");
+                mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        }
+      }
 }

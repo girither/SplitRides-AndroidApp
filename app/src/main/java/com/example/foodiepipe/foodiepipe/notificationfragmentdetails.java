@@ -1,5 +1,6 @@
 package com.example.foodiepipe.foodiepipe;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -15,7 +16,9 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
 
 import org.json.JSONException;
@@ -36,6 +39,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
     Button acceptrequest, rejectrequest;
     LinearLayout detailform;
     CustomerAdapter customerlistadapter;
+    private ProgressDialog pDialog;
     GridView mGridView;
 
     @Override
@@ -45,48 +49,45 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ridefromheader = (TextView) findViewById(R.id.rideFromTextHeader);
+        ridefromheader = (TextView) findViewById(R.id.requestFromTextHeader);
         todayortomorrowheader = (TextView) findViewById(R.id.rideday);
         timeofday = (TextView) findViewById(R.id.ridetime);
         rideownernamevalue = (TextView) findViewById(R.id.rideownernamevalue);
         rideowneremailvalue = (TextView) findViewById(R.id.rideowneremailvalue);
         rideownerphonevalue = (TextView) findViewById(R.id.rideownerphonenumbervalue);
         bar = (ProgressBar) findViewById(R.id.individualnotification_progress);
-        detailform = (LinearLayout) findViewById(R.id.ridedatashow);
+        detailform = (LinearLayout) findViewById(R.id.requestdatashow);
         mGridView = (GridView) findViewById(android.R.id.list);
         acceptrequest = (Button) findViewById(R.id.accept_request);
         rejectrequest = (Button) findViewById(R.id.reject_request);
         acceptrequest.setOnClickListener(this);
         rejectrequest.setOnClickListener(this);
         Bundle extras = getIntent().getExtras();
-        String requestId = extras.getString("requestId");
-        String datetimeOfRides = extras.getString("rideDate") , todayortomorrow;
-        String dateOfRides = datetimeOfRides.split("T")[0];
-        String timeofrides = datetimeOfRides.split("T")[1];
-        timeofrides = timeofrides.split(".000Z")[0];
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String currentDate = sdf.format(cal.getTime());
-        Calendar nextdaycal = Calendar.getInstance();
-        nextdaycal.add(Calendar.DATE, 1);
-        SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
-        String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
-        if(currentDate.equals(dateOfRides))
-        {
-            todayortomorrow = "Today";
-        }
-        else if(tomorrowDate.equals(dateOfRides))
-        {
-            todayortomorrow = "Tomorrow";
-        }
-        else
-        {
-            todayortomorrow = dateOfRides;
-        }
+        String requestId = (!extras.getString("requestId").isEmpty())?extras.getString("requestId"):SharedPreferenceManager.getPreference("currentrequestId");
+        SharedPreferenceManager.setPreference("currentrequestId",requestId);
         new getindividualnotificationdetailsetask(requestId).execute();
     }
 
     public void onClick(View view) {
+
+        ConnectionDetector cd = new ConnectionDetector(notificationfragmentdetails.this.getApplicationContext());
+
+        // Check if Internet present
+        if (!cd.isConnectingToInternet()) {
+            // Internet Connection is not present
+            Toast.makeText(notificationfragmentdetails.this,
+                    "Internet Connection Error Please connect to working Internet connection", Toast.LENGTH_LONG).show();
+            // stop executing code by return
+            return;
+        }
+        switch(view.getId()) {
+            case R.id.accept_request:
+                new acceptorrejecttojoinridetask(SharedPreferenceManager.getPreference("currentrequestId"),"accept").execute();
+                break;
+            case R.id.reject_request:
+                new acceptorrejecttojoinridetask(SharedPreferenceManager.getPreference("currentrequestId"),"reject").execute();
+                break;
+        }
 
     }
 
@@ -123,10 +124,13 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
             ((TextView) convertView.findViewById(R.id.rideowneremailvalue)).setText(mSamples.get(position).getCustomerEmail());
             ((TextView) convertView.findViewById(R.id.rideownernamevalue)).setText(mSamples.get(position).getCustomerName());
             ((TextView) convertView.findViewById(R.id.rideownerphonenumbervalue)).setText(mSamples.get(position).getCustomerPhoneNumber());
+            final String latlongposition = mSamples.get(position).getLatLong();
             ((Button)convertView.findViewById(R.id.see_pickup_point)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194");
+                    StringBuilder latlongbuilder = new StringBuilder();
+                    latlongbuilder.append("geo:").append(latlongposition).append("?q=").append(latlongposition).append("(Pickuppoint)");
+                    Uri gmmIntentUri = Uri.parse(latlongbuilder.toString());
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
                     if (mapIntent.resolveActivity(getPackageManager()) != null) {
@@ -173,7 +177,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 params.put("requestId", mrequestId);
 
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRideDetails", "POST",
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRequestDetails", "POST",
                         params);
 
 
@@ -209,7 +213,23 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 String currentDate = sdf.format(cal.getTime());
-                String todayortomorrow = (currentDate.equals(dateOfRides))?"Today":"Tomorrow";
+                Calendar nextdaycal = Calendar.getInstance();
+                nextdaycal.add(Calendar.DATE, 1);
+                String todayortomorrow;
+                SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
+                String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
+                if(currentDate.equals(dateOfRides))
+                {
+                    todayortomorrow = "Today        ";
+                }
+                else if(tomorrowDate.equals(dateOfRides))
+                {
+                    todayortomorrow = "Tomorrow     ";
+                }
+                else
+                {
+                    todayortomorrow = dateOfRides;
+                }
                 todayortomorrowheader.setText(todayortomorrow);
                 timeofday.setText(timeofrides);
                 customerlistadapter = new CustomerAdapter(notificationdataobject.getCustomerlistdata());
@@ -220,6 +240,72 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
         @Override
         protected void onCancelled() {
             individualnotificationstask = null;
+        }
+    }
+    public class acceptorrejecttojoinridetask extends AsyncTask<Void, Void, Boolean > {
+
+
+        private final String mrequestId;
+        private final String mstatus;
+
+
+        acceptorrejecttojoinridetask(String requestId,String status) {
+            mrequestId= requestId;
+            mstatus=status;
+        }
+
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(notificationfragmentdetails.this);
+            pDialog.setMessage("Sending reponse...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+        @Override
+        protected Boolean doInBackground(Void... param) {
+            ridedata info = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("requestId", mrequestId);
+                params.put("status",mstatus);
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/acceptOrRejectTheRequestToJoin", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null) {
+                    String message = jObj.getString("success");
+                    return true;
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            pDialog.dismiss();
+            if (success) {
+                finish();
+            } else {
+                Toast.makeText(notificationfragmentdetails.this,
+                        "Something went wrong while sending request. Please try again", Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+        @Override
+        protected void onCancelled() {
+
         }
     }
 }
