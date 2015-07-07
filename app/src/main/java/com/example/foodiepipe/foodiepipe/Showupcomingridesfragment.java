@@ -49,7 +49,6 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
         {
             Intent getinduvidualrides = new Intent(getActivity(),showupcomingridedetails.class);
             getinduvidualrides.putExtra("rideId", rideobj.getRideId());
-            getinduvidualrides.putExtra("ownercustomernumber", rideobj.getRideownercustomernumber());
             startActivity(getinduvidualrides);
         }
         getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);

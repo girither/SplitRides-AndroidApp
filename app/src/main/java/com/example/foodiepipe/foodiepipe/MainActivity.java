@@ -136,7 +136,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onFacebookLoginButtonClicked()
     {
-        AccessToken token = AccessToken.getCurrentAccessToken();
+        String token = AccessToken.getCurrentAccessToken().getToken();
         onregister();
         if(token != null){
             LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email", "user_birthday"));
