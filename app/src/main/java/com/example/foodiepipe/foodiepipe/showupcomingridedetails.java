@@ -374,7 +374,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         protected void onPostExecute(final String price) {
             pDialog.dismiss();
             if(price != null){
-                DialogFragment rateFragment = new ratecardfragment("20");
+                DialogFragment rateFragment = new ratecardfragment(price);
                 rateFragment.show(getFragmentManager(), "ratepicker");
             }
         }

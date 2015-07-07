@@ -115,9 +115,9 @@ public class GcmIntentService extends IntentService {
                 Intent getridedetails = new Intent(this,showupcomingridedetails.class);
                 getridedetails.putExtra("rideId",ownerrideid);
                 PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getridedetails, 0);
-                String emailId = msg.getString("requesteremailId");
-                String customername = msg.getString("requesterCustomerName");
-                String phonenumber = msg.getString("requesterCustomerPhoneNumber");
+                String emailId = msg.getString("ownerCustomerEmail");
+                String customername = msg.getString("ownerCustomerName");
+                String phonenumber = msg.getString("ownerPhoneNumber");
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_launcher)
@@ -140,19 +140,15 @@ public class GcmIntentService extends IntentService {
                 Intent getridedetails = new Intent(this,searchshowinduvidualrides.class);
                 getridedetails.putExtra("rideId",ownerrideid);
                 PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getridedetails, 0);
-                String source = msg.getString("source");
-                String destination =msg.getString("destination");
-                String customername = msg.getString("requesterCustomerName");
-                String phonenumber = msg.getString("requesterCustomerPhoneNumber");
+                String customername = msg.getString("ownerCustomerName");
+                String emailId = msg.getString("ownerCustomerEmail");
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_launcher)
                                 .setContentTitle("")
                                 .setStyle(new NotificationCompat.InboxStyle()
-                                        .addLine("source :" + source)
-                                        .addLine("destination :" + destination)
-                                        .setBigContentTitle("Request To Join Ride From " + customername)
-                                        .setSummaryText("Phone Number :"+phonenumber));
+                                        .addLine("email Id :" + emailId)
+                                        .setBigContentTitle("Request To Join Ride From " + customername));
 
 
                 mBuilder.setContentIntent(contentIntent);

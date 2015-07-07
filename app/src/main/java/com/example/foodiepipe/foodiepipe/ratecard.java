@@ -1,6 +1,7 @@
 package com.example.foodiepipe.foodiepipe;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.foodpipe.android.helper.ConnectionDetector;
+import com.foodpipe.android.helper.JSONParser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -25,6 +27,9 @@ import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -40,6 +45,7 @@ public class ratecard  extends Fragment implements GoogleApiClient.OnConnectionF
     private PlaceAutocompleteAdapter mAdapter;
     private ProgressDialog pDialog;
     private validateplacesapi mvalidateplacesTask = null;
+    JSONParser jsonParser = new JSONParser();
     private double sourcelat,sourcelong,destinationlat,destinationlong;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -270,7 +276,78 @@ public class ratecard  extends Fragment implements GoogleApiClient.OnConnectionF
                Bundle extras = data.getExtras();
                String cabprovidervalue = extras.getString("cabprovider");
 
+
             }
+        }
+    }
+
+    public class ratecardtask extends AsyncTask<Void, Void,String > {
+
+        private final String mserviceProvider;
+        private final String msourcelat;
+        private final String msourcelong;
+        private final String mdestinationlat;
+        private final String mdestinationlong;
+
+
+
+        ratecardtask(String serviceprovider,String sourcelat,String sourcelong,String destinationlat,String destinationlong) {
+            mserviceProvider =serviceprovider;
+            msourcelat = sourcelat;
+            msourcelong = sourcelong;
+            mdestinationlat = destinationlat;
+            mdestinationlong = destinationlong;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setMessage("Fetching rate...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+        @Override
+        protected String doInBackground(Void... param) {
+            String price = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("serviceProvider", mserviceProvider);
+                params.put("sourceLat", msourcelat);
+                params.put("sourceLong", msourcelong);
+                params.put("destinationlat",mdestinationlat);
+                params.put("destinationlong",mdestinationlong);
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/rateCardEstimationWithServiceProviders", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    price = jObj.getString("priceEstimate");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return price;
+        }
+
+        @Override
+        protected void onPostExecute(final String price) {
+            pDialog.dismiss();
+            if(price != null){
+                DialogFragment rateFragment = new ratecardfragment(price);
+                rateFragment.show(getActivity().getFragmentManager(), "ratepicker");
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+
         }
     }
 

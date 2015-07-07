@@ -506,6 +506,10 @@ public class MainActivity extends ActionBarActivity
                         .replace(R.id.containernavigation, new ratecard())
                         .commitAllowingStateLoss();
                 break;
+            case 3:
+                fragmentManager.beginTransaction().replace(R.id.containernavigation,new settingsfragment())
+                .commitAllowingStateLoss();
+                break;
         }
 
     }

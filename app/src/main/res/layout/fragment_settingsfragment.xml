@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#F2F2F2"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="SEARCH PARAMETERS"
+        android:id="@+id/Search_param_label"
+        />
+    <TextView
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="SOURCE RADIUS"
+        android:id="@+id/source_radius"
+        />
+
+      <SeekBar
+        android:layout_marginTop="20dp"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar_source"
+        android:layout_gravity="center_horizontal|top" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="230dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/source_measure"
+        android:text="DESTINATION RADIUS"
+        />
+
+
+    <TextView
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="DESTINATION RADIUS"
+        android:id="@+id/destination_radius"
+        />
+
+    <SeekBar
+        android:layout_marginTop="20dp"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar_destination"
+        android:layout_gravity="center_horizontal|top" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="230dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/destination_measure"
+        android:text="DESTINATION RADIUS"
+        />
+
+
+
+</LinearLayout>
+
+
