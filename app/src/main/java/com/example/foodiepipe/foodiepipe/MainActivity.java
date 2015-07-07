@@ -317,7 +317,7 @@ public class MainActivity extends ActionBarActivity
                                             gender = jsonObject.getString("gender");
                                             if (mAuthTask == null) {
                                                 mAuthTask = new UserLoginTask(email, "", profile.getName(), "facebook", loginResult.getAccessToken().getToken(),gender,getRegistrationId(getApplicationContext()));
-                                                Log.v("token", loginResult.getAccessToken().getToken());
+                                                //Log.v("token", loginResult.getAccessToken().getToken());
                                                 mAuthTask.execute((Void) null);
                                             }
 
