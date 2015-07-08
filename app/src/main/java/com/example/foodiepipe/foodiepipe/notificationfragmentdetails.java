@@ -46,6 +46,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notificationfragmentdetails);
+        SharedPreferenceManager.setApplicationContext(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

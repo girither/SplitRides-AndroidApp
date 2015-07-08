@@ -280,7 +280,8 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                             if(!ride.isNull("requestMatrix")) {
                                 JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
                                 if (requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
-                                    status = requestmatrix.getString("status");
+                                    JSONObject requestobject = requestmatrix.getJSONObject(SharedPreferenceManager.getPreference("customerNumber"));
+                                    status = requestobject.getString("status");
                                 }
                             }
                         }
@@ -300,7 +301,8 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                             if(!ride.isNull("requestMatrix")) {
                                 JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
                                 if (requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
-                                    status = requestmatrix.getString("status");
+                                    JSONObject requestobject = requestmatrix.getJSONObject(SharedPreferenceManager.getPreference("customerNumber"));
+                                    status = requestobject.getString("status");
                                 }
                             }
                         }
@@ -392,7 +394,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null) {
-                    String message = jObj.getString("message");
+                    String message = jObj.getString("success");
                     return true;
                 }
 
