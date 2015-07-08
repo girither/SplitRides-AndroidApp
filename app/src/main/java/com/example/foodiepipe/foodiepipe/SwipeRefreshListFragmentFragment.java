@@ -152,8 +152,8 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
             try {
                 JSONObject params = new JSONObject();
                 params.put("timeChoice",mtimechoice);
-                params.put("sourceRideSearchRadius", SharedPreferenceManager.getPreference("source_search_radius"));
-                params.put("destinationRideSearchRadius",SharedPreferenceManager.getPreference("destinationRideSearchRadius"));
+                params.put("sourceRideSearchRadius", Integer.toString(SharedPreferenceManager.getIntPreference("source_search_radius")));
+                params.put("destinationRideSearchRadius",Integer.toString(SharedPreferenceManager.getIntPreference("destination_search_radius")));
                 params.put("rideId",SharedPreferenceManager.getPreference("myrideId"));
 
                 // getting JSON string from URL

@@ -332,6 +332,7 @@ public class MainActivity extends ActionBarActivity
 
         super.onCreate(savedInstanceState);
         onregister();
+        SharedPreferenceManager.setApplicationContext(getApplicationContext());
         if(SharedPreferenceManager.getIntPreference("source_search_radius") == 0) {
             SharedPreferenceManager.setPreference("source_search_radius", 5);
         }
