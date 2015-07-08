@@ -276,9 +276,13 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         JSONObject ride = jObj.getJSONObject("jride");
                         JSONArray customerdata = jObj.getJSONArray("builtDetails");
                         List<customer> customerlistdata = new ArrayList<customer>();
-                        JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
-                        if(requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
-                           status = requestmatrix.getString("status");
+                        if(ride.has("requestMatrix")) {
+                            if(!ride.isNull("requestMatrix")) {
+                                JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
+                                if (requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
+                                    status = requestmatrix.getString("status");
+                                }
+                            }
                         }
                         for(int i=0; i<customerdata.length(); i++){
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
@@ -292,9 +296,13 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         JSONObject customerdata = jObj.getJSONObject("owner");
                         customer customeradapterdata = new customer(customerdata.getString("name"),customerdata.getString("email"),ride.getString("phoneNumber"),ride.getString("latlong"));
                         List<customer> customerlistdata = new ArrayList<customer>();
-                        JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
-                        if(requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
-                            status = requestmatrix.getString("status");
+                        if(ride.has("requestMatrix")) {
+                            if(!ride.isNull("requestMatrix")) {
+                                JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
+                                if (requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
+                                    status = requestmatrix.getString("status");
+                                }
+                            }
                         }
                         customerlistdata.add(customeradapterdata);
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata, ride.getString("rideId"));
