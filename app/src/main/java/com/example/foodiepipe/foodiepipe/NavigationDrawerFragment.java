@@ -251,7 +251,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         items.add(new NavigationItem("  Rate Card", getResources().getDrawable(R.drawable.ic_ratecard_1)));
         items.add(new NavigationItem("Settings", getResources().getDrawable(R.drawable.ic_action_settings)));
         items.add(new NavigationItem("  Wallet", getResources().getDrawable(R.drawable.ic_wallet)));
-        items.add(new NavigationItem("Self Drive", getResources().getDrawable(R.drawable.ic_car)));
+        items.add(new NavigationItem("  Self Drive", getResources().getDrawable(R.drawable.ic_car)));
         return items;
     }
 

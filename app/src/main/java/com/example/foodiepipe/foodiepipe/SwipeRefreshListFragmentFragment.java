@@ -75,11 +75,8 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
          * uses the system-defined simple_list_item_1 layout that contains one TextView.
          */
 
-
-        String source = getArguments().getString("source");
-        String destination = getArguments().getString("destination");
         String timeChoice = getArguments().getString("timeChoice");
-        searchridetask = new DummyBackgroundTask(source,destination,timeChoice.trim().toLowerCase());
+        searchridetask = new DummyBackgroundTask(timeChoice.trim().toLowerCase());
         searchridetask.execute();
         // BEGIN_INCLUDE (setup_refreshlistener)
         /**
@@ -124,11 +121,8 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
      */
     private void initiateRefresh() {
         Log.i(LOG_TAG, "initiateRefresh");
-
-        String source = getArguments().getString("source");
-        String destination = getArguments().getString("destination");
         String timeChoice = getArguments().getString("timeChoice");
-        new DummyBackgroundTask(source,destination,timeChoice.trim().toLowerCase()).execute();
+        new DummyBackgroundTask(timeChoice.trim().toLowerCase()).execute();
     }
 
 
@@ -136,14 +130,11 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
      * Dummy {@link AsyncTask} which simulates a long running task to fetch new cheeses.
      */
     private class DummyBackgroundTask extends AsyncTask<Void, Void, List<ridedata>> {
-        private  String msource;
-        private String mdestination;
         private  String mtimechoice;
 
 
-        DummyBackgroundTask(String source, String destination,String timeChoice) {
-            msource = source;
-            mdestination = destination;
+        DummyBackgroundTask(String timeChoice) {
+
             mtimechoice = timeChoice;
         }
 
@@ -160,6 +151,10 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
             params.add(new BasicNameValuePair("profile", mProfile));*/
             try {
                 JSONObject params = new JSONObject();
+                params.put("timeChoice",mtimechoice);
+                params.put("sourceRideSearchRadius", SharedPreferenceManager.getPreference("source_search_radius"));
+                params.put("destinationRideSearchRadius",SharedPreferenceManager.getPreference("destinationRideSearchRadius"));
+                params.put("rideId",SharedPreferenceManager.getPreference("myrideId"));
 
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRides", "POST",

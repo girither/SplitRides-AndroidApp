@@ -7,9 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -54,6 +54,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerCallbacks,
@@ -133,16 +134,54 @@ public class MainActivity extends ActionBarActivity
         super.onStop();
     }
 
+    public static boolean isFacebookAppInstalled(Context p_context)
+    {
+        Intent m_shareIntent;
+        PackageManager m_packageManager;
+        List<ResolveInfo> m_activityList;
+        boolean m_isAppInstall = false;
+        try
+        {
+            m_shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+            m_shareIntent.setType("text/plain");
+            m_packageManager = p_context.getApplicationContext().getPackageManager();
+            m_activityList = m_packageManager.queryIntentActivities(m_shareIntent, 0);
+            for (final ResolveInfo m_app : m_activityList)
+            {
+                if ((m_app.activityInfo.name).contains("com.facebook.katana"))
+                {
+                    m_isAppInstall = true;
+                    break;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            m_packageManager = null;
+            m_activityList = null;
+        }
+        return m_isAppInstall;
+    }
+
+
     @Override
     public void onFacebookLoginButtonClicked()
     {
         AccessToken token = AccessToken.getCurrentAccessToken();
         onregister();
-        if(token == null){
-            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email", "user_birthday"));
+        if(isFacebookAppInstalled(getApplicationContext())) {
+            if (token == null) {
+                LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email", "user_birthday"));
+            } else {
+                LoginManager.getInstance().logOut();
+            }
         }
         else{
-            LoginManager.getInstance().logOut();
+            Toast.makeText(getApplicationContext(),"Facebook App is not installed. Please install the app and try",Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -293,7 +332,12 @@ public class MainActivity extends ActionBarActivity
 
         super.onCreate(savedInstanceState);
         onregister();
-
+        if(SharedPreferenceManager.getIntPreference("source_search_radius") == 0) {
+            SharedPreferenceManager.setPreference("source_search_radius", 5);
+        }
+        if(SharedPreferenceManager.getIntPreference("destination_search_radius") == 0){
+            SharedPreferenceManager.setPreference("destination_search_radius",5);
+        }
     FacebookSdk.sdkInitialize(this.getApplicationContext());
 
         callbackManager = CallbackManager.Factory.create();
@@ -396,17 +440,14 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void storeRegistrationId(Context context, String regId) {
-        final SharedPreferences prefs = getGcmPreferences(context);
         int appVersion = getAppVersion(context);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("registrationid", regId);
-        editor.putInt("appversion", appVersion);
-        editor.commit();
+        SharedPreferenceManager.setPreference("registrationid",regId);
+        SharedPreferenceManager.setPreference("appversion",appVersion);
     }
 
     private String getRegistrationId(Context context) {
-        final SharedPreferences prefs = getGcmPreferences(context);
-        String registrationId = prefs.getString("registrationid", "");
+
+        String registrationId = SharedPreferenceManager.getPreference("registrationid");
         if (registrationId.isEmpty()) {
             Log.i(TAG, "Registration not found.");
             return "";
@@ -414,7 +455,7 @@ public class MainActivity extends ActionBarActivity
         // Check if app was updated; if so, it must clear the registration ID
         // since the existing regID is not guaranteed to work with the new
         // app version.
-        int registeredVersion = prefs.getInt("appversion", Integer.MIN_VALUE);
+        int registeredVersion = SharedPreferenceManager.getIntPreference("appversion");
         int currentVersion = getAppVersion(context);
         if (registeredVersion != currentVersion) {
             Log.i(TAG, "App version changed.");
@@ -459,13 +500,6 @@ public class MainActivity extends ActionBarActivity
         }.execute(null, null, null);
     }
 
-
-    private SharedPreferences getGcmPreferences(Context context) {
-        // This sample app persists the registration ID in shared preferences, but
-        // how you store the regID in your app is up to you.
-        return getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
-    }
 
     private GoogleApiClient buildGoogleApiClient() {
         // When we build the GoogleApiClient we specify where connected and

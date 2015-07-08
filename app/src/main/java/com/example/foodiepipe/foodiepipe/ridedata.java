@@ -32,6 +32,16 @@ public class ridedata {
     String rideId;
     String rideFlag;
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    String status;
+
 
     public String getPickUpLocation() {
         return pickUpLocation;
@@ -90,12 +100,13 @@ public class ridedata {
         return destination;
     }
 
-    public ridedata(String source,String destination,String date,List<customer> customerlistdata,String rideId) {
+    public ridedata(String source,String destination,String date,String status,List<customer> customerlistdata,String rideId) {
         this.source = source;
         this.destination = destination;
         this.date = date;
         this.customerlistdata = customerlistdata;
         this.rideId = rideId;
+        this.status = status;
     }
     public ridedata(String source,String destination,String date,List<customer> customerlistdata,String rideflag,String rideId) {
         this.source = source;

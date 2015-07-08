@@ -259,6 +259,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         @Override
         protected ridedata doInBackground(Void... param) {
             ridedata info = null;
+            String status = null;
 
             try {
                 JSONObject params = new JSONObject();
@@ -275,20 +276,28 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         JSONObject ride = jObj.getJSONObject("jride");
                         JSONArray customerdata = jObj.getJSONArray("builtDetails");
                         List<customer> customerlistdata = new ArrayList<customer>();
+                        JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
+                        if(requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
+                           status = requestmatrix.getString("status");
+                        }
                         for(int i=0; i<customerdata.length(); i++){
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
                             customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),customerindividualdata.getString("phoneNumber"),customerindividualdata.getString("latLng"));
                             customerlistdata.add(customeradapterdata);
                         }
-                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"));
+                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata,ride.getString("rideId"));
                     }
                     else if(jObj.has("ride")){
                         JSONObject ride = jObj.getJSONObject("ride");
                         JSONObject customerdata = jObj.getJSONObject("owner");
                         customer customeradapterdata = new customer(customerdata.getString("name"),customerdata.getString("email"),ride.getString("phoneNumber"),ride.getString("latlong"));
                         List<customer> customerlistdata = new ArrayList<customer>();
+                        JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
+                        if(requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
+                            status = requestmatrix.getString("status");
+                        }
                         customerlistdata.add(customeradapterdata);
-                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata, ride.getString("rideId"));
+                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata, ride.getString("rideId"));
                     }
                   }
             } catch (JSONException e) {
@@ -315,6 +324,13 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                 String todayortomorrow = (currentDate.equals(dateOfRides))?"Today":"Tomorrow";
                 todayortomorrowheader.setText(todayortomorrow);
                 timeofday.setText(timeofrides);
+                if (ridedataobject.getStatus() != null && ridedataobject.getStatus().equals("requestsent")) {
+                    requestalreadysent.setVisibility(View.VISIBLE);
+                    sendrequesttojoinride.setVisibility(View.GONE);
+                } else {
+                    requestalreadysent.setVisibility(View.GONE);
+                    sendrequesttojoinride.setVisibility(View.VISIBLE);
+                }
                 customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
                 mGridView.setAdapter(customerlistadapter);
             }
