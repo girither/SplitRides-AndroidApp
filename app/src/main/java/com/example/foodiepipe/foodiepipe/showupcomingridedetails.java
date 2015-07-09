@@ -203,7 +203,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         public View getView(int position, View convertView, ViewGroup container) {
             String todayortomorrow;
             if (convertView == null) {
-                convertView = showupcomingridedetails.this.getLayoutInflater().inflate(R.layout.customer_detail_list,
+                convertView = getLayoutInflater().inflate(R.layout.customer_detail_list,
                         container, false);
             }
 

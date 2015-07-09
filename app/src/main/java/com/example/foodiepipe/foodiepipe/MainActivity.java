@@ -331,8 +331,8 @@ public class MainActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        onregister();
         SharedPreferenceManager.setApplicationContext(getApplicationContext());
+        onregister();
         if(SharedPreferenceManager.getIntPreference("source_search_radius") == 0) {
             SharedPreferenceManager.setPreference("source_search_radius", 5);
         }
