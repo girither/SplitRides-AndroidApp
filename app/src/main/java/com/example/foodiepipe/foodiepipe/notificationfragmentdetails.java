@@ -33,7 +33,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
 
     private getindividualnotificationdetailsetask mynotificationTask = null;
     JSONParser jsonParser = new JSONParser();
-    TextView ridefromheader, todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
+    TextView ridefromheader_source,ridefromheader_destination, todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
     getindividualnotificationdetailsetask individualnotificationstask;
     ProgressBar bar;
     Button acceptrequest, rejectrequest;
@@ -50,7 +50,8 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ridefromheader = (TextView) findViewById(R.id.requestFromTextHeader);
+        ridefromheader_source = (TextView) findViewById(R.id.rideFromTextHeader_source);
+        ridefromheader_destination = (TextView)findViewById(R.id.rideFromTextHeader_destination);
         todayortomorrowheader = (TextView) findViewById(R.id.rideday);
         timeofday = (TextView) findViewById(R.id.ridetime);
         rideownernamevalue = (TextView) findViewById(R.id.rideownernamevalue);
@@ -206,8 +207,8 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
             bar.setVisibility(View.GONE);
             detailform.setVisibility((notificationdataobject!=null)?View.VISIBLE:View.GONE);
             if(notificationdataobject != null ){
-                String Ridefrom = new StringBuilder().append("Ride Request from ").append(notificationdataobject.getSource()).append(" to ").append(notificationdataobject.getDestination()).toString();
-                ridefromheader.setText(Ridefrom);
+                ridefromheader_source.setText(notificationdataobject.getSource());
+                ridefromheader_destination.setText(notificationdataobject.getDestination());
                 String dateOfRides = notificationdataobject.getDate().split("T")[0];
                 String timeofrides = notificationdataobject.getDate().split("T")[1];
                 timeofrides = timeofrides.split(".000Z")[0];

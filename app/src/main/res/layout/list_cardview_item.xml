@@ -92,7 +92,7 @@
                 style="@style/Widget.SampleDashboard.Item.MyRideTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="208dp"
+                android:layout_marginLeft="190dp"
                 />
         </LinearLayout>
 

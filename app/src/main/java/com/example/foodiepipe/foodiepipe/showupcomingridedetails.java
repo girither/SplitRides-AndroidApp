@@ -76,7 +76,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         rideownerphonevalue = (TextView) findViewById(R.id.rideownerphonenumbervalue);
         bar = (ProgressBar) findViewById(R.id.searchindividualrides_progress);
         detailform = (LinearLayout) findViewById(R.id.ridedatashow);
-        mGridView = (GridView) findViewById(android.R.id.list);
+        mGridView = (GridView) findViewById(R.id.customer_list);
         startride = (Button) findViewById(R.id.startride);
         endride = (Button) findViewById(R.id.endride);
         estimateride = (Button) findViewById(R.id.estimeateride);
@@ -427,7 +427,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                             customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("latLng"));
                             customerlistdata.add(customeradapterdata);
                         }
-                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("rideId"));
+                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"));
                     }
                     else if(jObj.has("ride")) {
                         JSONObject ride = jObj.getJSONObject("ride");

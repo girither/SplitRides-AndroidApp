@@ -545,6 +545,15 @@ public class MainActivity extends ActionBarActivity
                 fragmentManager.beginTransaction().replace(R.id.containernavigation,new settingsfragment())
                 .commitAllowingStateLoss();
                 break;
+            case 4:
+                fragmentManager.beginTransaction().replace(R.id.containernavigation,new wallet())
+                        .commitAllowingStateLoss();
+                break;
+            case 5:
+                fragmentManager.beginTransaction().replace(R.id.containernavigation,new selfdrive())
+                        .commitAllowingStateLoss();
+                break;
+
         }
 
     }
