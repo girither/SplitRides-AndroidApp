@@ -95,7 +95,8 @@ public class GcmIntentService extends IntentService {
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(this)
                             .setSmallIcon(R.drawable.ic_launcher)
-                            .setContentTitle("")
+                            .setContentTitle("Request To Join Ride From " + customername)
+                            .setContentText("source :" + source + " destination :" + destination)
                             .setStyle(new NotificationCompat.InboxStyle()
                                     .addLine("source :" + source)
                                     .addLine("destination :" + destination)
@@ -104,6 +105,8 @@ public class GcmIntentService extends IntentService {
 
 
             mBuilder.setContentIntent(contentIntent);
+                mBuilder.setAutoCancel(true);
+
             Log.i(TAG,"in the penultimate line");
             mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         }
@@ -121,14 +124,16 @@ public class GcmIntentService extends IntentService {
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_launcher)
-                                .setContentTitle("")
+                                .setContentTitle("Ride Request accepted by " + customername)
+                                .setContentText("email Id :" + emailId)
                                 .setStyle(new NotificationCompat.InboxStyle()
                                         .addLine("email Id :" + emailId)
-                                        .setBigContentTitle("Ride Request accepted by" + customername)
+                                        .setBigContentTitle("Ride Request accepted by " + customername)
                                         .setSummaryText("Phone Number :"+phonenumber));
 
 
                 mBuilder.setContentIntent(contentIntent);
+                mBuilder.setAutoCancel(true);
                 Log.i(TAG,"in the penultimate line");
                 mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         }
@@ -145,13 +150,15 @@ public class GcmIntentService extends IntentService {
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_launcher)
-                                .setContentTitle("")
+                                .setContentTitle("Ride Request rejected by " + customername)
+                                .setContentText("email Id :" + emailId)
                                 .setStyle(new NotificationCompat.InboxStyle()
                                         .addLine("email Id :" + emailId)
-                                        .setBigContentTitle("Request To Join Ride From " + customername));
+                                        .setBigContentTitle("Ride Request rejected by " + customername));
 
 
                 mBuilder.setContentIntent(contentIntent);
+                mBuilder.setAutoCancel(true);
                 Log.i(TAG,"in the penultimate line");
                 mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         }

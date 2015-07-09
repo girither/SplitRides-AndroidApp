@@ -42,7 +42,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
     private getindividualriddetailsetask myrideTask = null;
     JSONParser jsonParser = new JSONParser();
-    TextView ridefromheader, todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
+    TextView ridefromheader_source,ridefromheader_destination,todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
     getindividualriddetailsetask individualridestask;
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
     protected final static String LOCATION_KEY = "location-key";
@@ -67,7 +67,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ridefromheader = (TextView) findViewById(R.id.rideFromTextHeader);
+        ridefromheader_source = (TextView) findViewById(R.id.rideFromTextHeader_source);
+        ridefromheader_destination = (TextView)findViewById(R.id.rideFromTextHeader_destination);
         todayortomorrowheader = (TextView) findViewById(R.id.rideday);
         timeofday = (TextView) findViewById(R.id.ridetime);
         rideownernamevalue = (TextView) findViewById(R.id.rideownernamevalue);
@@ -450,8 +451,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             bar.setVisibility(View.GONE);
             detailform.setVisibility((ridedataobject!=null)?View.VISIBLE:View.GONE);
             if(ridedataobject != null ){
-                String Ridefrom = new StringBuilder().append("Ride from ").append(ridedataobject.getSource()).append(" to ").append(ridedataobject.getDestination()).toString();
-                ridefromheader.setText(Ridefrom);
+                ridefromheader_source.setText(ridedataobject.getSource());
+                ridefromheader_destination.setText(ridedataobject.getDestination());
                 String dateOfRides = ridedataobject.getDate().split("T")[0];
                 String timeofrides = ridedataobject.getDate().split("T")[1];
                 timeofrides = timeofrides.split(".000Z")[0];
