@@ -173,7 +173,7 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
                             ridedataArray.add(info);
                         }
                     }
-                    else if(jObj.has("joinedRides")){
+                    if(jObj.has("joinedRides")){
                         JSONArray jrides = jObj.getJSONArray("joinedRides");
                         for (int i = 0; i < jrides.length(); i++) {
                             JSONObject joinedrideindividualdata = jrides.getJSONObject(i);

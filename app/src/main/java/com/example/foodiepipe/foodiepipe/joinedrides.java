@@ -105,13 +105,21 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String currentDate = sdf.format(cal.getTime());
+            Calendar nextdaycal = Calendar.getInstance();
+            nextdaycal.add(Calendar.DATE, 1);
+            SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
+            String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
             if(currentDate.equals(dateOfRides))
             {
                 todayortomorrow = "Today        ";
             }
-            else
+            else if(tomorrowDate.equals(dateOfRides))
             {
                 todayortomorrow = "Tomorrow";
+            }
+            else
+            {
+                todayortomorrow = dateOfRides;
             }
             mSamples.get(position).setTodayortomorrow(todayortomorrow);
             ((TextView) convertView.findViewById(android.R.id.content)).setText(timeofrides);

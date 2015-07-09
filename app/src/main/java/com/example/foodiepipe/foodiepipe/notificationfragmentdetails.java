@@ -232,6 +232,11 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 {
                     todayortomorrow = dateOfRides;
                 }
+                if(!(todayortomorrow.trim().equals("Today") || todayortomorrow.trim().equals("Tomorrow")))
+                {
+                    acceptrequest.setVisibility(View.GONE);
+                    rejectrequest.setVisibility(View.GONE);
+                }
                 todayortomorrowheader.setText(todayortomorrow);
                 timeofday.setText(timeofrides);
                 customerlistadapter = new CustomerAdapter(notificationdataobject.getCustomerlistdata());
