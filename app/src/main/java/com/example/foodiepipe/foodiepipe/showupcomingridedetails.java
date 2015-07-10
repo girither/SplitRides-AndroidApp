@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -53,7 +52,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     LinearLayout detailform;
     CustomerAdapter customerlistadapter;
     private ProgressDialog pDialog;
-    GridView mGridView;
+    ExpandableHeightGridView mGridView;
     static final int PICK_CABPROVIDER_RESULT = 1;
     static final int PICK_CABPROVIDER_RESULT_FROMESIMATE = 2;
     private PendingIntent pendingIntent;
@@ -64,6 +63,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_showupcomingridedetails);
+        SharedPreferenceManager.setApplicationContext(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -76,7 +76,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         rideownerphonevalue = (TextView) findViewById(R.id.rideownerphonenumbervalue);
         bar = (ProgressBar) findViewById(R.id.searchindividualrides_progress);
         detailform = (LinearLayout) findViewById(R.id.ridedatashow);
-        mGridView = (GridView) findViewById(R.id.customer_list);
+        mGridView = (ExpandableHeightGridView)findViewById(R.id.customer_list);
+        mGridView.setExpanded(true);
         startride = (Button) findViewById(R.id.startride);
         endride = (Button) findViewById(R.id.endride);
         estimateride = (Button) findViewById(R.id.estimeateride);
@@ -490,6 +491,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 }
                 customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
                 mGridView.setAdapter(customerlistadapter);
+                customerlistadapter.notifyDataSetChanged();
             }
         }
 

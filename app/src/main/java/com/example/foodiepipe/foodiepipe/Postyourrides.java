@@ -99,6 +99,7 @@ public class Postyourrides extends ActionBarActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        SharedPreferenceManager.setApplicationContext(getApplicationContext());
         // Retrieve the AutoCompleteTextView that will display Place suggestions.
         mAutocompleteView = (AutoCompleteTextView)
                 findViewById(R.id.autocomplete_places_source);

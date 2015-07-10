@@ -64,6 +64,7 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
         mjoinedrideTask = new getjoinedridetask();
         mjoinedrideTask.execute((Void) null);
         mGridView = (GridView)rootView.findViewById(android.R.id.list);
+        mGridView.setOnItemClickListener(this);
         mGridView_noresults = (GridView)rootView.findViewById(R.id.no_results_return_list);
         joinedridesform = (LinearLayout)rootView.findViewById(R.id.show_joined_rides);
         noresultsform = (LinearLayout)rootView.findViewById(R.id.noridestoshow_form);
