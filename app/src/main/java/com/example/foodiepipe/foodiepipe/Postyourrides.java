@@ -38,6 +38,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.SphericalUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,6 +80,7 @@ public class Postyourrides extends ActionBarActivity
     private EditText mPhonenumber;
     JSONParser jsonParser = new JSONParser();
     private String currentDate;
+    LatLng latlongcordsource;
 
     private double sourcelat,sourcelong,destinationlat,destinationlong;
     //private TextView mPlaceDetailsText;
@@ -250,7 +252,7 @@ public class Postyourrides extends ActionBarActivity
             }
             // Get the Place object from the buffer.
             final Place place = places.get(0);
-            LatLng latlongcordsource = place.getLatLng();
+            latlongcordsource = place.getLatLng();
             sourcelat =  latlongcordsource.latitude;
             sourcelong = latlongcordsource.longitude;
             // Format details of the place for display and show it in a TextView.
@@ -272,6 +274,7 @@ public class Postyourrides extends ActionBarActivity
             }
             // Get the Place object from the buffer.
             final Place place = places.get(0);
+
             LatLng latlongcorddestination = place.getLatLng();
             destinationlat =  latlongcorddestination.latitude;
             destinationlong = latlongcorddestination.longitude;
@@ -390,11 +393,24 @@ public class Postyourrides extends ActionBarActivity
         }
     }
 
+    public LatLngBounds convertCenterAndRadiusToBounds(LatLng center, double radius) {
+        LatLng southwest = SphericalUtil.computeOffset(center, radius * Math.sqrt(2.0), 225);
+        LatLng northeast = SphericalUtil.computeOffset(center, radius * Math.sqrt(2.0), 45);
+        return new LatLngBounds(southwest, northeast);
+    }
+
     public void onPickButtonClick() {
         // Construct an intent for the place picker
         try {
-            PlacePicker.IntentBuilder intentBuilder =
-                    new PlacePicker.IntentBuilder();
+            PlacePicker.IntentBuilder intentBuilder;
+            if(latlongcordsource != null) {
+                    intentBuilder         =
+                        new PlacePicker.IntentBuilder().setLatLngBounds(convertCenterAndRadiusToBounds(latlongcordsource, 70.000));
+            }
+            else{
+                intentBuilder =
+                        new PlacePicker.IntentBuilder();
+            }
             Intent intent = intentBuilder.build(this);
             // Start the intent by requesting a result,
             // identified by a request code.

@@ -175,6 +175,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 startActivityForResult(selectcabprovider_estimate,PICK_CABPROVIDER_RESULT_FROMESIMATE);
                 break;
             case R.id.exitride:
+                new exitjoinedride(SharedPreferenceManager.getPreference("currentride_rideid"),SharedPreferenceManager.getPreference("customerNumber")).execute();
                 break;
         }
     }
@@ -316,6 +317,72 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
             }
         }
+
+        @Override
+        protected void onCancelled() {
+
+        }
+    }
+
+    public class exitjoinedride extends AsyncTask<Void, Void,Boolean> {
+
+        private final String jrId;
+        private final String mcustomerNumber;
+
+
+        exitjoinedride(String joinedrideId, String customerNumber) {
+            jrId=joinedrideId;
+            mcustomerNumber = customerNumber;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(showupcomingridedetails.this);
+            pDialog.setMessage("Exiting Ride...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+        @Override
+        protected Boolean doInBackground(Void... param) {
+            String success = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("jrId", jrId);
+                params.put("customerNumber",mcustomerNumber);
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/removeFromTheJoinedRide", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    success = jObj.getString("success");
+                    return true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+
+            pDialog.dismiss();
+            if(success){
+                finish();
+            }
+            else{
+                Toast.makeText(showupcomingridedetails.this,
+                        "Something went wrong while sending request. Please try again", Toast.LENGTH_LONG).show();
+            }
+        }
+
 
         @Override
         protected void onCancelled() {

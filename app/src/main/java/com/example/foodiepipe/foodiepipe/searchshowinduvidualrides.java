@@ -53,6 +53,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        SharedPreferenceManager.setApplicationContext(getApplicationContext());
         ridefromheader_source = (TextView) findViewById(R.id.rideFromTextHeader_source);
         ridefromheader_destination = (TextView)findViewById(R.id.rideFromTextHeader_destination);
         todayortomorrowheader = (TextView)findViewById(R.id.rideday);
