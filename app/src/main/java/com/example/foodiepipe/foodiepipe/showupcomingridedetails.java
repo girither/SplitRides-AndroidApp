@@ -549,6 +549,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     startride.setVisibility(View.GONE);
                     endride.setVisibility(View.GONE);
                     estimateride.setVisibility(View.GONE);
+                    exitride.setVisibility(View.GONE);
                 }
                 todayortomorrowheader.setText(todayortomorrow);
                 timeofday.setText(timeofrides);

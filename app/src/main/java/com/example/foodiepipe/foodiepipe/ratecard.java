@@ -112,9 +112,6 @@ public class ratecard  extends Fragment implements GoogleApiClient.OnConnectionF
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
 
-            Toast.makeText(getActivity(), "Clicked: " + item.description,
-                  Toast.LENGTH_SHORT).show();
-
         }
     };
 
@@ -275,7 +272,7 @@ public class ratecard  extends Fragment implements GoogleApiClient.OnConnectionF
             if (resultCode == Activity.RESULT_OK) {
                Bundle extras = data.getExtras();
                String cabprovidervalue = extras.getString("cabprovider");
-
+                new ratecardtask(cabprovidervalue,Double.toString(sourcelat),Double.toString(sourcelong),Double.toString(destinationlat),Double.toString(destinationlong)).execute();
 
             }
         }

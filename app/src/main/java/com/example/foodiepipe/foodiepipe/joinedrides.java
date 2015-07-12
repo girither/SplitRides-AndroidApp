@@ -202,7 +202,7 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
                     JSONArray rides = jObj.getJSONArray("jrides");
                     for(int i=0; i<rides.length(); i++){
                         JSONObject rideindividualdata = rides.getJSONObject(i);
-                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"));
+                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("jrId"));
                         ridedataArray.add(info);
                     }
                 }

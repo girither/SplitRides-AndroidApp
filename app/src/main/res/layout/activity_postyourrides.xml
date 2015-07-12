@@ -10,6 +10,16 @@
         layout="@layout/tool_bar"
         ></include>
 
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
         <AutoCompleteTextView
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
@@ -113,7 +123,7 @@
 
             android:layout_marginTop="20dp"
             android:id="@+id/choose_pickup_point"
-            android:background="#E80000"
+            android:background="#669966"
             android:textColor="#FFFFFF"
             android:layout_width="200dp"
             android:layout_height="30dp"
@@ -130,16 +140,49 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:layout_marginLeft="10dp"
+
+            android:layout_marginTop="20dp"
+            android:id="@+id/choose_drop_point"
+            android:background="#E80000"
+            android:textColor="#FFFFFF"
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:text="Choose Drop Point"
+            />
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:id="@+id/latlong_data_droppoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#A52A2A"
+            android:autoLink="web"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
+
+
     <Button
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginBottom="15dp"
         android:id="@+id/post_ride_button"
         android:background="#F87217"
         android:textColor="#FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:text="POST YOUR RIDE" />
+
+            </LinearLayout>
+    </ScrollView>
+
 
 
 

@@ -34,7 +34,7 @@ public class ratecardfragment extends DialogFragment {
 
         builder.setView(dialogView);
         TextView rateText = (TextView)dialogView.findViewById(R.id.textView3);
-        rateText.setText(Html.fromHtml("<big><b>"+"&#8364;"+mRateText+"</b></big>"));
+        rateText.setText(Html.fromHtml("<big><b>"+"&#8377;"+ " " +mRateText+"</b></big>"));
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {

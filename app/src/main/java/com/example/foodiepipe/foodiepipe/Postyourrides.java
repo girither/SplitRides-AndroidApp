@@ -69,9 +69,10 @@ public class Postyourrides extends ActionBarActivity
      * Request code passed to the PlacePicker intent to identify its result when it returns.
      */
     private static final int REQUEST_PLACE_PICKER = 1;
+    private static final int REQUEST_PLACE_PICKER_DROPPOINT = 2;
     TextView settimetextView;
     TextView settimetextViewhidden;
-    TextView setlatlongtextView;
+    TextView setlatlongtextView,setlatlongtextView_droppoint;
     private AutoCompleteTextView mAutocompleteView;
     private AutoCompleteTextView mAutocompleteView_destination;
     private Postyouridetask mAuthTask = null;
@@ -80,7 +81,7 @@ public class Postyourrides extends ActionBarActivity
     private EditText mPhonenumber;
     JSONParser jsonParser = new JSONParser();
     private String currentDate;
-    LatLng latlongcordsource;
+    LatLng latlongcordsource,latlongcorddestination;
 
     private double sourcelat,sourcelong,destinationlat,destinationlong;
     //private TextView mPlaceDetailsText;
@@ -113,6 +114,8 @@ public class Postyourrides extends ActionBarActivity
         postyourridebutton.setOnClickListener(this);
         Button choosepickuppoint = (Button)findViewById(R.id.choose_pickup_point);
         choosepickuppoint.setOnClickListener(this);
+        Button choosedroppoint = (Button)findViewById(R.id.choose_drop_point);
+        choosedroppoint.setOnClickListener(this);
         // Register a listener that receives callbacks when a suggestion has been selected
         mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
         mAutocompleteView_destination.setOnItemClickListener(mAutocompleteClickListener_destination);
@@ -140,6 +143,7 @@ public class Postyourrides extends ActionBarActivity
                 findViewById(R.id.time_data);
         setlatlongtextView = (TextView)
                 findViewById(R.id.latlong_data);
+        setlatlongtextView_droppoint = (TextView)findViewById(R.id.latlong_data_droppoint);
         String currenttime = sdf.format(cal.getTime());
         settimetextView.setText(currenttime);
         SimpleDateFormat sdfhidden = new SimpleDateFormat("HH:mm:ss");
@@ -233,7 +237,26 @@ public class Postyourrides extends ActionBarActivity
             StringBuilder locationstringbuilder = new StringBuilder();
             locationstringbuilder.append(Double.toString(latlongcord.latitude)).append(",").append(Double.toString(latlongcord.longitude));
             setlatlongtextView.setText(locationstringbuilder.toString());
-        } else {
+        }
+        else if (requestCode == REQUEST_PLACE_PICKER_DROPPOINT
+                && resultCode == Activity.RESULT_OK){
+            final Place place = PlacePicker.getPlace(data, this);
+
+            final CharSequence name = place.getName();
+            final CharSequence address = place.getAddress();
+            final LatLng latlongcord = place.getLatLng();
+
+            String attributions = PlacePicker.getAttributions(data);
+            if (attributions == null) {
+                attributions = "";
+            }
+            StringBuilder locationstringbuilder = new StringBuilder();
+            locationstringbuilder.append(Double.toString(latlongcord.latitude)).append(",").append(Double.toString(latlongcord.longitude));
+            setlatlongtextView_droppoint.setText(locationstringbuilder.toString());
+
+        }
+        else
+        {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -275,7 +298,7 @@ public class Postyourrides extends ActionBarActivity
             // Get the Place object from the buffer.
             final Place place = places.get(0);
 
-            LatLng latlongcorddestination = place.getLatLng();
+            latlongcorddestination = place.getLatLng();
             destinationlat =  latlongcorddestination.latitude;
             destinationlong = latlongcorddestination.longitude;
             // Format details of the place for display and show it in a TextView.
@@ -390,6 +413,9 @@ public class Postyourrides extends ActionBarActivity
             case R.id.choose_pickup_point:
                 onPickButtonClick();
                 break;
+            case R.id.choose_drop_point:
+                ondropbuttonclick();
+                break;
         }
     }
 
@@ -405,7 +431,7 @@ public class Postyourrides extends ActionBarActivity
             PlacePicker.IntentBuilder intentBuilder;
             if(latlongcordsource != null) {
                     intentBuilder         =
-                        new PlacePicker.IntentBuilder().setLatLngBounds(convertCenterAndRadiusToBounds(latlongcordsource, 70.000));
+                        new PlacePicker.IntentBuilder().setLatLngBounds(convertCenterAndRadiusToBounds(latlongcordsource,100));
             }
             else{
                 intentBuilder =
@@ -422,6 +448,31 @@ public class Postyourrides extends ActionBarActivity
             // ...
         }
     }
+
+    public void ondropbuttonclick() {
+        // Construct an intent for the place picker
+        try {
+            PlacePicker.IntentBuilder intentBuilder;
+            if(latlongcordsource != null) {
+                intentBuilder         =
+                        new PlacePicker.IntentBuilder().setLatLngBounds(convertCenterAndRadiusToBounds(latlongcorddestination, 100));
+            }
+            else{
+                intentBuilder =
+                        new PlacePicker.IntentBuilder();
+            }
+            Intent intent = intentBuilder.build(this);
+            // Start the intent by requesting a result,
+            // identified by a request code.
+            startActivityForResult(intent, REQUEST_PLACE_PICKER_DROPPOINT);
+
+        } catch (GooglePlayServicesRepairableException e) {
+            // ...
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // ...
+        }
+    }
+
     public void attempttopostrides() {
         if (mAuthTask != null) {
             return;
@@ -438,6 +489,7 @@ public class Postyourrides extends ActionBarActivity
         String phonenumber = mPhonenumber.getText().toString();
         String timeclock = settimetextViewhidden.getText().toString();
         String latlong = setlatlongtextView.getText().toString();
+        String latlong_droppoint = setlatlongtextView_droppoint.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -466,6 +518,13 @@ public class Postyourrides extends ActionBarActivity
                     "Please select a pickup point", Toast.LENGTH_LONG).show();
             cancel = true;
             focusView = setlatlongtextView;
+        }
+        if(latlong_droppoint.isEmpty())
+        {
+            Toast.makeText(Postyourrides.this,
+                    "Please select a droppoint point", Toast.LENGTH_LONG).show();
+            cancel = true;
+            focusView = setlatlongtextView_droppoint;
         }
 
         if (cancel) {
