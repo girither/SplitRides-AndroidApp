@@ -126,14 +126,22 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onDataChanged(int number){
-        homepageX homepagexfragment = (homepageX)
-                getSupportFragmentManager().findFragmentById(R.id.containernavigation);
 
-        if (homepagexfragment != null) {
-            // If article frag is available, we're in two-pane layout...
+        try {
 
-            // Call a method in the ArticleFragment to update its content
-            homepagexfragment.onDataChanged(number);
+            homepageX homepagexfragment = (homepageX)
+                    getSupportFragmentManager().findFragmentById(R.id.containernavigation);
+
+
+            if (homepagexfragment != null) {
+                // If article frag is available, we're in two-pane layout...
+
+                // Call a method in the ArticleFragment to update its content
+                homepagexfragment.onDataChanged(number);
+            }
+        }
+        catch(java.lang.ClassCastException e){
+            e.printStackTrace();
         }
     }
 
