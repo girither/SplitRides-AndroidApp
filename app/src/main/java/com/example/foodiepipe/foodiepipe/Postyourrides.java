@@ -534,7 +534,7 @@ public class Postyourrides extends ActionBarActivity
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mvalidateplacesTask = new validateplacesapi(source,destination,phonenumber,currentDate,timeclock,Double.toString(sourcelat),Double.toString(sourcelong),Double.toString(destinationlat),Double.toString(destinationlong),latlong);
+            mvalidateplacesTask = new validateplacesapi(source,destination,phonenumber,currentDate,timeclock,Double.toString(sourcelat),Double.toString(sourcelong),Double.toString(destinationlat),Double.toString(destinationlong),latlong,latlong_droppoint);
             mvalidateplacesTask.execute((Void) null);
 
         }
@@ -564,8 +564,9 @@ public class Postyourrides extends ActionBarActivity
         private final String mdestinationlat;
         private final String mdestinationlong;
         private final String mpickuppoint;
+        private final String mdroppoint;
 
-        Postyouridetask(String source, String destination,String phonenumber,String date,String time,String pickuppoint,String sourcelat,String sourcelong,String destinationlat,String destinationlong) {
+        Postyouridetask(String source, String destination,String phonenumber,String date,String time,String pickuppoint,String droppoint,String sourcelat,String sourcelong,String destinationlat,String destinationlong) {
             mSource = source;
             mDestination = destination;
             mPhonenumber = phonenumber;
@@ -576,6 +577,7 @@ public class Postyourrides extends ActionBarActivity
             mdestinationlat = destinationlat;
             mdestinationlong = destinationlong;
             mpickuppoint = pickuppoint;
+            mdroppoint = droppoint;
         }
         @Override
         protected void onPreExecute() {
@@ -588,14 +590,7 @@ public class Postyourrides extends ActionBarActivity
         }
         @Override
         protected Boolean doInBackground(Void... param) {
-            // Building Parameters
-            /*List<NameValuePair> params = new ArrayList<NameValuePair>();
 
-            // post album id, song id as GET parameters
-            params.add(new BasicNameValuePair("name", mName));
-            params.add(new BasicNameValuePair("email", mEmail));
-            params.add(new BasicNameValuePair("password", mPassword));
-            params.add(new BasicNameValuePair("profile", mProfile));*/
             try {
                 JSONObject params = new JSONObject();
                 params.put("source", mSource);
@@ -607,9 +602,10 @@ public class Postyourrides extends ActionBarActivity
                 params.put("sourceLng", msourcelong);
                 params.put("destinationLat", mdestinationlat);
                 params.put("destinationLng", mdestinationlong);
-                params.put("latlong", mpickuppoint);
+                params.put("pickUpLatLng", mpickuppoint);
+                params.put("dropLatLng",mdroppoint);
 
-                Log.d("token data ",SharedPreferenceManager.getPreference("auth_token"));
+                Log.d("token data ", SharedPreferenceManager.getPreference("auth_token"));
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/postRide", "POST",
                         params);
@@ -663,10 +659,11 @@ public class Postyourrides extends ActionBarActivity
         private final String mdestinationlat;
         private final String mdestinationlong;
         private final String mpickuppoint;
+        private final String mdroppoint;
 
         String validityflag;
 
-        validateplacesapi(String source, String destination,String phonenumber,String date,String time,String sourcelat,String sourcelong,String destinationlat,String destinationlong,String pickuppoint) {
+        validateplacesapi(String source, String destination,String phonenumber,String date,String time,String sourcelat,String sourcelong,String destinationlat,String destinationlong,String pickuppoint,String droppoint) {
             mSource = source;
             mDestination = destination;
             mPhonenumber = phonenumber;
@@ -677,6 +674,7 @@ public class Postyourrides extends ActionBarActivity
             mdestinationlat = destinationlat;
             mdestinationlong = destinationlong;
             mpickuppoint = pickuppoint;
+            mdroppoint = droppoint;
 
         }
         @Override
@@ -716,7 +714,7 @@ public class Postyourrides extends ActionBarActivity
             pDialog.dismiss();
             View focusView = null;
             if (success) {
-                mAuthTask = new Postyouridetask(mSource,mDestination,mPhonenumber,mDate,mTime,mpickuppoint,msourcelat,msourcelong,mdestinationlat,mdestinationlong);
+                mAuthTask = new Postyouridetask(mSource,mDestination,mPhonenumber,mDate,mTime,mpickuppoint,mdroppoint,msourcelat,msourcelong,mdestinationlat,mdestinationlong);
                 mAuthTask.execute((Void) null);
             } else {
                 if(validityflag.equals("source")){

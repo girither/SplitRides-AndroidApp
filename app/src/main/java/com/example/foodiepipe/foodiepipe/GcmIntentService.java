@@ -5,12 +5,17 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.foodpipe.android.helper.JSONParser;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by gbm on 6/30/15.
@@ -19,6 +24,7 @@ public class GcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
     NotificationCompat.Builder builder;
+    JSONParser jsonParser = new JSONParser();
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -75,10 +81,12 @@ public class GcmIntentService extends IntentService {
     private void sendNotification(Bundle msg) {
         String data = msg.getString("NotificationType");
             if(data.equals("StartRideDistanceTravelled")){
-
+                new startridewithdistancetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
+                SharedPreferenceManager.setPreference("locationstringdata","");
             }
             else if(data.equals("EndRideDistanceTravelled")){
-
+                new endridewithdistancetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
+                SharedPreferenceManager.setPreference("locationstringdata","");
             }
             else if(data.equals("requestToJoinTheRide")){
             String requestID = msg.getString("requestId");
@@ -163,4 +171,111 @@ public class GcmIntentService extends IntentService {
                 mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         }
       }
+
+    public class startridewithdistancetask extends AsyncTask<Void, Void,String > {
+
+        private final String mjrId;
+        private final String mdistanceTravelled;
+
+
+        startridewithdistancetask(String jRideId,String distancetravelled) {
+
+            mjrId = jRideId;
+            mdistanceTravelled = distancetravelled;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(Void... param) {
+            String data = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("jrId", mjrId);
+                params.put("distanceTravelled",mdistanceTravelled);
+
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/startRideDistanceTravelled", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    data = jObj.getString("success");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(final String success) {
+            if(success != null){
+
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+
+        }
+    }
+    public class endridewithdistancetask extends AsyncTask<Void, Void,String > {
+
+        private final String mjrId;
+        private final String mdistanceTravelled;
+
+
+        endridewithdistancetask(String jRideId,String distancetravelled) {
+
+            mjrId = jRideId;
+            mdistanceTravelled = distancetravelled;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected String doInBackground(Void... param) {
+            String data = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("jrId", mjrId);
+                params.put("distanceTravelled",mdistanceTravelled);
+
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/endRideDistanceTravelled", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    data = jObj.getString("success");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(final String success) {
+            if(success != null){
+
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+
+        }
+    }
 }

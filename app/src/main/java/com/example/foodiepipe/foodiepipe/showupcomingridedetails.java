@@ -1,11 +1,9 @@
 package com.example.foodiepipe.foodiepipe;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -93,12 +91,12 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         new getindividualriddetailsetask(rideId).execute();
 
         startlocationservice = new Intent(this,Locationservice.class);
-        Intent alarmIntent = new Intent(showupcomingridedetails.this, Alarmreciever.class);
-        pendingIntent = PendingIntent.getBroadcast(showupcomingridedetails.this, 0, alarmIntent, 0);
+        /*Intent alarmIntent = new Intent(showupcomingridedetails.this, Alarmreciever.class);
+        pendingIntent = PendingIntent.getBroadcast(showupcomingridedetails.this, 0, alarmIntent, 0);*/
     }
     //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 
-
+/*
     public void startalarm() {
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         int interval = 1000 * 3 * 60;
@@ -111,7 +109,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         manager.cancel(pendingIntent);
         //Toast.makeText(this, "Alarm Canceled", Toast.LENGTH_SHORT).show();
     }
-
+*/
     public void startlocationservice(){
         this.startService(startlocationservice);
     }
@@ -149,12 +147,10 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     SharedPreferenceManager.setPreference("startrides", false);
-                                    stopalarm();
                                     SharedPreferenceManager.setPreference("stoprides", true);
                                     String locationstring = SharedPreferenceManager.getPreference("locationstringdata");
                                     if (locationstring != null && !locationstring.isEmpty()) {
-                                        Intent dailyUpdater = new Intent(getApplicationContext(), googleservice.class);
-                                        startService(dailyUpdater);
+
                                     }
                                     stoplocationservice();
                                     Toast.makeText(showupcomingridedetails.this,
@@ -246,10 +242,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 SharedPreferenceManager.setPreference("startrides",true);
-                SharedPreferenceManager.setPreference("totaldistance", 0.0f);
                 Toast.makeText(showupcomingridedetails.this,
                         "Ride has started", Toast.LENGTH_LONG).show();
-                startalarm();
                 startlocationservice();
             }
         }
@@ -492,7 +486,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         List<customer> customerlistdata = new ArrayList<customer>();
                         for (int i = 0; i < customerdata.length(); i++) {
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
-                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("latLng"));
+                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("latLng"),customerindividualdata.getString("profileId"));
                             customerlistdata.add(customeradapterdata);
                         }
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"));
@@ -500,7 +494,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     else if(jObj.has("ride")) {
                         JSONObject ride = jObj.getJSONObject("ride");
                         JSONObject customerdata = jObj.getJSONObject("owner");
-                        customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"), ride.getString("phoneNumber"), ride.getString("latlong"));
+                        customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"), ride.getString("phoneNumber"), ride.getString("latlong"),customerdata.getString("profileId"));
                         List<customer> customerlistdata = new ArrayList<customer>();
                         customerlistdata.add(customeradapterdata);
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"ride",ride.getString("rideId"));

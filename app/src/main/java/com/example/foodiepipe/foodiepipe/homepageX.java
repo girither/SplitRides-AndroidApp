@@ -12,12 +12,19 @@ import android.widget.TextView;
 import com.readystatesoftware.viewbadger.BadgeView;
 
 
-public class homepageX extends Fragment {
+public class homepageX extends Fragment implements notificationfragment.OnDataChangedListener {
     private FragmentTabHost mTabHost;
+    BadgeView badge;
 
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onDataChanged(int number){
+        updatebadge(number);
 
     }
 
@@ -49,9 +56,9 @@ public class homepageX extends Fragment {
         TextView tv = (TextView) view.findViewById(R.id.tab_text);
         tv.setText(title);
         TextView tv_counter = (TextView) view.findViewById(R.id.tab_counter);
-        BadgeView badge = new BadgeView(getActivity(), tv_counter);
-        badge.setText("1");
-        badge.show();
+        badge = new BadgeView(getActivity(), tv_counter);
+        updatebadge(SharedPreferenceManager.getIntPreference("notificationcount"));
+
         return view;
     }
     private View getTabIndicatorhome(Context context, String title) {
@@ -59,6 +66,11 @@ public class homepageX extends Fragment {
         TextView tv = (TextView) view.findViewById(R.id.tab_text_home);
         tv.setText(title);
         return view;
+    }
+
+    private void updatebadge(int number){
+        badge.setText(Integer.toString(number));
+        badge.show();
     }
 
 }

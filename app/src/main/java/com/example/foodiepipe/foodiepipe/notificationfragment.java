@@ -1,5 +1,6 @@
 package com.example.foodiepipe.foodiepipe;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
         JSONParser jsonParser = new JSONParser();
         private GridView mGridView,mGridView_noresults;
         private LinearLayout allnotificationform;
+        OnDataChangedListener mCallback;
         private LinearLayout noresultsform;
         SampleAdapter myallnotificationdataadapter;
         SampleAdapter_noresults  myallnotificationdataadapter_noresults;
@@ -40,6 +42,25 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
         public void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
 
+        }
+
+        // Container Activity must implement this interface
+        public interface OnDataChangedListener {
+            public void onDataChanged(int number);
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+
+            // This makes sure that the container activity has implemented
+            // the callback interface. If not, it throws an exception
+            try {
+                mCallback = (OnDataChangedListener) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString()
+                        + " must implement OnDataChangedListener");
+            }
         }
 
         @Override
@@ -218,6 +239,7 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
                 if(!notificationdataArray.isEmpty()){
                     myallnotificationdataadapter = new SampleAdapter(notificationdataArray);
                     mGridView.setAdapter(myallnotificationdataadapter);
+                    mCallback.onDataChanged(notificationdataArray.size());
                 }
                 else
                 {
@@ -227,6 +249,7 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
                     noresultsarray.add(info);
                     myallnotificationdataadapter_noresults = new SampleAdapter_noresults(noresultsarray);
                     mGridView_noresults.setAdapter(myallnotificationdataadapter_noresults);
+                    mCallback.onDataChanged(0);
                 }
             }
 

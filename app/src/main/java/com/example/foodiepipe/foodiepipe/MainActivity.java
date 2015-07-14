@@ -49,17 +49,19 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerCallbacks,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,facebookloginFragment.OnGooglePlusButtonClicked,signupage.OnSignUpsButtonClicked
+        GoogleApiClient.OnConnectionFailedListener,facebookloginFragment.OnGooglePlusButtonClicked,signupage.OnSignUpsButtonClicked, notificationfragment.OnDataChangedListener
 {
 
     private static final int LOGINPAGE = 0;
@@ -123,6 +125,20 @@ public class MainActivity extends ActionBarActivity
    }
 
     @Override
+    public void onDataChanged(int number){
+        homepageX homepagexfragment = (homepageX)
+                getSupportFragmentManager().findFragmentById(R.id.containernavigation);
+
+        if (homepagexfragment != null) {
+            // If article frag is available, we're in two-pane layout...
+
+            // Call a method in the ArticleFragment to update its content
+            homepagexfragment.onDataChanged(number);
+        }
+    }
+
+
+    @Override
     public void onStart()
     {
         super.onStart();
@@ -173,17 +189,12 @@ public class MainActivity extends ActionBarActivity
     {
         AccessToken token = AccessToken.getCurrentAccessToken();
         onregister();
-        if(isFacebookAppInstalled(getApplicationContext())) {
-            if (token == null) {
-                LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email", "user_birthday"));
-            } else {
-                LoginManager.getInstance().logOut();
-            }
+        if (token == null) {
+            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email", "user_birthday"));
         }
         else{
-            Toast.makeText(getApplicationContext(),"Facebook App is not installed. Please install the app and try",Toast.LENGTH_SHORT).show();
+            LoginManager.getInstance().logOut();
         }
-
     }
 
    @Override
@@ -249,7 +260,7 @@ public class MainActivity extends ActionBarActivity
             // perform the user login attempt.
 
 
-            mAuthTask = new UserLoginTask(Email,Password,Name,"local","","male",getRegistrationId(getApplicationContext()));
+            mAuthTask = new UserLoginTask(Email,Password,Name,"local","","","male",getRegistrationId(getApplicationContext()));
             mAuthTask.execute((Void) null);
         }
     }
@@ -300,7 +311,7 @@ public class MainActivity extends ActionBarActivity
             // perform the user login attempt.
 
 
-            mAuthTask = new UserLoginTask(Email,Password,"","local","","",getRegistrationId(getApplicationContext()));
+            mAuthTask = new UserLoginTask(Email,Password,"","local","","","",getRegistrationId(getApplicationContext()));
             mAuthTask.execute((Void) null);
         }
     }
@@ -339,9 +350,11 @@ public class MainActivity extends ActionBarActivity
         if(SharedPreferenceManager.getIntPreference("destination_search_radius") == 0){
             SharedPreferenceManager.setPreference("destination_search_radius",5);
         }
+        SharedPreferenceManager.setPreference("notificationcount",0);
     FacebookSdk.sdkInitialize(this.getApplicationContext());
 
         callbackManager = CallbackManager.Factory.create();
+
 
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -361,7 +374,7 @@ public class MainActivity extends ActionBarActivity
                                             email = jsonObject.getString("email");
                                             gender = jsonObject.getString("gender");
                                             if (mAuthTask == null) {
-                                                mAuthTask = new UserLoginTask(email, "", profile.getName(), "facebook", loginResult.getAccessToken().getToken(),gender,getRegistrationId(getApplicationContext()));
+                                                mAuthTask = new UserLoginTask(email, "", profile.getName(), "facebook",profile.getId(),loginResult.getAccessToken().getToken(),gender,getRegistrationId(getApplicationContext()));
                                                 //Log.v("token", loginResult.getAccessToken().getToken());
                                                 mAuthTask.execute((Void) null);
                                             }
@@ -410,7 +423,68 @@ public class MainActivity extends ActionBarActivity
 
         mPasswordView_signup = (EditText) findViewById(R.id.enter_password_signup);
         mNameView_signup = (EditText) findViewById(R.id.enter_name_signup);
+        ConnectionDetector cd = new ConnectionDetector(this.getApplicationContext());
 
+        // Check if Internet present
+        if (!cd.isConnectingToInternet()) {
+            // Internet Connection is not present
+            Toast.makeText(this,
+                    "Internet Connection Error Please connect to working Internet connection", Toast.LENGTH_LONG).show();
+            // stop executing code by return
+            return;
+        }
+        new getallnotificationtask().execute((Void) null);
+
+    }
+
+    public class getallnotificationtask extends AsyncTask<Void, Void, List<notificationdata>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+        @Override
+        protected List<notificationdata> doInBackground(Void... param) {
+            List<notificationdata> notificationdataArray = new ArrayList<notificationdata>();
+            try {
+                JSONObject params = new JSONObject();
+
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRequests", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    JSONArray notification = jObj.getJSONArray("requests");
+                    for(int i=0; i<notification.length(); i++){
+                        JSONObject notificationJSONObject = notification.getJSONObject(i);
+                        notificationdata info = new notificationdata(notificationJSONObject.getString("requesterSource"),notificationJSONObject.getString("requesterDestination"),notificationJSONObject.getString("requesterDate"),notificationJSONObject.getString("requestId"));
+                        notificationdataArray.add(info);
+                    }
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return notificationdataArray;
+        }
+
+        @Override
+        protected void onPostExecute(final List<notificationdata> notificationdataArray) {
+            if(!notificationdataArray.isEmpty()){
+                onDataChanged(notificationdataArray.size());
+                SharedPreferenceManager.setPreference("notificationcount",notificationdataArray.size());
+            }
+            else
+            {
+                onDataChanged(0);
+                SharedPreferenceManager.setPreference("notificationcount",0);
+            }
+        }
     }
 
     private boolean checkPlayServices() {
@@ -821,15 +895,17 @@ public class MainActivity extends ActionBarActivity
         private final String mPassword;
         private final String mName;
         private final String mProfile;
+        private final String mProfileId;
         private final String accessToken;
         private final String mgender;
         private final String mgcmid;
 
-        UserLoginTask(String email, String password,String name,String profile,String accesstoken,String gender,String gcmid) {
+        UserLoginTask(String email, String password,String name,String profile,String profileId,String accesstoken,String gender,String gcmid) {
             mEmail = email;
             mPassword = password;
             mName = name;
             mProfile = profile;
+            mProfileId = profileId;
             accessToken = accesstoken;
             mgender = gender;
             mgcmid = gcmid;
@@ -981,7 +1057,7 @@ public class MainActivity extends ActionBarActivity
             pDialog.dismiss();
             if(result!=null)
             {
-                mAuthTask = new UserLoginTask(mEmail,"",mName,"google",result,mGender,getRegistrationId(getApplicationContext()));
+                mAuthTask = new UserLoginTask(mEmail,"",mName,"google","",result,mGender,getRegistrationId(getApplicationContext()));
                 mAuthTask.execute((Void) null);
             }
             else
