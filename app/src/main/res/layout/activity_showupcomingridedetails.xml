@@ -152,55 +152,50 @@
 
 
                 <Button
-                    android:background="@drawable/border_edittextbox"
-                    android:textColor="#000000"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_marginTop="20dp"
+                    android:background="#585858"
+                    android:textColor="#FFFFFF"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
                     android:id="@+id/estimeateride"
                     android:text="ESTIMATE RIDE" />
 
-
-
-                <TableRow
+                <Button
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#669966"
+                    android:textColor="#FFFFFF"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal">
+                    android:layout_height="30dp"
+                    android:id="@+id/startride"
+                    android:text="START RIDE" />
 
-                    <Button
-                        android:layout_weight="1"
-                        android:background="@drawable/border_edittextbox"
-                        android:textColor="#000000"
-                        android:gravity="center"
-                        android:id="@+id/startride"
-                        android:text="START RIDE" />
-
-                    <Button
-                        android:layout_weight="1"
-                        android:background="@drawable/border_edittextbox"
-                        android:textColor="#000000"
-                        android:id="@+id/endride"
-                        android:gravity="center"
-                        android:text="END RIDE" />
-
-                </TableRow>
-
-                <TableRow
+                <Button
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="#F87217"
+                    android:textColor="#FFFFFF"
                     android:layout_width="match_parent"
-                    android:paddingBottom="20dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal">
+                    android:layout_height="30dp"
+                    android:id="@+id/endride"
+                    android:text="END RIDE" />
 
-
-                    <Button
-                        android:layout_weight="1"
-                        android:background="@drawable/border_edittextbox"
-                        android:textColor="#000000"
-                        android:id="@+id/exitride"
-                        android:gravity="center"
-                        android:text="EXIT RIDE" />
-
-                </TableRow>
+                <Button
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="#F87217"
+                    android:textColor="#FFFFFF"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:id="@+id/exitride"
+                    android:text="EXIT RIDE" />
 
 
             </LinearLayout>

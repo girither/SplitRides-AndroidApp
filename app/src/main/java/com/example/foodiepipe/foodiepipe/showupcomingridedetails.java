@@ -242,9 +242,9 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 SharedPreferenceManager.setPreference("startrides",true);
-                Toast.makeText(showupcomingridedetails.this,
-                        "Ride has started", Toast.LENGTH_LONG).show();
+                SharedPreferenceManager.setPreference("started_jrride", SharedPreferenceManager.getPreference("currentride_rideid"));
                 startlocationservice();
+                new startridetask(SharedPreferenceManager.getPreference("started_jrride")).execute();
             }
         }
         else if(requestCode == PICK_CABPROVIDER_RESULT_FROMESIMATE){
@@ -308,7 +308,12 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
             pDialog.dismiss();
             if(success != null){
-
+                startride.setVisibility(View.GONE);
+                exitride.setVisibility(View.GONE);
+            }
+            else{
+                Toast.makeText(showupcomingridedetails.this,
+                        "Something went wrong while sending request. Please try again", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -486,15 +491,17 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         List<customer> customerlistdata = new ArrayList<customer>();
                         for (int i = 0; i < customerdata.length(); i++) {
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
-                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("latLng"),customerindividualdata.getString("profileId"));
+                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),"");
                             customerlistdata.add(customeradapterdata);
                         }
-                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"));
+                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"),ride.getString("status"));
                     }
                     else if(jObj.has("ride")) {
                         JSONObject ride = jObj.getJSONObject("ride");
                         JSONObject customerdata = jObj.getJSONObject("owner");
-                        customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"), ride.getString("phoneNumber"), ride.getString("latlong"),customerdata.getString("profileId"));
+                        StringBuilder latlongbuilder = new StringBuilder();
+                        latlongbuilder.append(ride.getString("pickUpLat")).append(",").append(ride.getString("pickUpLng"));
+                        customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"), ride.getString("phoneNumber"),latlongbuilder.toString() ,"");
                         List<customer> customerlistdata = new ArrayList<customer>();
                         customerlistdata.add(customeradapterdata);
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"ride",ride.getString("rideId"));
@@ -543,6 +550,13 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     startride.setVisibility(View.GONE);
                     endride.setVisibility(View.GONE);
                     estimateride.setVisibility(View.GONE);
+                    exitride.setVisibility(View.GONE);
+                }
+                if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("notstarted")){
+                    endride.setVisibility(View.GONE);
+                }
+                else if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("started")){
+                    startride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
                 }
                 todayortomorrowheader.setText(todayortomorrow);

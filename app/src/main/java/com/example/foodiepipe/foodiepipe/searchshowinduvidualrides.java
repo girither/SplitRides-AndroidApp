@@ -289,7 +289,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         }
                         for(int i=0; i<customerdata.length(); i++){
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
-                            customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),customerindividualdata.getString("phoneNumber"),customerindividualdata.getString("latLng"),customerindividualdata.getString("profileId"));
+                            customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),customerindividualdata.getString("phoneNumber"),customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("profileId"));
                             customerlistdata.add(customeradapterdata);
                         }
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata,ride.getString("rideId"));
@@ -297,7 +297,9 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                     else if(jObj.has("ride")){
                         JSONObject ride = jObj.getJSONObject("ride");
                         JSONObject customerdata = jObj.getJSONObject("owner");
-                        customer customeradapterdata = new customer(customerdata.getString("name"),customerdata.getString("email"),ride.getString("phoneNumber"),ride.getString("latlong"),customerdata.getString("profileId"));
+                        StringBuilder latlongbuilder = new StringBuilder();
+                        latlongbuilder.append(ride.getString("pickUpLat")).append(",").append(ride.getString("pickUpLng"));
+                        customer customeradapterdata = new customer(customerdata.getString("name"),customerdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString(),customerdata.getString("profileId"));
                         List<customer> customerlistdata = new ArrayList<customer>();
                         if(ride.has("requestMatrix")) {
                             if(!ride.isNull("requestMatrix")) {

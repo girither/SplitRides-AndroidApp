@@ -79,7 +79,10 @@ public class GcmIntentService extends IntentService {
     // This is just one simple example of what you might choose to do with
     // a GCM message.
     private void sendNotification(Bundle msg) {
-        String data = msg.getString("NotificationType");
+        String data ="";
+        if(msg != null) {
+           data = msg.getString("NotificationType");
+        }
             if(data.equals("StartRideDistanceTravelled")){
                 new startridewithdistancetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
                 SharedPreferenceManager.setPreference("locationstringdata","");

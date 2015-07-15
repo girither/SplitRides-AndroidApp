@@ -9,6 +9,15 @@ public class ridedata {
     String destination;
     String source;
     String date;
+    String ridestatus;
+
+    public String getRidestatus() {
+        return ridestatus;
+    }
+
+    public void setRidestatus(String ridestatus) {
+        this.ridestatus = ridestatus;
+    }
 
     public List<customer> getCustomerlistdata() {
         return customerlistdata;
@@ -107,6 +116,15 @@ public class ridedata {
         this.customerlistdata = customerlistdata;
         this.rideId = rideId;
         this.status = status;
+    }
+    public ridedata(String source,String destination,String date,List<customer> customerlistdata,String rideflag,String rideId,String rideStatus) {
+        this.source = source;
+        this.destination = destination;
+        this.date = date;
+        this.customerlistdata = customerlistdata;
+        this.rideFlag = rideflag;
+        this.rideId = rideId;
+        this.ridestatus = rideStatus;
     }
     public ridedata(String source,String destination,String date,List<customer> customerlistdata,String rideflag,String rideId) {
         this.source = source;
