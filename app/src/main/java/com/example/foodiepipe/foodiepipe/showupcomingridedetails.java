@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.widget.ProfilePictureView;
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
 
@@ -209,6 +210,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             ((TextView) convertView.findViewById(R.id.rideowneremailvalue)).setText(mSamples.get(position).getCustomerEmail());
             ((TextView) convertView.findViewById(R.id.rideownernamevalue)).setText(mSamples.get(position).getCustomerName());
             ((TextView) convertView.findViewById(R.id.rideownerphonenumbervalue)).setText(mSamples.get(position).getCustomerPhoneNumber());
+            ((ProfilePictureView)convertView.findViewById(R.id.profilePicture)).setProfileId(mSamples.get(position).getProfileId());
             final String latlongposition = mSamples.get(position).getLatLong();
             ((Button)convertView.findViewById(R.id.see_pickup_point)).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -491,7 +493,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         List<customer> customerlistdata = new ArrayList<customer>();
                         for (int i = 0; i < customerdata.length(); i++) {
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
-                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),"");
+                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("profileId"));
                             customerlistdata.add(customeradapterdata);
                         }
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"),ride.getString("status"));
@@ -501,7 +503,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         JSONObject customerdata = jObj.getJSONObject("owner");
                         StringBuilder latlongbuilder = new StringBuilder();
                         latlongbuilder.append(ride.getString("pickUpLat")).append(",").append(ride.getString("pickUpLng"));
-                        customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"), ride.getString("phoneNumber"),latlongbuilder.toString() ,"");
+                        customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"), ride.getString("phoneNumber"),latlongbuilder.toString() ,customerdata.getString("profileId"));
                         List<customer> customerlistdata = new ArrayList<customer>();
                         customerlistdata.add(customeradapterdata);
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"ride",ride.getString("rideId"));

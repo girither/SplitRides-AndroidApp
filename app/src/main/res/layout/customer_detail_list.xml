@@ -16,14 +16,23 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
             <com.facebook.login.widget.ProfilePictureView
                 android:id="@+id/profilePicture"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="5dp"
-                android:layout_marginLeft="120dp"
                 facebook:preset_size="small"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -31,10 +40,10 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Name :"
@@ -42,9 +51,9 @@
                     android:id="@+id/rideownername" />
 
                 <TextView
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginLeft="2dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
@@ -57,10 +66,10 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Email  :"
@@ -68,9 +77,9 @@
                     android:id="@+id/rideowneremail" />
 
                 <TextView
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginLeft="2dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
@@ -84,10 +93,10 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Phone Number  :"
@@ -95,14 +104,18 @@
                     android:id="@+id/rideownerphonenumber" />
 
                 <TextView
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginLeft="2dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/rideownerphonenumbervalue" />
             </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
             <Button
                 android:id="@+id/see_pickup_point"
                 android:background="@drawable/border_edittextbox"
@@ -110,8 +123,19 @@
                 android:layout_marginLeft="10dp"
                 android:textColor="#000000"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:text="PICKUPPOINT"
+                />
+
+            <Button
+                android:id="@+id/see_drop_point"
+                android:background="#E80000"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="DROPPOINT"
                 />
 
         </LinearLayout>

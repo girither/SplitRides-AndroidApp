@@ -352,12 +352,12 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         SharedPreferenceManager.setApplicationContext(getApplicationContext());
         onregister();
-        if(SharedPreferenceManager.getIntPreference("source_search_radius") == 0) {
+        /*if(SharedPreferenceManager.getIntPreference("source_search_radius") == 0) {
             SharedPreferenceManager.setPreference("source_search_radius", 5);
         }
         if(SharedPreferenceManager.getIntPreference("destination_search_radius") == 0){
             SharedPreferenceManager.setPreference("destination_search_radius",5);
-        }
+        }*/
         SharedPreferenceManager.setPreference("notificationcount",0);
     FacebookSdk.sdkInitialize(this.getApplicationContext());
 
@@ -624,14 +624,10 @@ public class MainActivity extends ActionBarActivity
                         .commitAllowingStateLoss();
                 break;
             case 3:
-                fragmentManager.beginTransaction().replace(R.id.containernavigation,new settingsfragment())
-                .commitAllowingStateLoss();
-                break;
-            case 4:
                 fragmentManager.beginTransaction().replace(R.id.containernavigation,new wallet())
                         .commitAllowingStateLoss();
                 break;
-            case 5:
+            case 4:
                 fragmentManager.beginTransaction().replace(R.id.containernavigation,new selfdrive())
                         .commitAllowingStateLoss();
                 break;
@@ -946,6 +942,7 @@ public class MainActivity extends ActionBarActivity
                 params.put("token", accessToken);
                 params.put("gender",mgender);
                 params.put("gcmId",mgcmid);
+                params.put("profileId",mProfileId);
 
 
 
