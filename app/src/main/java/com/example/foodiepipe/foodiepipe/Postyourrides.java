@@ -39,11 +39,12 @@ import com.google.maps.android.SphericalUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
-
+import java.util.Date;
+import java.util.List;
 
 
 public class Postyourrides extends ActionBarActivity
@@ -78,6 +79,7 @@ public class Postyourrides extends ActionBarActivity
     JSONParser jsonParser = new JSONParser();
     private String currentDate;
     LatLng latlongcordsource,latlongcorddestination;
+    private String hiddenRideID;
 
     private double sourcelat,sourcelong,destinationlat,destinationlong;
     //private TextView mPlaceDetailsText;
@@ -153,6 +155,18 @@ public class Postyourrides extends ActionBarActivity
 
         mAutocompleteView.setAdapter(mAdapter);
         mAutocompleteView_destination.setAdapter(mAdapter);
+
+        //After creation
+        if(getIntent() != null && getIntent().getExtras() != null) {
+            String activityName = getIntent().getExtras().getString("activityName");
+            if(activityName != null && activityName.equals("editRide")) {
+                String rideId = getIntent().getExtras().getString("editRideId");
+
+                GetRideDetailTask task = new GetRideDetailTask(rideId);
+                task.execute();
+                ((Button)findViewById(R.id.post_ride_button)).setText("EDIT YOUR RIDE");
+            }
+        }
     }
 
     /**
@@ -524,7 +538,7 @@ public class Postyourrides extends ActionBarActivity
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mvalidateplacesTask = new validateplacesapi(source,destination,phonenumber,currentDate,timeclock,Double.toString(sourcelat),Double.toString(sourcelong),Double.toString(destinationlat),Double.toString(destinationlong),latlong,latlong_droppoint);
+            mvalidateplacesTask = new validateplacesapi(hiddenRideID,source,destination,phonenumber,currentDate,timeclock,Double.toString(sourcelat),Double.toString(sourcelong),Double.toString(destinationlat),Double.toString(destinationlong),latlong,latlong_droppoint);
             mvalidateplacesTask.execute((Void) null);
 
         }
@@ -544,6 +558,7 @@ public class Postyourrides extends ActionBarActivity
     }
     public class Postyouridetask extends AsyncTask<Void, Void, Boolean> {
 
+        private final String mRideId;
         private final String mSource;
         private final String mDestination;
         private final String mPhonenumber;
@@ -556,7 +571,8 @@ public class Postyourrides extends ActionBarActivity
         private final String mpickuppoint;
         private final String mdroppoint;
 
-        Postyouridetask(String source, String destination,String phonenumber,String date,String time,String pickuppoint,String droppoint,String sourcelat,String sourcelong,String destinationlat,String destinationlong) {
+        Postyouridetask(String rideId, String source, String destination,String phonenumber,String date,String time,String pickuppoint,String droppoint,String sourcelat,String sourcelong,String destinationlat,String destinationlong) {
+            mRideId = rideId;
             mSource = source;
             mDestination = destination;
             mPhonenumber = phonenumber;
@@ -569,6 +585,7 @@ public class Postyourrides extends ActionBarActivity
             mpickuppoint = pickuppoint;
             mdroppoint = droppoint;
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -580,7 +597,7 @@ public class Postyourrides extends ActionBarActivity
         }
         @Override
         protected Boolean doInBackground(Void... param) {
-
+            String apiAction = null;
             try {
                 JSONObject params = new JSONObject();
                 params.put("source", mSource);
@@ -597,7 +614,16 @@ public class Postyourrides extends ActionBarActivity
 
                 Log.d("token data ", SharedPreferenceManager.getPreference("auth_token"));
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/postRide", "POST",
+                String json = null;
+
+                if(mRideId != null && !mRideId.trim().equals("")) {
+                    params.put("rideId", mRideId);
+                    apiAction = "updateRide";
+                } else {
+                    apiAction = "postRide";
+                }
+
+                json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/" + apiAction, "POST",
                         params);
 
                 // Check your log cat for JSON reponse
@@ -621,15 +647,20 @@ public class Postyourrides extends ActionBarActivity
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             pDialog.dismiss();
-
+            String userMessage = null;
             if (success) {
                 finish();
-                Toast.makeText(Postyourrides.this,
-                        "Your Ride was posted succesfully", Toast.LENGTH_LONG).show();
+                if(mRideId != null && !mRideId.trim().equals("")) {
+                    userMessage = "Your Ride was updated succesfully";
+                } else {
+                    userMessage = "Your Ride was posted succesfully";
+                }
             } else {
-                Toast.makeText(Postyourrides.this,
-                        "Something went wrong while posting your ride. Please try again", Toast.LENGTH_LONG).show();
+                userMessage = "Something went wrong while posting your ride. Please try again";
             }
+
+            Toast.makeText(Postyourrides.this,
+                    userMessage, Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -639,6 +670,7 @@ public class Postyourrides extends ActionBarActivity
     }
     public class validateplacesapi extends AsyncTask<Void, Void, Boolean> {
 
+        private final String mRideId;
         private final String mSource;
         private final String mDestination;
         private final String mPhonenumber;
@@ -653,7 +685,8 @@ public class Postyourrides extends ActionBarActivity
 
         String validityflag;
 
-        validateplacesapi(String source, String destination,String phonenumber,String date,String time,String sourcelat,String sourcelong,String destinationlat,String destinationlong,String pickuppoint,String droppoint) {
+        validateplacesapi(String rideId, String source, String destination,String phonenumber,String date,String time,String sourcelat,String sourcelong,String destinationlat,String destinationlong,String pickuppoint,String droppoint) {
+            mRideId = rideId;
             mSource = source;
             mDestination = destination;
             mPhonenumber = phonenumber;
@@ -667,6 +700,7 @@ public class Postyourrides extends ActionBarActivity
             mdroppoint = droppoint;
 
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -704,7 +738,7 @@ public class Postyourrides extends ActionBarActivity
             pDialog.dismiss();
             View focusView = null;
             if (success) {
-                mAuthTask = new Postyouridetask(mSource,mDestination,mPhonenumber,mDate,mTime,mpickuppoint,mdroppoint,msourcelat,msourcelong,mdestinationlat,mdestinationlong);
+                mAuthTask = new Postyouridetask(mRideId,mSource,mDestination,mPhonenumber,mDate,mTime,mpickuppoint,mdroppoint,msourcelat,msourcelong,mdestinationlat,mdestinationlong);
                 mAuthTask.execute((Void) null);
             } else {
                 if(validityflag.equals("source")){
@@ -721,6 +755,84 @@ public class Postyourrides extends ActionBarActivity
         @Override
         protected void onCancelled() {
             mvalidateplacesTask = null;
+        }
+    }
+
+
+    private class GetRideDetailTask extends AsyncTask<Void, Void, ridedata> {
+        private String rideId = null;
+
+        GetRideDetailTask(String rideId) {
+            this.rideId = rideId;
+        }
+
+        @Override
+        protected ridedata doInBackground(Void ...param) {
+            ridedata rideDetails = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("rideId", this.rideId);
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRideDetails", "POST",
+                        params);
+
+                JSONObject responseJSON = new JSONObject(json);
+
+                if(responseJSON.has("ride")) {
+                    JSONObject ride = responseJSON.getJSONObject("ride");
+                    JSONObject customerdata = responseJSON.getJSONObject("owner");
+                    StringBuilder customerLatLongString = new StringBuilder();
+                    customerLatLongString.append(ride.getString("pickUpLat")).append(",").append(ride.getString("pickUpLng"));
+
+                    StringBuilder customerDropLatLong = new StringBuilder();
+                    customerDropLatLong.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
+                    customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"),
+                                                                ride.getString("phoneNumber"), customerLatLongString.toString(),
+                                                                customerDropLatLong.toString(), "");
+                    List<customer> customerlistdata = new ArrayList<customer>();
+                    customerlistdata.add(customeradapterdata);
+                    rideDetails = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"ride",ride.getString("rideId"));
+                }
+            } catch (JSONException je) {
+                je.printStackTrace();
+            }
+
+            return rideDetails;
+        }
+
+        @Override
+        protected void onPostExecute(final ridedata ridedataobject) {
+            Date rideDate = null, currentDate = new Date();
+            String dayDate = null;
+
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                rideDate = sdf.parse(ridedataobject.getDate());
+
+                if(rideDate.getDate() == currentDate.getDate()) {
+                    dayDate = "Today";
+                } else if(rideDate.after(currentDate)) {
+                    dayDate = "Tomorrow";
+                }
+            } catch (ParseException pe) {
+                pe.printStackTrace();
+            }
+
+            mAutocompleteView.setText(ridedataobject.getSource());
+            mAutocompleteView_destination.setText(ridedataobject.getDestination());
+            mPhonenumber.setText(ridedataobject.getCustomerlistdata().get(0).getCustomerPhoneNumber());
+            settimetextView.setText(rideDate.getHours() + ":" + rideDate.getMinutes() + ":" + rideDate.getSeconds());
+            setlatlongtextView.setText(ridedataobject.getCustomerlistdata().get(0).getLatLong());
+            setlatlongtextView_droppoint.setText(ridedataobject.getCustomerlistdata().get(0).getDropLatlong());
+            hiddenRideID = ridedataobject.getRideId();
+
+            Spinner spinner = (Spinner) findViewById(R.id.spinner);
+            if(dayDate.equals("Tomorrow")) {
+                spinner.setSelection(1);
+            } else {
+                spinner.setSelection(0);
+            }
         }
     }
 

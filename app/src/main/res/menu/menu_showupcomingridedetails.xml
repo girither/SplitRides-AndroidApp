@@ -2,5 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.foodiepipe.foodiepipe.showupcomingridedetails">
-
+    <item android:id="@+id/action_edit" android:title="Edit"
+        android:icon="@drawable/ic_edit" app:showAsAction="ifRoom" />
 </menu>

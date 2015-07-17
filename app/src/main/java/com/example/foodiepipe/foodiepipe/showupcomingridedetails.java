@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -85,6 +86,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         endride.setOnClickListener(this);
         estimateride.setOnClickListener(this);
         exitride.setOnClickListener(this);
+
         Bundle extras = getIntent().getExtras();
         String currentrideid = extras.getString("rideId");
         String rideId = (currentrideid!= null && !currentrideid.isEmpty())?extras.getString("rideId"):SharedPreferenceManager.getPreference("currentride_rideid");
@@ -271,7 +273,25 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_searchshowinduvidualrides, menu);
+        getMenuInflater().inflate(R.menu.menu_showupcomingridedetails, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Integer itemId = item.getItemId();
+        switch (itemId) {
+            case R.id.action_edit:
+                Intent editYourRide = new Intent(showupcomingridedetails.this, Postyourrides.class);
+                Bundle editRideBundle = new Bundle();
+                editRideBundle.putString("activityName", "editRide");
+                editRideBundle.putString("editRideId", getIntent().getExtras().getString("rideId"));
+                editYourRide.putExtras(editRideBundle);
+                startActivity(editYourRide);
+                break;
+            default:
+                break;
+        }
         return true;
     }
 
@@ -502,7 +522,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
-                    if(jObj.has("jride")) {
+                    if (jObj.has("jride")) {
                         JSONObject ride = jObj.getJSONObject("jride");
                         JSONArray customerdata = jObj.getJSONArray("builtDetails");
                         List<customer> customerlistdata = new ArrayList<customer>();
