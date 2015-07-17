@@ -28,9 +28,9 @@ public class cabproviderselction extends ActionBarActivity implements AdapterVie
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         ArrayList<String> arrayStrings = new ArrayList<String>();
-        arrayStrings.add("Ola MINI");
-        arrayStrings.add("Ola SEDAN");
-        arrayStrings.add("Ola PRIME");
+        //arrayStrings.add("Ola MINI");
+        //arrayStrings.add("Ola SEDAN");
+        //arrayStrings.add("Ola PRIME");
         arrayStrings.add("uberX");
         arrayStrings.add("uberGO");
         arrayStrings.add("UberBLACK");

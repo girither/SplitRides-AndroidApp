@@ -391,7 +391,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         }
     }
 
-    public class estimateridetask extends AsyncTask<Void, Void,String > {
+    public class estimateridetask extends AsyncTask<Void, Void,ratecardobject > {
 
         private final String jrId;
         private final String mestimateBeforeJoining;
@@ -415,8 +415,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             pDialog.show();
         }
         @Override
-        protected String doInBackground(Void... param) {
-            String price = null;
+        protected ratecardobject doInBackground(Void... param) {
+            ratecardobject data = null;
 
             try {
                 JSONObject params = new JSONObject();
@@ -431,20 +431,21 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
-                    price = jObj.getString("price");
+                    JSONObject estimate = jObj.getJSONObject("estimate");
+                    data = new ratecardobject(estimate.getString("estimate"),estimate.getString("distance"),estimate.getString("durationInMinutes"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            return price;
+            return data;
         }
 
         @Override
-        protected void onPostExecute(final String price) {
+        protected void onPostExecute(final ratecardobject data) {
             pDialog.dismiss();
-            if(price != null){
-                DialogFragment rateFragment = new ratecardfragment(price);
+            if(data != null){
+                DialogFragment rateFragment = new ratecardfragment(data);
                 rateFragment.show(getFragmentManager(), "ratepicker");
             }
         }

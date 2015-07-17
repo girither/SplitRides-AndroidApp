@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -15,9 +14,9 @@ import android.widget.TextView;
  */
 public class ratecardfragment extends DialogFragment {
 
-    String mRateText;
+    ratecardobject mRateText;
 
-    public ratecardfragment(String textView) {
+    public ratecardfragment(ratecardobject textView) {
         mRateText = textView;
     }
 
@@ -33,8 +32,12 @@ public class ratecardfragment extends DialogFragment {
         View dialogView = inflater.inflate(R.layout.fragment_ratefragment, null);
 
         builder.setView(dialogView);
-        TextView rateText = (TextView)dialogView.findViewById(R.id.textView3);
-        rateText.setText(Html.fromHtml("<big><b>"+"&#8377;"+ " " +mRateText+"</b></big>"));
+        TextView rateText = (TextView)dialogView.findViewById(R.id.estimatecost_value);
+        rateText.setText(mRateText.getPrice());
+        TextView ratedistance = (TextView)dialogView.findViewById(R.id.distance_value);
+        ratedistance.setText(mRateText.getDistance());
+        TextView ratetime = (TextView)dialogView.findViewById(R.id.trip_time_value);
+        ratetime.setText(mRateText.getTime());
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
