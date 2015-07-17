@@ -27,15 +27,26 @@ public class customer {
 
     private String latLong;
 
+    public String getDropLatlong() {
+        return dropLatlong;
+    }
+
+    public void setDropLatlong(String dropLatlong) {
+        this.dropLatlong = dropLatlong;
+    }
+
+    private String dropLatlong;
+
     public String getCustomerPhoneNumber() {
         return customerPhoneNumber;
     }
 
-    public customer(String customerName, String customerEmail, String customerPhoneNumber,String latLong,String profileId) {
+    public customer(String customerName, String customerEmail, String customerPhoneNumber,String latLong,String droplatlong,String profileId) {
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.customerPhoneNumber = customerPhoneNumber;
         this.latLong = latLong;
+        this.dropLatlong = droplatlong;
         this.profileId = profileId;
     }
 

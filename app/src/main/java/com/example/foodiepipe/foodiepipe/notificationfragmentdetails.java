@@ -189,7 +189,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                     JSONObject ride = jObj.getJSONObject("requesterRide");
                     JSONObject customerindividualdata = jObj.getJSONObject("requesterCustomerProfile");
                     List<customer> customerlistdata = new ArrayList<customer>();
-                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),ride.getString("latlong"),customerindividualdata.getString("profileId"));
+                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),ride.getString("latlong"),"",customerindividualdata.getString("profileId"));
                     customerlistdata.add(customeradapterdata);
                     info = new notificationdata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"));
 
