@@ -789,7 +789,7 @@ public class Postyourrides extends ActionBarActivity
                     customerDropLatLong.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
                     customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"),
                                                                 ride.getString("phoneNumber"), customerLatLongString.toString(),
-                                                                customerDropLatLong.toString(), "");
+                                                                customerDropLatLong.toString(),customerdata.getString("profileId"));
                     List<customer> customerlistdata = new ArrayList<customer>();
                     customerlistdata.add(customeradapterdata);
                     rideDetails = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"ride",ride.getString("rideId"));
