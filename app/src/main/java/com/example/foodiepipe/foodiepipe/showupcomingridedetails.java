@@ -615,6 +615,9 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 timeofday.setText(timeofrides);
                 if(ridedataobject.getRideFlag().equals("ride"))
                 {
+                    startride.setVisibility(View.GONE);
+                    endride.setVisibility(View.GONE);
+                    estimateride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
                 }
                 customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
