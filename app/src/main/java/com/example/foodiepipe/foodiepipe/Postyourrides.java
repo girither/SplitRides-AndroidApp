@@ -296,6 +296,17 @@ public class Postyourrides extends ActionBarActivity
         }
     };
 
+    public LatLng convertStringtoLatlong(String locationdata)
+    {
+        int index = locationdata.indexOf(",");
+        String lat = locationdata.substring(0, index).trim();
+        String lng = locationdata.substring(index+1).trim();
+        double lati = Double.parseDouble(lat);
+        double lngi = Double.parseDouble(lng);
+        LatLng newlatlong = new LatLng(lati, lngi);
+        return newlatlong;
+    }
+
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback_destination
             = new ResultCallback<PlaceBuffer>() {
         @Override
@@ -825,6 +836,8 @@ public class Postyourrides extends ActionBarActivity
             settimetextView.setText(rideDate.getHours() + ":" + rideDate.getMinutes() + ":" + rideDate.getSeconds());
             setlatlongtextView.setText(ridedataobject.getCustomerlistdata().get(0).getLatLong());
             setlatlongtextView_droppoint.setText(ridedataobject.getCustomerlistdata().get(0).getDropLatlong());
+            latlongcordsource = convertStringtoLatlong(ridedataobject.getCustomerlistdata().get(0).getLatLong());
+            latlongcorddestination = convertStringtoLatlong(ridedataobject.getCustomerlistdata().get(0).getDropLatlong());
             hiddenRideID = ridedataobject.getRideId();
 
             Spinner spinner = (Spinner) findViewById(R.id.spinner);

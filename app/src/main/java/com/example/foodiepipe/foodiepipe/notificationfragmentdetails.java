@@ -188,8 +188,12 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 if(jObj != null){
                     JSONObject ride = jObj.getJSONObject("requesterRide");
                     JSONObject customerindividualdata = jObj.getJSONObject("requesterCustomerProfile");
+                    StringBuilder latlongbuilder = new StringBuilder();
+                    latlongbuilder.append(ride.getString("pickUpLat")).append(",").append(ride.getString("pickUpLng"));
+                    StringBuilder latlongbuilder_droppoint = new StringBuilder();
+                    latlongbuilder_droppoint.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
                     List<customer> customerlistdata = new ArrayList<customer>();
-                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),ride.getString("latlong"),"",customerindividualdata.getString("profileId"));
+                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerindividualdata.getString("profileId"));
                     customerlistdata.add(customeradapterdata);
                     info = new notificationdata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"));
 

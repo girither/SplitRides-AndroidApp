@@ -57,6 +57,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     static final int PICK_CABPROVIDER_RESULT_FROMESIMATE = 2;
     private PendingIntent pendingIntent;
     Intent startlocationservice;
+    MenuItem hideeditmenuitem;
 
 
     @Override
@@ -274,6 +275,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_showupcomingridedetails, menu);
+        hideeditmenuitem = menu.findItem(R.id.action_edit);
         return true;
     }
 
@@ -510,6 +512,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         @Override
         protected ridedata doInBackground(Void... param) {
             ridedata info = null;
+            String status = null;
 
             try {
                 JSONObject params = new JSONObject();
@@ -526,12 +529,21 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         JSONObject ride = jObj.getJSONObject("jride");
                         JSONArray customerdata = jObj.getJSONArray("builtDetails");
                         List<customer> customerlistdata = new ArrayList<customer>();
+                        if(ride.has("statusMatrix")) {
+                            if(!ride.isNull("statusMatrix")) {
+                                JSONObject statusmatrix = ride.getJSONObject("statusMatrix");
+                                if (statusmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
+                                    JSONObject requestobject = statusmatrix.getJSONObject(SharedPreferenceManager.getPreference("customerNumber"));
+                                    status = requestobject.getString("status");
+                                }
+                            }
+                        }
                         for (int i = 0; i < customerdata.length(); i++) {
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
                             customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.getString("profileId"));
                             customerlistdata.add(customeradapterdata);
                         }
-                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"),ride.getString("status"));
+                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"),status);
                     }
                     else if(jObj.has("ride")) {
                         JSONObject ride = jObj.getJSONObject("ride");
@@ -590,6 +602,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     endride.setVisibility(View.GONE);
                     estimateride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
+                    hideeditmenuitem.setVisible(false);
                 }
                 if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("notstarted")){
                     endride.setVisibility(View.GONE);
