@@ -154,52 +154,57 @@
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray" />
 
-
-                <Button
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="20dp"
-                    android:background="#585858"
-                    android:textColor="#FFFFFF"
+                <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:id="@+id/estimeateride"
-                    android:text="ESTIMATE RIDE" />
-
-                <Button
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="20dp"
-                    android:background="#669966"
-                    android:textColor="#FFFFFF"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:id="@+id/startride"
-                    android:text="START RIDE" />
-
-                <Button
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
-                    android:background="#F87217"
-                    android:textColor="#FFFFFF"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:id="@+id/endride"
-                    android:text="END RIDE" />
+                    android:layout_marginLeft= "5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal">
 
-                <Button
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="#F87217"
-                    android:textColor="#FFFFFF"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:id="@+id/exitride"
-                    android:text="EXIT RIDE" />
+                    <Button
+                        android:layout_weight="1"
+                        android:id="@+id/estimeateride"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#FFF8DC"
+                        android:drawablePadding="6dp"
+                        android:gravity="center"
+                        android:drawableLeft="@drawable/estimate_ride"
+                        android:text="ESTIMATE\nRIDE" />
+
+                    <Button
+                        android:layout_weight="1"
+                        android:id="@+id/startride"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="6dp"
+                        android:background="#FFF8DC"
+                        android:gravity="center"
+                        android:drawableLeft="@drawable/start_ride_icon"
+                        android:text="START\nRIDE" />
+                    <Button
+                        android:layout_weight="1"
+                        android:id="@+id/endride"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="6dp"
+                        android:background="#FFF8DC"
+                        android:gravity="center"
+                        android:drawableLeft="@drawable/stop_ride"
+                        android:text="END\nRIDE" />
+                    <Button
+                        android:layout_weight="1"
+                        android:id="@+id/exitride"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="6dp"
+                        android:background="#FFF8DC"
+                        android:gravity="center"
+                        android:drawableLeft="@drawable/exit_ride"
+                        android:text="EXIT\nRIDE" />
+                </TableRow>
 
 
             </LinearLayout>

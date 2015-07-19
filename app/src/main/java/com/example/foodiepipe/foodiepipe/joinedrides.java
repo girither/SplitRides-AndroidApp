@@ -71,6 +71,11 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     private class SampleAdapter extends BaseAdapter {
         private List<ridedata> mSamples;
         public SampleAdapter(List<ridedata> myDataset) {
