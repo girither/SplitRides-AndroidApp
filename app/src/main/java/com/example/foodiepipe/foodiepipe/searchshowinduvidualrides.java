@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -45,7 +44,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
     CustomerAdapter customerlistadapter;
     private ProgressDialog pDialog;
     static final int PICK_CABPROVIDER_RESULT_FROMESIMATE = 2;
-    GridView mGridView;
+    ExpandableHeightGridView mGridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +63,8 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         rideownerphonevalue = (TextView)findViewById(R.id.rideownerphonenumbervalue);
         bar = (ProgressBar)findViewById(R.id.searchindividualrides_progress);
         detailform = (LinearLayout)findViewById(R.id.ridedatashow);
-        mGridView = (GridView)findViewById(android.R.id.list);
+        mGridView = (ExpandableHeightGridView)findViewById(R.id.customer_list);
+        mGridView.setExpanded(true);
         sendrequesttojoinride = (Button)findViewById(R.id.send_request_joinride);
         estimaterideindividual = (Button)findViewById(R.id.estimate_ride_searchindividual);
         estimaterideindividual.setOnClickListener(this);
@@ -366,6 +366,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                 }
                 customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
                 mGridView.setAdapter(customerlistadapter);
+                customerlistadapter.notifyDataSetChanged();
             }
         }
 

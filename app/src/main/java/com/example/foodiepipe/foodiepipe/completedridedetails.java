@@ -1,13 +1,39 @@
 package com.example.foodiepipe.foodiepipe;
 
-import android.support.v7.app.ActionBarActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.foodpipe.android.helper.JSONParser;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class completedridedetails extends ActionBarActivity {
 
+
+    private getindividualcompletedridetask mycompletedrideTask = null;
+    TextView base_fare,fare_distance,fare_time,total_fare,ridestart_time,rideend_time;
+    JSONParser jsonParser = new JSONParser();
+    ProgressBar bar;
+    LinearLayout detailform;
+    SplitRideAdapter splitridelistadapter;
+    GridView mGridView;
+    getindividualcompletedridetask individualcompletedridestask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,6 +41,20 @@ public class completedridedetails extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        base_fare = (TextView) findViewById(R.id.base_fare_value);
+        fare_distance = (TextView)findViewById(R.id.fare_distance_value);
+        fare_time = (TextView) findViewById(R.id.fare_time_value);
+        total_fare = (TextView) findViewById(R.id.total_fare_value);
+        ridestart_time = (TextView) findViewById(R.id.ridestart_time);
+        rideend_time = (TextView) findViewById(R.id.rideend_time);
+        bar = (ProgressBar) findViewById(R.id.completedridedetails_progress);
+        detailform = (LinearLayout) findViewById(R.id.completedridedatashow);
+        mGridView = (GridView)findViewById(android.R.id.list);
+        Bundle extras = getIntent().getExtras();
+        String currentuniqueid = extras.getString("uniqueId");
+        String uniqueId = (currentuniqueid!= null && !currentuniqueid.isEmpty())?extras.getString("uniqueId"):SharedPreferenceManager.getPreference("currentride_uniqueid");
+        SharedPreferenceManager.setPreference("currentride_uniqueid", uniqueId);
+        new getindividualcompletedridetask(uniqueId).execute();
     }
 
     @Override
@@ -38,4 +78,122 @@ public class completedridedetails extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private class SplitRideAdapter extends BaseAdapter {
+        private List<splitfaredataobject> mSamples;
+        public SplitRideAdapter(List<splitfaredataobject> myDataset) {
+            mSamples = myDataset;
+        }
+
+        @Override
+        public int getCount() {
+            return mSamples.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mSamples.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return mSamples.get(position).hashCode();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup container) {
+            String todayortomorrow;
+            if (convertView == null) {
+                convertView = getLayoutInflater().inflate(R.layout.splitfare_detail_list,
+                        container, false);
+            }
+
+            ((TextView) convertView.findViewById(R.id.fare_for_distance_value)).setText(mSamples.get(position).getFareForThisLeg());
+            ((TextView) convertView.findViewById(R.id.fare_for_time_value)).setText(mSamples.get(position).getFareForTimeSpentInThisLeg());
+            ((TextView) convertView.findViewById(R.id.partners_value)).setText(mSamples.get(position).getPartners().toString());
+            return convertView;
+        }
+    }
+
+
+    public class getindividualcompletedridetask extends AsyncTask<Void, Void, completedrideobject > {
+
+        private final String mUniqueId;
+
+        getindividualcompletedridetask(String UniqueId) {
+            mUniqueId = UniqueId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            bar.setVisibility(View.VISIBLE);
+
+        }
+        @Override
+        protected completedrideobject doInBackground(Void... param) {
+            completedrideobject info = null;
+            List<splitfaredataobject> splitrideobjectlist = new ArrayList<splitfaredataobject>();
+            String status = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("uniqueId", mUniqueId);
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getCompletedRideDetails", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    if (jObj.has("completedRides")) {
+                        JSONObject completedride = jObj.getJSONObject("completedRides");
+                        if(completedride.has("statusMatrix")) {
+                            JSONArray somematrix = jObj.getJSONArray("someMatrix");
+                            for (int i = 0; i < somematrix.length(); i++) {
+                                JSONObject splitfaredetails = somematrix.getJSONObject(i);
+                                JSONArray partnerarray = splitfaredetails.getJSONArray("partners");
+                                List<String> array = new ArrayList<String>();
+                                for (int j = 0; j < partnerarray.length(); j++) {
+                                     JSONObject partners = partnerarray.getJSONObject(j);
+                                     array.add(partners.getString("name"));
+                                }
+                                splitfaredataobject dataobject = new splitfaredataobject(splitfaredetails.getString("fareForTimeSpentInThisLeg"), array, splitfaredetails.getString("fareForThisLeg"));
+                                splitrideobjectlist.add(dataobject);
+                            }
+                        }
+                        info = new completedrideobject(completedride.getString("uniqueId"),completedride.getString("totalFare"),completedride.getString("fareForTimeSpent"),completedride.getString("fareForDistanceTravelled"),completedride.getString("baseFare"),completedride.getString("rideEndedAt"),completedride.getString("rideStartedAt"),splitrideobjectlist);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return info;
+        }
+
+        @Override
+        protected void onPostExecute(final completedrideobject completedridedataobject) {
+            bar.setVisibility(View.GONE);
+            detailform.setVisibility((completedridedataobject!=null)?View.VISIBLE:View.GONE);
+            if(completedridedataobject != null ){
+                base_fare.setText(completedridedataobject.getBaseFare());
+                fare_distance.setText(completedridedataobject.getPfareForDistanceTravelled());
+                fare_time.setText(completedridedataobject.getFareForTimeSpent());
+                total_fare.setText(completedridedataobject.getTotalFare());
+                String timeofrides_start = completedridedataobject.getRideStartedAt().split(" ")[1];
+                String timeofrides_end = completedridedataobject.getRideEndedAt().split(" ")[1];
+                ridestart_time.setText(timeofrides_start);
+                rideend_time.setText(timeofrides_end);
+                splitridelistadapter = new SplitRideAdapter(completedridedataobject.getListofsplitfare());
+                mGridView.setAdapter(splitridelistadapter);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+        }
+    }
+
 }

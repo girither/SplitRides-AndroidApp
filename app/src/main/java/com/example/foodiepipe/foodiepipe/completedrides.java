@@ -58,11 +58,10 @@ public class completedrides extends android.support.v4.app.Fragment implements A
 
     @Override
     public void onItemClick(AdapterView<?> container, View view, int position, long id) {
-        ridedata rideobj = (ridedata)mycompletedridedataadapter.getItem(position);
-        Intent getinduvidualrides = new Intent(getActivity(),completedridedetails.class);
-        getinduvidualrides.putExtra("rideId", rideobj.getRideId());
-        startActivity(getinduvidualrides);
-        getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);
+        completedrideobject completedrideobj = (completedrideobject)mycompletedridedataadapter.getItem(position);
+        Intent getinduvidualcompletedrides = new Intent(getActivity(),completedridedetails.class);
+        getinduvidualcompletedrides.putExtra("uniqueId", completedrideobj.getUniqueId());
+        startActivity(getinduvidualcompletedrides);
         getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);
     }
 
