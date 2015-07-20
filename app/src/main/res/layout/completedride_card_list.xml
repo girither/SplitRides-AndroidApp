@@ -1,0 +1,169 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <!-- The CardView needs to be wrapped to ensure spacing is applied correctly. -->
+
+    <android.support.v7.widget.CardView
+        style="@style/Widget.SampleDashboard.Card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            style="@style/Widget.SampleDashboard.Item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/day_header"
+                    style="@style/Widget.SampleDashboard.Item.MyRideTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <!--TextView
+                    android:id="@+id/content"
+                    style="@style/Widget.SampleDashboard.Item.MyRideTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="113dp"
+                    /-->
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/start_time_label"
+                    style="@style/Widget.SampleDashboard.Item.Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="START TIME"/>
+
+                <TextView
+                    android:id="@+id/start_time_value"
+                    style="@style/Widget.SampleDashboard.Item.Description"
+                    android:layout_width="match_parent"
+                    android:layout_weight="2"
+                    android:layout_marginLeft="30dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/end_time_label"
+                    style="@style/Widget.SampleDashboard.Item.Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="END TIME"/>
+
+                <TextView
+                    android:id="@+id/end_time_value"
+                    style="@style/Widget.SampleDashboard.Item.Description"
+                    android:layout_width="match_parent"
+                    android:layout_weight="2"
+                    android:layout_marginLeft="6dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/base_fare_label"
+                    style="@style/Widget.SampleDashboard.Item.Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BASE FARE:"/>
+
+                <TextView
+                    android:id="@+id/base_fare_value"
+                    style="@style/Widget.SampleDashboard.Item.Description"
+                    android:layout_width="match_parent"
+                    android:layout_weight="2"
+                    android:layout_marginLeft="6dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/fare_distance_label"
+                    style="@style/Widget.SampleDashboard.Item.Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FARE FOR DISTANCE:"/>
+
+                <TextView
+                    android:id="@+id/fare_distance_value"
+                    style="@style/Widget.SampleDashboard.Item.Description"
+                    android:layout_width="match_parent"
+                    android:layout_weight="2"
+                    android:layout_marginLeft="6dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/fare_time_label"
+                    style="@style/Widget.SampleDashboard.Item.Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FARE FOR TIME:"/>
+
+                <TextView
+                    android:id="@+id/fare_time_value"
+                    style="@style/Widget.SampleDashboard.Item.Description"
+                    android:layout_width="match_parent"
+                    android:layout_weight="2"
+                    android:layout_marginLeft="6dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/total_fare_label"
+                    style="@style/Widget.SampleDashboard.Item.MyRideTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TOTAL FARE:"/>
+
+                <TextView
+                    android:id="@+id/total_fare_value"
+                    style="@style/Widget.SampleDashboard.Item.MyRideTitle"
+                    android:layout_width="match_parent"
+                    android:layout_weight="2"
+                    android:layout_marginLeft="6dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+</FrameLayout>

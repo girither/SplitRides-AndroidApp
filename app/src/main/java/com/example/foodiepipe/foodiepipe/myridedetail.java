@@ -39,8 +39,8 @@ public class myridedetail extends Fragment {
                 allrides.class, null);
         mTabHost.addTab(mTabHost.newTabSpec("JOINED RIDES").setIndicator("JOINED RIDES "),
                 joinedrides.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("COMPLETED").setIndicator("COMPLETED"),
-                completedrides.class, null);
+        //mTabHost.addTab(mTabHost.newTabSpec("COMPLETED").setIndicator("COMPLETED"),
+          //      completedrides.class, null);
         return rootView;
 
     }

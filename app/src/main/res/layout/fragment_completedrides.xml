@@ -15,7 +15,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#F2F2F2"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="10dp"
         android:visibility="gone"
         android:id="@+id/show_completed_rides"
         android:orientation="vertical">
@@ -37,7 +37,7 @@
         android:layout_height="fill_parent"
         android:background="#F2F2F2"
         android:visibility="gone"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/noridestoshow_form"
         android:orientation="vertical">
 

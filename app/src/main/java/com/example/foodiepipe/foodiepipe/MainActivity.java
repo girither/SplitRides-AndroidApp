@@ -624,10 +624,16 @@ public class MainActivity extends ActionBarActivity
                         .commitAllowingStateLoss();
                 break;
             case 3:
-                fragmentManager.beginTransaction().replace(R.id.containernavigation,new wallet())
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.containernavigation, new completedrides())
                         .commitAllowingStateLoss();
                 break;
             case 4:
+                fragmentManager.beginTransaction().replace(R.id.containernavigation,new wallet())
+                        .commitAllowingStateLoss();
+                break;
+            case 5:
                 fragmentManager.beginTransaction().replace(R.id.containernavigation,new selfdrive())
                         .commitAllowingStateLoss();
                 break;

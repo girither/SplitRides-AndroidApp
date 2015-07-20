@@ -82,8 +82,8 @@ public class completedrides extends android.support.v4.app.Fragment implements A
     }
 
     private class SampleAdapter extends BaseAdapter {
-        private List<ridedata> mSamples;
-        public SampleAdapter(List<ridedata> myDataset) {
+        private List<completedrideobject> mSamples;
+        public SampleAdapter(List<completedrideobject> myDataset) {
             mSamples = myDataset;
         }
 
@@ -106,31 +106,47 @@ public class completedrides extends android.support.v4.app.Fragment implements A
         public View getView(int position, View convertView, ViewGroup container) {
             String todayortomorrow;
             if (convertView == null) {
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.myride_details,
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.completedride_card_list,
                         container, false);
             }
-            String datetimeOfRides = mSamples.get(position).getDate();
-            String dateOfRides = datetimeOfRides.split("T")[0];
-            String timeofrides = datetimeOfRides.split("T")[1];
+            String datetimeOfRides = mSamples.get(position).getRideStartedAt();
+            String dateOfRides = datetimeOfRides.split(" ")[0];
+            String timeofrides = datetimeOfRides.split(" ")[1];
             timeofrides = timeofrides.split(".000Z")[0];
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String currentDate = sdf.format(cal.getTime());
+            Calendar nextdaycal = Calendar.getInstance();
+            nextdaycal.add(Calendar.DATE, 1);
+            SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
+            String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
             if(currentDate.equals(dateOfRides))
             {
                 todayortomorrow = "Today        ";
             }
-            else
+            else if(tomorrowDate.equals(dateOfRides))
             {
                 todayortomorrow = "Tomorrow";
             }
+            else
+            {
+                todayortomorrow = dateOfRides;
+            }
             mSamples.get(position).setTodayortomorrow(todayortomorrow);
-            ((TextView) convertView.findViewById(android.R.id.content)).setText(timeofrides);
-            ((TextView) convertView.findViewById(android.R.id.title)).setText(todayortomorrow);
-            ((TextView) convertView.findViewById(android.R.id.text1)).setText(
-                    mSamples.get(position).getSource());
-            ((TextView) convertView.findViewById(android.R.id.text2)).setText(
-                    mSamples.get(position).getDestination());
+            ((TextView) convertView.findViewById(R.id.day_header)).setText(todayortomorrow);
+            ((TextView) convertView.findViewById(R.id.start_time_value)).setText(
+                    mSamples.get(position).getRideStartedAt());
+            ((TextView) convertView.findViewById(R.id.end_time_value)).setText(
+                    mSamples.get(position).getRideEndedAt());
+            ((TextView) convertView.findViewById(R.id.base_fare_value)).setText(
+                    mSamples.get(position).getBaseFare());
+            ((TextView) convertView.findViewById(R.id.fare_distance_value)).setText(
+                    mSamples.get(position).getPfareForDistanceTravelled());
+            ((TextView) convertView.findViewById(R.id.fare_time_value)).setText(
+                    mSamples.get(position).getFareForTimeSpent());
+            ((TextView) convertView.findViewById(R.id.total_fare_value)).setText(
+                    mSamples.get(position).getTotalFare());
+
             return convertView;
         }
     }
@@ -170,7 +186,7 @@ public class completedrides extends android.support.v4.app.Fragment implements A
         }
     }
 
-    public class getcompletedridetask extends AsyncTask<Void, Void, List<ridedata>> {
+    public class getcompletedridetask extends AsyncTask<Void, Void, List<completedrideobject>> {
 
         @Override
         protected void onPreExecute() {
@@ -179,8 +195,8 @@ public class completedrides extends android.support.v4.app.Fragment implements A
 
         }
         @Override
-        protected List<ridedata> doInBackground(Void... param) {
-            List<ridedata> ridedataArray = new ArrayList<ridedata>();
+        protected List<completedrideobject> doInBackground(Void... param) {
+            List<completedrideobject> completedridedataArray = new ArrayList<completedrideobject>();
             // Building Parameters
             /*List<NameValuePair> params = new ArrayList<NameValuePair>();
 
@@ -200,11 +216,11 @@ public class completedrides extends android.support.v4.app.Fragment implements A
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
-                    JSONArray rides = jObj.getJSONArray("rides");
-                    for(int i=0; i<rides.length(); i++){
-                        JSONObject rideindividualdata = rides.getJSONObject(i);
-                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"));
-                        ridedataArray.add(info);
+                    JSONArray completedrides = jObj.getJSONArray("completedRides");
+                    for(int i=0; i<completedrides.length(); i++){
+                        JSONObject completedrideindividualdata = completedrides.getJSONObject(i);
+                        completedrideobject info = new completedrideobject(completedrideindividualdata.getString("uniqueId"),completedrideindividualdata.getString("totalFare"),completedrideindividualdata.getString("fareForTimeSpent"),completedrideindividualdata.getString("fareForDistanceTravelled"),completedrideindividualdata.getString("baseFare"),completedrideindividualdata.getString("rideEndedAt"),completedrideindividualdata.getString("rideStartedAt"));
+                        completedridedataArray.add(info);
                     }
                 }
 
@@ -212,11 +228,11 @@ public class completedrides extends android.support.v4.app.Fragment implements A
                 e.printStackTrace();
             }
 
-            return ridedataArray;
+            return completedridedataArray;
         }
 
         @Override
-        protected void onPostExecute(final List<ridedata> ridedataArray) {
+        protected void onPostExecute(final List<completedrideobject> ridedataArray) {
             mcompletedrideTask = null;
             bar.setVisibility(View.GONE);
             completedridesform.setVisibility(!ridedataArray.isEmpty()?View.VISIBLE:View.GONE);
