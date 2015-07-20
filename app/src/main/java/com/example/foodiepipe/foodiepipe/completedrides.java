@@ -109,10 +109,11 @@ public class completedrides extends android.support.v4.app.Fragment implements A
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.completedride_card_list,
                         container, false);
             }
-            String datetimeOfRides = mSamples.get(position).getRideStartedAt();
-            String dateOfRides = datetimeOfRides.split(" ")[0];
-            String timeofrides = datetimeOfRides.split(" ")[1];
-            timeofrides = timeofrides.split(".000Z")[0];
+            String datetimeOfRides_start = mSamples.get(position).getRideStartedAt();
+            String dateOfRides_start = datetimeOfRides_start.split(" ")[0];
+            String timeofrides_start = datetimeOfRides_start.split(" ")[1];
+            String datetimeOfRides_end = mSamples.get(position).getRideStartedAt();
+            String timeofrides_end = datetimeOfRides_end.split(" ")[1];
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String currentDate = sdf.format(cal.getTime());
@@ -120,24 +121,24 @@ public class completedrides extends android.support.v4.app.Fragment implements A
             nextdaycal.add(Calendar.DATE, 1);
             SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
             String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
-            if(currentDate.equals(dateOfRides))
+            if(currentDate.equals(dateOfRides_start))
             {
                 todayortomorrow = "Today        ";
             }
-            else if(tomorrowDate.equals(dateOfRides))
+            else if(tomorrowDate.equals(dateOfRides_start))
             {
                 todayortomorrow = "Tomorrow";
             }
             else
             {
-                todayortomorrow = dateOfRides;
+                todayortomorrow = dateOfRides_start;
             }
             mSamples.get(position).setTodayortomorrow(todayortomorrow);
             ((TextView) convertView.findViewById(R.id.day_header)).setText(todayortomorrow);
             ((TextView) convertView.findViewById(R.id.start_time_value)).setText(
-                    mSamples.get(position).getRideStartedAt());
+                    timeofrides_start);
             ((TextView) convertView.findViewById(R.id.end_time_value)).setText(
-                    mSamples.get(position).getRideEndedAt());
+                    timeofrides_end);
             ((TextView) convertView.findViewById(R.id.base_fare_value)).setText(
                     mSamples.get(position).getBaseFare());
             ((TextView) convertView.findViewById(R.id.fare_distance_value)).setText(
