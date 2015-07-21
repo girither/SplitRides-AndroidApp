@@ -352,12 +352,12 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         SharedPreferenceManager.setApplicationContext(getApplicationContext());
         onregister();
-        /*if(SharedPreferenceManager.getIntPreference("source_search_radius") == 0) {
-            SharedPreferenceManager.setPreference("source_search_radius", 5);
+        if(SharedPreferenceManager.getIntPreference("source_search_radius") == 0) {
+            SharedPreferenceManager.setPreference("source_search_radius", 15);
         }
         if(SharedPreferenceManager.getIntPreference("destination_search_radius") == 0){
-            SharedPreferenceManager.setPreference("destination_search_radius",5);
-        }*/
+            SharedPreferenceManager.setPreference("destination_search_radius",15);
+        }
         SharedPreferenceManager.setPreference("notificationcount",0);
     FacebookSdk.sdkInitialize(this.getApplicationContext());
 
