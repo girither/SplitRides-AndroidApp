@@ -467,8 +467,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
-                    JSONObject estimate = jObj.getJSONObject("estimate");
-                    data = new ratecardobject(estimate.getString("estimate"),estimate.getString("distance"),estimate.getString("durationInMinutes"));
+                    data = new ratecardobject(jObj.getString("price"),jObj.getString("distance"),jObj.getString("time"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
