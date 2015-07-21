@@ -93,6 +93,8 @@ public class GcmIntentService extends IntentService {
             }
             else if(data.equals("requestToJoinTheRide")){
             String requestID = msg.getString("requestId");
+                int count = SharedPreferenceManager.getIntPreference("notificationcount");
+                SharedPreferenceManager.setPreference("notificationcount", count+1);
             mNotificationManager = (NotificationManager)
                     this.getSystemService(Context.NOTIFICATION_SERVICE);
 

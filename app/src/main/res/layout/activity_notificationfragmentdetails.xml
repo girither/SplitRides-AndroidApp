@@ -170,29 +170,38 @@
                     android:background="@android:color/darker_gray" />
 
 
-                <Button
-                    android:background="#585858"
-                    android:textColor="#FFFFFF"
+                <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:id="@+id/accept_request"
-                    android:text="ACCEPT REQUEST" />
-
-
-                <Button
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="20dp"
-                    android:background="#F87217"
-                    android:textColor="#FFFFFF"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:id="@+id/reject_request"
-                    android:text="REJECT REQUEST" />
+                    android:layout_marginLeft= "5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal">
+
+                    <Button
+                        android:layout_weight="1"
+                        android:id="@+id/accept_request"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#FFF8DC"
+                        android:drawablePadding="6dp"
+                        android:gravity="center"
+                        android:drawableLeft="@drawable/estimate_ride"
+                        android:text="ACCEPT\nREQUEST" />
+
+                    <Button
+                        android:layout_weight="1"
+                        android:id="@+id/reject_request"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="6dp"
+                        android:background="#FFF8DC"
+                        android:gravity="center"
+                        android:drawableLeft="@drawable/send_request"
+                        android:text="REJECT\nREQUEST" />
+
+                </TableRow>
 
             </LinearLayout>
         </ScrollView>

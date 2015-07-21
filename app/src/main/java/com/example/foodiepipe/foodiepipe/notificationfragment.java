@@ -77,6 +77,7 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
 
                 View rootView = inflater.inflate(R.layout.fragment_notificationfragment,container, false);
                 bar = (ProgressBar) rootView.findViewById(R.id.notification_progress);
+                SharedPreferenceManager.setApplicationContext(getActivity().getApplicationContext());
 
                 mGridView = (GridView)rootView.findViewById(android.R.id.list);
                 mGridView.setOnItemClickListener(this);
@@ -240,6 +241,7 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
                     myallnotificationdataadapter = new SampleAdapter(notificationdataArray);
                     mGridView.setAdapter(myallnotificationdataadapter);
                     mCallback.onDataChanged(notificationdataArray.size());
+                    SharedPreferenceManager.setPreference("notificationcount", notificationdataArray.size());
                 }
                 else
                 {
@@ -250,6 +252,7 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
                     myallnotificationdataadapter_noresults = new SampleAdapter_noresults(noresultsarray);
                     mGridView_noresults.setAdapter(myallnotificationdataadapter_noresults);
                     mCallback.onDataChanged(0);
+                    SharedPreferenceManager.setPreference("notificationcount", 0);
                 }
             }
 

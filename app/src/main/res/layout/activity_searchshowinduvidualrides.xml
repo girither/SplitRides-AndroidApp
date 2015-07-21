@@ -152,42 +152,49 @@
         android:layout_height="1dp"
         android:background="@android:color/darker_gray" />
 
-            <Button
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+
+            <TableRow
+                android:layout_width="match_parent"
                 android:layout_marginTop="20dp"
-                android:background="#585858"
-                android:textColor="#FFFFFF"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:id="@+id/estimate_ride_searchindividual"
-                android:text="ESTIMATE RIDE WITH PERSON/GROUP" />
-
-    <Button
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
-        android:background="#F87217"
-        android:textColor="#FFFFFF"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:id="@+id/send_request_joinride"
-        android:text="SEND REQUEST TO JOIN RIDE" />
-
-            <Button
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
-                android:visibility="gone"
-                android:background="#F87217"
-                android:textColor="#FFFFFF"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:id="@+id/request_alreadysent"
-                android:text="REQUEST IS ALREADY SENT" />
+                android:layout_marginLeft= "5dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
 
+                <Button
+                    android:layout_weight="1"
+                    android:id="@+id/estimate_ride_searchindividual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#FFF8DC"
+                    android:drawablePadding="6dp"
+                    android:gravity="center"
+                    android:drawableLeft="@drawable/estimate_ride"
+                    android:text="ESTIMATE\nRIDE" />
+
+                <Button
+                    android:layout_weight="1"
+                    android:id="@+id/send_request_joinride"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="6dp"
+                    android:background="#FFF8DC"
+                    android:gravity="center"
+                    android:drawableLeft="@drawable/send_request"
+                    android:text="SEND\nREQUEST" />
+                <Button
+                    android:layout_weight="1"
+                    android:id="@+id/request_alreadysent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="6dp"
+                    android:background="#FFF8DC"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:drawableLeft="@drawable/send_request"
+                    android:text="REQUEST\nSENT" />
+            </TableRow>
 
         </LinearLayout>
    </ScrollView>
