@@ -153,13 +153,12 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                                 public void onClick(DialogInterface dialog, int id) {
                                     SharedPreferenceManager.setPreference("startrides", false);
                                     SharedPreferenceManager.setPreference("stoprides", true);
+                                    stoplocationservice();
                                     String locationstring = SharedPreferenceManager.getPreference("locationstringdata");
                                     if (locationstring != null && !locationstring.isEmpty()) {
-
+                                        new endridetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
+                                        SharedPreferenceManager.setPreference("locationstringdata","");
                                     }
-                                    stoplocationservice();
-                                    Toast.makeText(showupcomingridedetails.this,
-                                            "Ride has ended", Toast.LENGTH_LONG).show();
 
                                 }
                             }).setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -261,10 +260,16 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         if (requestCode == PICK_CABPROVIDER_RESULT) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                SharedPreferenceManager.setPreference("startrides",true);
-                SharedPreferenceManager.setPreference("started_jrride", SharedPreferenceManager.getPreference("currentride_rideid"));
-                startlocationservice();
-                new startridetask(SharedPreferenceManager.getPreference("started_jrride")).execute();
+                if(!SharedPreferenceManager.getBooleanPreference("startrides")) {
+                    SharedPreferenceManager.setPreference("startrides", true);
+                    SharedPreferenceManager.setPreference("started_jrride", SharedPreferenceManager.getPreference("currentride_rideid"));
+                    startlocationservice();
+                    new startridetask(SharedPreferenceManager.getPreference("started_jrride")).execute();
+                }
+                else{
+                    Toast.makeText(showupcomingridedetails.this,
+                            "You have already started a Ride. PLease end it to start another one", Toast.LENGTH_LONG).show();
+                }
             }
         }
         else if(requestCode == PICK_CABPROVIDER_RESULT_FROMESIMATE){
@@ -353,6 +358,72 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             if(success != null){
                 startride.setVisibility(View.GONE);
                 exitride.setVisibility(View.GONE);
+            }
+            else{
+                Toast.makeText(showupcomingridedetails.this,
+                        "Something went wrong while sending request. Please try again", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+
+        }
+    }
+
+    public class endridetask extends AsyncTask<Void, Void,String > {
+
+        private final String mRideId;
+        private  final  String mlatlongstring;
+
+
+
+        endridetask(String RideId,String latlongstring) {
+            mRideId = RideId;
+            mlatlongstring = latlongstring;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(showupcomingridedetails.this);
+            pDialog.setMessage("Ending Ride...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+
+        }
+        @Override
+        protected String doInBackground(Void... param) {
+            String data = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("rideId", mRideId);
+                params.put("latLngString",mlatlongstring);
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/endRide", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    data = jObj.getString("success");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(final String success) {
+
+            pDialog.dismiss();
+            if(success != null){
+               finish();
             }
             else{
                 Toast.makeText(showupcomingridedetails.this,
