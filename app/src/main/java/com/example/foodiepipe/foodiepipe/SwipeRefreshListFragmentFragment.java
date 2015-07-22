@@ -74,9 +74,7 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
          * Create an ArrayAdapter to contain the data for the ListView. Each item in the ListView
          * uses the system-defined simple_list_item_1 layout that contains one TextView.
          */
-
-        String timeChoice = getArguments().getString("timeChoice");
-        searchridetask = new DummyBackgroundTask(timeChoice.trim().toLowerCase());
+        searchridetask = new DummyBackgroundTask();
         searchridetask.execute();
         // BEGIN_INCLUDE (setup_refreshlistener)
         /**
@@ -121,8 +119,7 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
      */
     private void initiateRefresh() {
         Log.i(LOG_TAG, "initiateRefresh");
-        String timeChoice = getArguments().getString("timeChoice");
-        new DummyBackgroundTask(timeChoice.trim().toLowerCase()).execute();
+        new DummyBackgroundTask().execute();
     }
 
 
@@ -130,13 +127,6 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
      * Dummy {@link AsyncTask} which simulates a long running task to fetch new cheeses.
      */
     private class DummyBackgroundTask extends AsyncTask<Void, Void, List<ridedata>> {
-        private  String mtimechoice;
-
-
-        DummyBackgroundTask(String timeChoice) {
-
-            mtimechoice = timeChoice;
-        }
 
         @Override
         protected List<ridedata> doInBackground(Void... param) {
@@ -151,7 +141,7 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
             params.add(new BasicNameValuePair("profile", mProfile));*/
             try {
                 JSONObject params = new JSONObject();
-                params.put("timeChoice",mtimechoice);
+                params.put("timeChoice",SharedPreferenceManager.getPreference("myrideId_timechoice"));
                 params.put("sourceRideSearchRadius", Integer.toString(SharedPreferenceManager.getIntPreference("source_search_radius")));
                 params.put("destinationRideSearchRadius",Integer.toString(SharedPreferenceManager.getIntPreference("destination_search_radius")));
                 params.put("rideId",SharedPreferenceManager.getPreference("myrideId"));

@@ -51,8 +51,8 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
             Intent searchrides = new Intent(getActivity(),Searchridessourcedestination.class);
             searchrides.putExtra("source", rideobj.getSource());
             searchrides.putExtra("destination", rideobj.getDestination());
-            searchrides.putExtra("timeChoice", rideobj.getTodayortomorrow().toLowerCase().trim());
             SharedPreferenceManager.setPreference("myrideId", rideobj.getRideId());
+            SharedPreferenceManager.setPreference("myrideId_timechoice", rideobj.getTodayortomorrow().toLowerCase().trim());
             startActivity(searchrides);
         }
         getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);
