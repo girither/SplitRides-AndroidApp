@@ -1,5 +1,6 @@
 package com.example.foodiepipe.foodiepipe;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
@@ -267,7 +268,11 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             }
         }
         else if(requestCode == PICK_CABPROVIDER_RESULT_FROMESIMATE){
-            new estimateridetask(SharedPreferenceManager.getPreference("currentride_rideid"),Integer.toString(0),"").execute();
+            if (resultCode == Activity.RESULT_OK) {
+                Bundle extras = data.getExtras();
+                String cabprovidervalue = extras.getString("cabprovider");
+                new estimateridetask(cabprovidervalue, SharedPreferenceManager.getPreference("currentride_rideid"), Integer.toString(0), "").execute();
+            }
         }
     }
 
@@ -429,13 +434,15 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
     public class estimateridetask extends AsyncTask<Void, Void,ratecardobject > {
 
+        private final String mcabProvider;
         private final String jrId;
         private final String mestimateBeforeJoining;
         private final String mrrideId;
 
 
 
-        estimateridetask(String joinedrideId, String estimateBeforeJoining,String rRideId) {
+        estimateridetask(String cabProvider,String joinedrideId, String estimateBeforeJoining,String rRideId) {
+            mcabProvider = cabProvider;
             jrId=joinedrideId;
             mestimateBeforeJoining =estimateBeforeJoining;
             mrrideId = rRideId;
@@ -459,6 +466,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 params.put("jrId", jrId);
                 params.put("estimateBeforeJoining", mestimateBeforeJoining);
                 params.put("rrideId", mrrideId);
+                params.put("serviceProvider",mcabProvider.toLowerCase());
+                params.put("city","bengaluru");
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/estimateRide", "POST",
                         params);
