@@ -233,7 +233,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                 JSONObject params = new JSONObject();
                 params.put("jrId", jrId);
                 params.put("estimateBeforeJoining", mestimateBeforeJoining);
-                params.put("rrideId", mrrideId);
+                params.put("rRideId", mrrideId);
                 params.put("serviceProvider",mcabProvider.toLowerCase());
                 params.put("city","bengaluru");
                 // getting JSON string from URL
