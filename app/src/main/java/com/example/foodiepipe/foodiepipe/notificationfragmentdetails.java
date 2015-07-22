@@ -193,7 +193,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                     StringBuilder latlongbuilder_droppoint = new StringBuilder();
                     latlongbuilder_droppoint.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
                     List<customer> customerlistdata = new ArrayList<customer>();
-                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerindividualdata.getString("profileId"));
+                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"");
                     customerlistdata.add(customeradapterdata);
                     info = new notificationdata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"));
 

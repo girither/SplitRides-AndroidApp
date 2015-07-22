@@ -539,7 +539,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         }
                         for (int i = 0; i < customerdata.length(); i++) {
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
-                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.getString("profileId"));
+                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"");
                             customerlistdata.add(customeradapterdata);
                         }
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"),status);
@@ -551,7 +551,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         latlongbuilder.append(ride.getString("pickUpLat")).append(",").append(ride.getString("pickUpLng"));
                         StringBuilder latlongbuilder_droppoint = new StringBuilder();
                         latlongbuilder_droppoint.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
-                        customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"), ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerdata.getString("profileId"));
+                        customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"), ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerdata.has("profileId")?customerdata.getString("profileId"):"");
                         List<customer> customerlistdata = new ArrayList<customer>();
                         customerlistdata.add(customeradapterdata);
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"ride",ride.getString("rideId"));
