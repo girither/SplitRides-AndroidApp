@@ -42,12 +42,11 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String source = getArguments().getString("source");
-        String destination = getArguments().getString("destination");
+        SharedPreferenceManager.setApplicationContext(getActivity().getApplicationContext());
         EditText populatesource = (EditText)getActivity().findViewById(R.id.populate_source);
         EditText populatedestination = (EditText)getActivity().findViewById(R.id.populate_destination);
-        populatesource.setText(source);
-        populatedestination.setText(destination);
+        populatesource.setText(SharedPreferenceManager.getPreference("myride_source"));
+        populatedestination.setText(SharedPreferenceManager.getPreference("myride_destination"));
         // Notify the system to allow an options menu for this fragment.
         setHasOptionsMenu(true);
     }

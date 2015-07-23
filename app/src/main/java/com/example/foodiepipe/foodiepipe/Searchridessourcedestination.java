@@ -18,7 +18,6 @@ public class Searchridessourcedestination extends ActionBarActivity {
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             SwipeRefreshListFragmentFragment fragment = new SwipeRefreshListFragmentFragment();
-            fragment.setArguments(getIntent().getExtras());
             transaction.replace(R.id.sample_content_fragment, fragment);
             transaction.commitAllowingStateLoss();
         }

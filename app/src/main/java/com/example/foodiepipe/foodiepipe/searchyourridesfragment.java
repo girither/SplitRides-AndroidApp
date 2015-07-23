@@ -33,7 +33,7 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        SharedPreferenceManager.setApplicationContext(getActivity().getApplicationContext());
         // Notify the system to allow an options menu for this fragment.
         setHasOptionsMenu(true);
     }
@@ -49,8 +49,8 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
         if(rideobj.getNoresults() == null)
         {
             Intent searchrides = new Intent(getActivity(),Searchridessourcedestination.class);
-            searchrides.putExtra("source", rideobj.getSource());
-            searchrides.putExtra("destination", rideobj.getDestination());
+            SharedPreferenceManager.setPreference("myride_source", rideobj.getSource());
+            SharedPreferenceManager.setPreference("myride_destination", rideobj.getDestination());
             SharedPreferenceManager.setPreference("myrideId", rideobj.getRideId());
             SharedPreferenceManager.setPreference("myrideId_timechoice", rideobj.getTodayortomorrow().toLowerCase().trim());
             startActivity(searchrides);
@@ -185,22 +185,22 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
 
             super.onPostExecute(ridedataArray);
             setRefreshing(false);
-            if(!ridedataArray.isEmpty()){
-                adapter = new customridedataadapter(getActivity(),ridedataArray);
+            if(getActivity()!= null) {
+                if (!ridedataArray.isEmpty()) {
+                    adapter = new customridedataadapter(getActivity(), ridedataArray);
 
-                // Set the adapter between the ListView and its backing data.
-                setListAdapter(adapter);
-            }
-            else
-            {
-                List<ridedata> noresultsarray = new ArrayList<ridedata>();
-                ridedata info = new ridedata(null,null,null);
-                info.setNoresults("No Results Available Currently");
-                noresultsarray.add(info);
-                adapter = new noresultsadapter_searchrides(getActivity(),noresultsarray);
+                    // Set the adapter between the ListView and its backing data.
+                    setListAdapter(adapter);
+                } else {
+                    List<ridedata> noresultsarray = new ArrayList<ridedata>();
+                    ridedata info = new ridedata(null, null, null);
+                    info.setNoresults("No Results Available Currently");
+                    noresultsarray.add(info);
+                    adapter = new noresultsadapter_searchrides(getActivity(), noresultsarray);
 
-                // Set the adapter between the ListView and its backing data.
-                setListAdapter(adapter);
+                    // Set the adapter between the ListView and its backing data.
+                    setListAdapter(adapter);
+                }
             }
         }
 

@@ -50,7 +50,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SOURCE            : "/>
+                android:text="SOURCE           : "/>
 
             <TextView
                 android:layout_weight="2"
