@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.EditText;
 
 public class Searchridessourcedestination extends ActionBarActivity {
 
@@ -15,6 +16,10 @@ public class Searchridessourcedestination extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        EditText populatesource = (EditText)findViewById(R.id.populate_source);
+        EditText populatedestination = (EditText)findViewById(R.id.populate_destination);
+        populatesource.setText(SharedPreferenceManager.getPreference("myride_source"));
+        populatedestination.setText(SharedPreferenceManager.getPreference("myride_destination"));
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             SwipeRefreshListFragmentFragment fragment = new SwipeRefreshListFragmentFragment();
