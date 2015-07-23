@@ -61,20 +61,20 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
 
         View rootView = inflater.inflate(R.layout.fragment_joinedrides,container, false);
         bar = (ProgressBar) rootView.findViewById(R.id.joinedrides_progress);
-        mjoinedrideTask = new getjoinedridetask();
-        mjoinedrideTask.execute((Void) null);
         mGridView = (GridView)rootView.findViewById(android.R.id.list);
         mGridView.setOnItemClickListener(this);
         mGridView_noresults = (GridView)rootView.findViewById(R.id.no_results_return_list);
         joinedridesform = (LinearLayout)rootView.findViewById(R.id.show_joined_rides);
         noresultsform = (LinearLayout)rootView.findViewById(R.id.noridestoshow_form);
+        mjoinedrideTask = new getjoinedridetask();
+        mjoinedrideTask.execute((Void) null);
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
+        new getjoinedridetask().execute((Void) null);
     }
 
     private class SampleAdapter extends BaseAdapter {
@@ -181,6 +181,8 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
         protected void onPreExecute() {
             super.onPreExecute();
             bar.setVisibility(View.VISIBLE);
+            joinedridesform.setVisibility(View.GONE);
+            noresultsform.setVisibility(View.GONE);
 
         }
         @Override
