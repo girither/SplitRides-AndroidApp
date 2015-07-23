@@ -683,7 +683,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     exitride.setVisibility(View.GONE);
                     hideeditmenuitem.setVisible(false);
                 }
-                if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("notstarted")){
+                if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("accepted")){
                     endride.setVisibility(View.GONE);
                 }
                 else if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("started")){
@@ -698,6 +698,9 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     endride.setVisibility(View.GONE);
                     estimateride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
+                }
+                else{
+                    hideeditmenuitem.setVisible(false);
                 }
                 customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
                 mGridView.setAdapter(customerlistadapter);
