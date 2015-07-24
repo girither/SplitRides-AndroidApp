@@ -99,6 +99,26 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
     }
     // END_INCLUDE (setup_views)
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ConnectionDetector cd = new ConnectionDetector(getActivity().getApplicationContext());
+        if (!cd.isConnectingToInternet()) {
+            List<ridedata> noresultsarray = new ArrayList<ridedata>();
+            ridedata info = new ridedata(null,null,null);
+            info.setNoresults("No Internet Available Currently");
+            noresultsarray.add(info);
+            adapter = new noresultsadapter(getActivity(),noresultsarray);
+
+            // Set the adapter between the ListView and its backing data.
+            setListAdapter(adapter);
+
+        }
+        else {
+            mMyrideTask = new getmyridetask();
+            mMyrideTask.execute();
+        }
+    }
 
 
     // BEGIN_INCLUDE (setup_refresh_menu_listener)

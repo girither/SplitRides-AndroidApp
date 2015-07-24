@@ -20,6 +20,16 @@
         android:id="@+id/show_completed_rides"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="25dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Completed Rides"
+            android:textColor="@color/teal"
+            android:id="@+id/textView2" />
+
 
         <GridView android:id="@android:id/list"
             style="@style/Widget.SampleDashboard.Grid"
@@ -40,6 +50,16 @@
         android:layout_marginTop="10dp"
         android:id="@+id/noridestoshow_form"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="25dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Completed Rides"
+            android:textColor="@color/teal"
+            android:id="@+id/textView_noresults" />
 
 
         <GridView android:id="@+id/no_results_return_list"

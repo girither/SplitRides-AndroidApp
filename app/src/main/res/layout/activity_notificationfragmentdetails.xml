@@ -181,13 +181,25 @@
 
                     <Button
                         android:layout_weight="1"
-                        android:id="@+id/accept_request"
+                        android:id="@+id/estimeaterequest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="#FFF8DC"
                         android:drawablePadding="6dp"
                         android:gravity="center"
                         android:drawableLeft="@drawable/estimate_ride"
+                        android:text="ESTIMATE\nREQUEST" />
+
+
+                    <Button
+                        android:layout_weight="1"
+                        android:id="@+id/accept_request"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#FFF8DC"
+                        android:drawablePadding="6dp"
+                        android:gravity="center"
+                        android:drawableLeft="@drawable/completed_ride_icon"
                         android:text="ACCEPT\nREQUEST" />
 
                     <Button
@@ -198,7 +210,7 @@
                         android:drawablePadding="6dp"
                         android:background="#FFF8DC"
                         android:gravity="center"
-                        android:drawableLeft="@drawable/send_request"
+                        android:drawableLeft="@drawable/exit_ride"
                         android:text="REJECT\nREQUEST" />
 
                 </TableRow>

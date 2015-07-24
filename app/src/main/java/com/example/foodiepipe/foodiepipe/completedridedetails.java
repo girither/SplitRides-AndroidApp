@@ -4,12 +4,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,7 +32,7 @@ public class completedridedetails extends ActionBarActivity {
     ProgressBar bar;
     LinearLayout detailform;
     SplitRideAdapter splitridelistadapter;
-    GridView mGridView;
+    ExpandableHeightGridView mGridView;
     getindividualcompletedridetask individualcompletedridestask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,8 @@ public class completedridedetails extends ActionBarActivity {
         rideend_time = (TextView) findViewById(R.id.rideend_time);
         bar = (ProgressBar) findViewById(R.id.completedridedetails_progress);
         detailform = (LinearLayout) findViewById(R.id.completedridedatashow);
-        mGridView = (GridView)findViewById(android.R.id.list);
+        mGridView = (ExpandableHeightGridView)findViewById(android.R.id.list);
+        mGridView.setExpanded(true);
         Bundle extras = getIntent().getExtras();
         String currentuniqueid = extras.getString("uniqueId");
         String uniqueId = (currentuniqueid!= null && !currentuniqueid.isEmpty())?extras.getString("uniqueId"):SharedPreferenceManager.getPreference("currentride_uniqueid");
@@ -110,7 +111,7 @@ public class completedridedetails extends ActionBarActivity {
 
             ((TextView) convertView.findViewById(R.id.fare_for_distance_value)).setText(mSamples.get(position).getFareForThisLeg());
             ((TextView) convertView.findViewById(R.id.fare_for_time_value)).setText(mSamples.get(position).getFareForTimeSpentInThisLeg());
-            ((TextView) convertView.findViewById(R.id.partners_value)).setText(mSamples.get(position).getPartners().toString());
+            ((TextView) convertView.findViewById(R.id.partners_value)).setText(TextUtils.join(",",mSamples.get(position).getPartners()));
             return convertView;
         }
     }
@@ -169,7 +170,11 @@ public class completedridedetails extends ActionBarActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
+            /*List<String> array = new ArrayList<String>();
+            array.add("giri");
+            splitfaredataobject dataobject = new splitfaredataobject("300", array, "400");
+            splitrideobjectlist.add(dataobject);
+            info = new completedrideobject("11111111","300","100","100","75","2015-07-18 20:22:32","2015-07-18 20:28:34",splitrideobjectlist);*/
             return info;
         }
 
@@ -188,6 +193,7 @@ public class completedridedetails extends ActionBarActivity {
                 rideend_time.setText(timeofrides_end);
                 splitridelistadapter = new SplitRideAdapter(completedridedataobject.getListofsplitfare());
                 mGridView.setAdapter(splitridelistadapter);
+                splitridelistadapter.notifyDataSetChanged();
             }
         }
 

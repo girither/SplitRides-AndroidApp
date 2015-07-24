@@ -24,6 +24,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
+                <TextView
+                    android:id="@+id/start_time_value"
+                    style="@style/Widget.SampleDashboard.Item.MyRideTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="113dp"
+                    />
+
+
                 <!--TextView
                     android:id="@+id/content"
                     style="@style/Widget.SampleDashboard.Item.MyRideTitle"
@@ -35,7 +44,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <!--LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -75,7 +84,7 @@
                     android:layout_weight="2"
                     android:layout_marginLeft="6dp"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </LinearLayout-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -87,14 +96,14 @@
                     style="@style/Widget.SampleDashboard.Item.Description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="BASE FARE:"/>
+                    android:text="BASE FARE                  :"/>
 
                 <TextView
                     android:id="@+id/base_fare_value"
                     style="@style/Widget.SampleDashboard.Item.Description"
                     android:layout_width="match_parent"
                     android:layout_weight="2"
-                    android:layout_marginLeft="6dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
@@ -108,7 +117,7 @@
                     style="@style/Widget.SampleDashboard.Item.Description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FARE FOR DISTANCE:"/>
+                    android:text="FARE FOR DISTANCE :"/>
 
                 <TextView
                     android:id="@+id/fare_distance_value"
@@ -129,7 +138,7 @@
                     style="@style/Widget.SampleDashboard.Item.Description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FARE FOR TIME:"/>
+                    android:text="FARE FOR TIME          :"/>
 
                 <TextView
                     android:id="@+id/fare_time_value"
@@ -150,7 +159,7 @@
                     style="@style/Widget.SampleDashboard.Item.MyRideTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TOTAL FARE:"/>
+                    android:text="TOTAL FARE       :"/>
 
                 <TextView
                     android:id="@+id/total_fare_value"

@@ -12,6 +12,25 @@ public class notificationdata {
     String source;
     String date;
     String requestId;
+    String rideId;
+
+    public String getRideId() {
+        return rideId;
+    }
+
+    public void setRideId(String rideId) {
+        this.rideId = rideId;
+    }
+
+    public String getOwnerrideid() {
+        return ownerrideid;
+    }
+
+    public void setOwnerrideid(String ownerrideid) {
+        this.ownerrideid = ownerrideid;
+    }
+
+    String ownerrideid;
     String todayortomorrow;
     List<customer> customerlistdata;
 
@@ -63,6 +82,15 @@ public class notificationdata {
         this.date = date;
         this.customerlistdata = customerlistdata;
         this.requestId = requestId;
+    }
+
+    public notificationdata(String destination, String source, String date,List<customer> customerlistdata,String rideId,String ownerrideid) {
+        this.destination = destination;
+        this.source = source;
+        this.date = date;
+        this.customerlistdata = customerlistdata;
+        this.rideId = rideId;
+        this.ownerrideid = ownerrideid;
     }
 
     public String getDate() {

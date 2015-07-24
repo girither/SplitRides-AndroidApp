@@ -1,8 +1,6 @@
 package com.example.foodiepipe.foodiepipe;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,15 +26,7 @@ import java.util.Calendar;
 import java.util.List;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link completedrides.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link completedrides#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class completedrides extends android.support.v4.app.Fragment implements AdapterView.OnItemClickListener {
+public class completedrides extends Fragment implements AdapterView.OnItemClickListener {
 
     JSONParser jsonParser = new JSONParser();
     private GridView mGridView,mGridView_noresults;
@@ -74,6 +64,7 @@ public class completedrides extends android.support.v4.app.Fragment implements A
         mcompletedrideTask = new getcompletedridetask();
         mcompletedrideTask.execute((Void) null);
         mGridView = (GridView)rootView.findViewById(android.R.id.list);
+        mGridView.setOnItemClickListener(this);
         mGridView_noresults = (GridView)rootView.findViewById(R.id.no_results_return_list);
         completedridesform = (LinearLayout)rootView.findViewById(R.id.show_completed_rides);
         noresultsform = (LinearLayout)rootView.findViewById(R.id.noridestoshow_form);
@@ -136,8 +127,6 @@ public class completedrides extends android.support.v4.app.Fragment implements A
             ((TextView) convertView.findViewById(R.id.day_header)).setText(todayortomorrow);
             ((TextView) convertView.findViewById(R.id.start_time_value)).setText(
                     timeofrides_start);
-            ((TextView) convertView.findViewById(R.id.end_time_value)).setText(
-                    timeofrides_end);
             ((TextView) convertView.findViewById(R.id.base_fare_value)).setText(
                     mSamples.get(position).getBaseFare());
             ((TextView) convertView.findViewById(R.id.fare_distance_value)).setText(
@@ -213,7 +202,8 @@ public class completedrides extends android.support.v4.app.Fragment implements A
                         params);
 
 
-
+                // completedrideobject info = new completedrideobject("112345678","300","34","239","60","2015-07-18 20:28:34","2015-07-18 20:22:32");
+                // completedridedataArray.add(info);
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
                     JSONArray completedrides = jObj.getJSONArray("completedRides");

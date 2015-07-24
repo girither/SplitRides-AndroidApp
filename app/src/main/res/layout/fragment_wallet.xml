@@ -5,6 +5,16 @@
     android:background="#F2F2F2"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="25dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Wallet"
+        android:textColor="@color/teal"
+        android:id="@+id/textView2" />
+
     <GridView android:id="@+id/coming_soon_list_wallet"
         style="@style/Widget.SampleDashboard.Grid"
         android:layout_width="match_parent"

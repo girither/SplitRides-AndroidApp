@@ -1,5 +1,7 @@
 package com.example.foodiepipe.foodiepipe;
 
+import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -36,11 +38,13 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
     TextView ridefromheader_source,ridefromheader_destination, todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
     getindividualnotificationdetailsetask individualnotificationstask;
     ProgressBar bar;
-    Button acceptrequest, rejectrequest;
+    Button acceptrequest, rejectrequest,estimaterequest;
     LinearLayout detailform;
     CustomerAdapter customerlistadapter;
+    static final int PICK_CABPROVIDER_RESULT_FROMESIMATE = 2;
     private ProgressDialog pDialog;
     GridView mGridView;
+    notificationdata globalnotificationdataobject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
         mGridView = (GridView) findViewById(android.R.id.list);
         acceptrequest = (Button) findViewById(R.id.accept_request);
         rejectrequest = (Button) findViewById(R.id.reject_request);
+        estimaterequest = (Button) findViewById(R.id.estimeaterequest);
         acceptrequest.setOnClickListener(this);
         rejectrequest.setOnClickListener(this);
         Bundle extras = getIntent().getExtras();
@@ -89,8 +94,90 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
             case R.id.reject_request:
                 new acceptorrejecttojoinridetask(SharedPreferenceManager.getPreference("currentrequestId"),"reject").execute();
                 break;
+            case R.id.estimeaterequest:
+                Intent selectcabprovider_estimate = new Intent(notificationfragmentdetails.this,cabproviderselction.class);
+                startActivityForResult(selectcabprovider_estimate,PICK_CABPROVIDER_RESULT_FROMESIMATE);
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == PICK_CABPROVIDER_RESULT_FROMESIMATE){
+            if (resultCode == Activity.RESULT_OK) {
+                Bundle extras = data.getExtras();
+                String cabprovidervalue = extras.getString("cabprovider");
+                new estimateridetask(cabprovidervalue,globalnotificationdataobject.getOwnerrideid(),Integer.toString(1),globalnotificationdataobject.getRideId()).execute();
+            }
+        }
+    }
+
+
+    public class estimateridetask extends AsyncTask<Void, Void,ratecardobject > {
+
+        private final String mcabProvider;
+        private final String jrId;
+        private final String mestimateBeforeJoining;
+        private final String mrrideId;
+
+        estimateridetask(String cabProvider,String joinedrideId, String estimateBeforeJoining,String rRideId) {
+            mcabProvider = cabProvider;
+            jrId=joinedrideId;
+            mestimateBeforeJoining =estimateBeforeJoining;
+            mrrideId = rRideId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(notificationfragmentdetails.this);
+            pDialog.setMessage("Estimating Request...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+        @Override
+        protected ratecardobject doInBackground(Void... param) {
+            ratecardobject data = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("jrId", jrId);
+                params.put("estimateBeforeJoining", mestimateBeforeJoining);
+                params.put("rRideId", mrrideId);
+                params.put("serviceProvider",mcabProvider.toLowerCase());
+                params.put("city","bengaluru");
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/estimateRide", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    data = new ratecardobject(jObj.getString("price"),jObj.getString("distance"),jObj.getString("time"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(final ratecardobject data) {
+            pDialog.dismiss();
+            if(data != null){
+                DialogFragment rateFragment = new ratecardfragment(data);
+                rateFragment.show(getFragmentManager(), "ratepicker");
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+
+        }
     }
 
     private class CustomerAdapter extends BaseAdapter {
@@ -187,6 +274,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
                     JSONObject ride = jObj.getJSONObject("requesterRide");
+                    String ownerride = jObj.getString("requesterRide");
                     JSONObject customerindividualdata = jObj.getJSONObject("requesterCustomerProfile");
                     StringBuilder latlongbuilder = new StringBuilder();
                     latlongbuilder.append(ride.getString("pickUpLat")).append(",").append(ride.getString("pickUpLng"));
@@ -195,7 +283,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                     List<customer> customerlistdata = new ArrayList<customer>();
                     customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"");
                     customerlistdata.add(customeradapterdata);
-                    info = new notificationdata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"));
+                    info = new notificationdata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"),ownerride);
 
                 }
             } catch (JSONException e) {
@@ -211,6 +299,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
             bar.setVisibility(View.GONE);
             detailform.setVisibility((notificationdataobject!=null)?View.VISIBLE:View.GONE);
             if(notificationdataobject != null ){
+                globalnotificationdataobject = notificationdataobject;
                 ridefromheader_source.setText(notificationdataobject.getSource());
                 ridefromheader_destination.setText(notificationdataobject.getDestination());
                 String dateOfRides = notificationdataobject.getDate().split("T")[0];

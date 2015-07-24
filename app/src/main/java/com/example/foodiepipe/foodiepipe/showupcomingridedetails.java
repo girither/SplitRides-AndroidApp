@@ -157,7 +157,6 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                                     String locationstring = SharedPreferenceManager.getPreference("locationstringdata");
                                     if (locationstring != null && !locationstring.isEmpty()) {
                                         new endridetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
-                                        SharedPreferenceManager.setPreference("locationstringdata","");
                                     }
 
                                 }
@@ -371,7 +370,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         }
     }
 
-    public class endridetask extends AsyncTask<Void, Void,String > {
+    public class endridetask extends AsyncTask<Void, Void,ratecardobject > {
 
         private final String mRideId;
         private  final  String mlatlongstring;
@@ -394,8 +393,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
         }
         @Override
-        protected String doInBackground(Void... param) {
-            String data = null;
+        protected ratecardobject doInBackground(Void... param) {
+            ratecardobject data = null;
 
             try {
                 JSONObject params = new JSONObject();
@@ -409,7 +408,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
-                    data = jObj.getString("success");
+                    data = new ratecardobject(jObj.getString("totalSharedFare"),jObj.getString("distanceTravelled"),jObj.getString("totalTimeSpent"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -419,12 +418,13 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         }
 
         @Override
-        protected void onPostExecute(final String success) {
-
-            pDialog.dismiss();
-            if(success != null){
-               finish();
-            }
+        protected void onPostExecute(final ratecardobject data) {
+                pDialog.dismiss();
+                if(data != null){
+                    SharedPreferenceManager.setPreference("locationstringdata", "");
+                    DialogFragment billFragment = new billcardfragment(data);
+                    billFragment.show(getFragmentManager(), "ratepicker");
+                }
             else{
                 Toast.makeText(showupcomingridedetails.this,
                         "Something went wrong while sending request. Please try again", Toast.LENGTH_LONG).show();
