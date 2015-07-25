@@ -34,7 +34,6 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
 
 import org.json.JSONException;
@@ -636,7 +635,7 @@ public class Postyourrides extends ActionBarActivity
                     apiAction = "postRide";
                 }
 
-                json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/" + apiAction, "POST",
+                json = jsonParser.makeHttpRequest(mainurl.geturl()  + apiAction, "POST",
                         params);
 
                 // Check your log cat for JSON reponse
@@ -787,7 +786,7 @@ public class Postyourrides extends ActionBarActivity
                 JSONObject params = new JSONObject();
                 params.put("rideId", this.rideId);
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRideDetails", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl()+"getRideDetails", "POST",
                         params);
 
                 JSONObject responseJSON = new JSONObject(json);

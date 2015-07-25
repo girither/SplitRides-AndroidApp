@@ -198,7 +198,7 @@ public class completedrides extends Fragment implements AdapterView.OnItemClickL
                 JSONObject params = new JSONObject();
 
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getride_completedrides", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"getride_completedrides", "POST",
                         params);
 
 

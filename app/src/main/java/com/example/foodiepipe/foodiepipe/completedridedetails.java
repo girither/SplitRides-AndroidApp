@@ -141,7 +141,7 @@ public class completedridedetails extends ActionBarActivity {
                 JSONObject params = new JSONObject();
                 params.put("uniqueId", mUniqueId);
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getCompletedRideDetails", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"getCompletedRideDetails", "POST",
                         params);
 
 

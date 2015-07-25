@@ -149,7 +149,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 params.put("serviceProvider",mcabProvider.toLowerCase());
                 params.put("city","bengaluru");
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/estimateRide", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"estimateRide", "POST",
                         params);
 
 
@@ -266,7 +266,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 params.put("requestId", mrequestId);
 
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRequestDetails", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"getRequestDetails", "POST",
                         params);
 
 
@@ -373,7 +373,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 JSONObject params = new JSONObject();
                 params.put("requestId", mrequestId);
                 params.put("status",mstatus);
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/acceptOrRejectTheRequestToJoin", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"acceptOrRejectTheRequestToJoin", "POST",
                         params);
 
 

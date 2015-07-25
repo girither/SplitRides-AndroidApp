@@ -200,7 +200,7 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
                 JSONObject params = new JSONObject();
 
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getride_joinedride", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"getride_joinedride", "POST",
                         params);
 
 

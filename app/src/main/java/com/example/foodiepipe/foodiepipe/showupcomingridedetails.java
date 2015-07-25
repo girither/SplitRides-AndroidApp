@@ -335,7 +335,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 JSONObject params = new JSONObject();
                 params.put("rideId", mRideId);
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/startRide", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"startRide", "POST",
                         params);
 
 
@@ -413,7 +413,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 params.put("rideId", mRideId);
                 params.put("latLngString",mlatlongstring);
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/endRide", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"endRide", "POST",
                         params);
 
 
@@ -478,7 +478,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 params.put("jrId", jrId);
                 params.put("customerNumber",mcustomerNumber);
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/removeFromTheJoinedRide", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"removeFromTheJoinedRide", "POST",
                         params);
 
 
@@ -552,7 +552,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 params.put("serviceProvider",mcabProvider.toLowerCase());
                 params.put("city","bengaluru");
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/estimateRide", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"estimateRide", "POST",
                         params);
 
 
@@ -609,7 +609,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 JSONObject params = new JSONObject();
                 params.put("rideId", mRideId);
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRideDetails", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"getRideDetails", "POST",
                         params);
 
 

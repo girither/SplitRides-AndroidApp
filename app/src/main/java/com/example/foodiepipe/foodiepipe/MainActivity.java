@@ -453,7 +453,7 @@ public class MainActivity extends ActionBarActivity
                 JSONObject params = new JSONObject();
 
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRequests", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"getRequests", "POST",
                         params);
 
 
@@ -947,7 +947,7 @@ public class MainActivity extends ActionBarActivity
 
 
             // getting JSON string from URL
-            String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/signuplogin", "POST",
+            String json = jsonParser.makeHttpRequest(mainurl.geturl() +"signuplogin", "POST",
                     params);
 
             // Check your log cat for JSON reponse

@@ -179,7 +179,7 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
                 params.put("timeChoice",SharedPreferenceManager.getPreference("myrideId_timechoice"));
                 params.put("rideId",SharedPreferenceManager.getPreference("myrideId"));
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRides", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"getRides", "POST",
                         params);
 
 

@@ -183,7 +183,7 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
                 JSONObject params = new JSONObject();
 
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getMyRides", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"getMyRides", "POST",
                         params);
 
 

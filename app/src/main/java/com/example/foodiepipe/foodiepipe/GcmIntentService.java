@@ -223,7 +223,7 @@ public class GcmIntentService extends IntentService {
                 params.put("jrId", mjrId);
                 params.put("distanceTravelled",mdistanceTravelled);
 
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/startRideDistanceTravelled", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"startRideDistanceTravelled", "POST",
                         params);
 
 
@@ -277,7 +277,7 @@ public class GcmIntentService extends IntentService {
                 params.put("distanceTravelled",mdistanceTravelled);
 
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/endRideDistanceTravelled", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"endRideDistanceTravelled", "POST",
                         params);
 
 

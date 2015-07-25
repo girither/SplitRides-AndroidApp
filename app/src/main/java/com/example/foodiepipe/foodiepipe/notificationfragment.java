@@ -209,7 +209,7 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
                     JSONObject params = new JSONObject();
 
                     // getting JSON string from URL
-                    String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRequests", "POST",
+                    String json = jsonParser.makeHttpRequest(mainurl.geturl() +"getRequests", "POST",
                             params);
 
 

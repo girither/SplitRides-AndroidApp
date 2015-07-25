@@ -58,7 +58,7 @@ public class googleservice  extends IntentService {
                 params.put("sourcelatlong", mlocationstring);
                 params.put("destinationlatlong", mlocationstring);
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/calculatedistance", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"calculatedistance", "POST",
                         params);
 
                 // Check your log cat for JSON reponse

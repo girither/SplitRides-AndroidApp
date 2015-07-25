@@ -318,7 +318,7 @@ public class ratecard  extends Fragment implements GoogleApiClient.OnConnectionF
                 params.put("destinationLng",mdestinationlong);
                 params.put("city","bengaluru");
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/rateCardEstimationWithServiceProviders", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() + "rateCardEstimationWithServiceProviders", "POST",
                         params);
 
 
