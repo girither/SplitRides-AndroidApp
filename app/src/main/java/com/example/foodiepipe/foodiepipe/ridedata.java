@@ -11,6 +11,43 @@ public class ridedata {
     String date;
     String ridestatus;
 
+    public String getSourcelat() {
+        return sourcelat;
+    }
+
+    public void setSourcelat(String sourcelat) {
+        this.sourcelat = sourcelat;
+    }
+
+    public String getSourcelong() {
+        return sourcelong;
+    }
+
+    public void setSourcelong(String sourcelong) {
+        this.sourcelong = sourcelong;
+    }
+
+    public String getDestinationlat() {
+        return destinationlat;
+    }
+
+    public void setDestinationlat(String destinationlat) {
+        this.destinationlat = destinationlat;
+    }
+
+    public String getDestinationlng() {
+        return destinationlng;
+    }
+
+    public void setDestinationlng(String destinationlng) {
+        this.destinationlng = destinationlng;
+    }
+
+    String sourcelat;
+    String sourcelong;
+    String destinationlat;
+    String destinationlng;
+
     public String getEncodedpolyline() {
         return encodedpolyline;
     }
@@ -164,5 +201,18 @@ public class ridedata {
         this.rideFlag = rideFlag;
         this.rideownercustomernumber = rideownercustomernumber;
         this.encodedpolyline = encodedpolyline;
+    }
+    public ridedata(String source,String destination,String date,String rideId,String rideFlag,String rideownercustomernumber,String encodedpolyline, String sourcelat,String sourcelong ,String destinationlat,String destinationlng) {
+        this.source = source;
+        this.destination = destination;
+        this.date = date;
+        this.rideId = rideId;
+        this.rideFlag = rideFlag;
+        this.rideownercustomernumber = rideownercustomernumber;
+        this.encodedpolyline = encodedpolyline;
+        this.sourcelat =sourcelat;
+        this.sourcelong = sourcelong;
+        this.destinationlat = destinationlat;
+        this.destinationlng = destinationlng;
     }
 }

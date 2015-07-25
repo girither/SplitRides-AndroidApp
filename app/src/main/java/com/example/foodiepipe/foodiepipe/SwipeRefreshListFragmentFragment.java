@@ -191,7 +191,11 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
                         for (int i = 0; i < rides.length(); i++) {
                             JSONObject rideindividualdata = rides.getJSONObject(i);
                             if(islatlongonpathofride(convertStringtoLatlong(rideindividualdata.getString("pickUpLat"),rideindividualdata.getString("pickUpLng")),convertStringtoLatlong(rideindividualdata.getString("dropLat"),rideindividualdata.getString("dropLng")),polylinelatlong)) {
-                                ridedata info = new ridedata(rideindividualdata.getString("source"), rideindividualdata.getString("destination"), rideindividualdata.getString("date"), rideindividualdata.getString("rideId"), "ride", rideindividualdata.getString("customerNumber"), "");
+                                ridedata info = new ridedata(rideindividualdata.getString("source"), rideindividualdata.getString("destination"), rideindividualdata.getString("date"), rideindividualdata.getString("rideId"), "ride", rideindividualdata.getString("customerNumber"), rideindividualdata.getString("overview_polyline"));
+                                ridedataArray.add(info);
+                            }
+                            else if(islatlongonpathofride(convertStringtoLatlong(SharedPreferenceManager.getPreference("myrideId_sourcelat"),SharedPreferenceManager.getPreference("myrideId_sourcelong")),convertStringtoLatlong(SharedPreferenceManager.getPreference(""),SharedPreferenceManager.getPreference("")),PolyUtil.decode(rideindividualdata.getString("overview_polyline")))){
+                                ridedata info = new ridedata(rideindividualdata.getString("source"), rideindividualdata.getString("destination"), rideindividualdata.getString("date"), rideindividualdata.getString("rideId"), "ride", rideindividualdata.getString("customerNumber"), rideindividualdata.getString("overview_polyline"));
                                 ridedataArray.add(info);
                             }
                         }
@@ -201,7 +205,11 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
                         for (int i = 0; i < jrides.length(); i++) {
                             JSONObject joinedrideindividualdata = jrides.getJSONObject(i);
                             if(islatlongonpathofride(convertStringtoLatlong(joinedrideindividualdata.getString("pickUpLat"),joinedrideindividualdata.getString("pickUpLng")),convertStringtoLatlong(joinedrideindividualdata.getString("dropLat"),joinedrideindividualdata.getString("dropLng")),polylinelatlong)) {
-                                ridedata info = new ridedata(joinedrideindividualdata.getString("source"), joinedrideindividualdata.getString("destination"), joinedrideindividualdata.getString("date"), joinedrideindividualdata.getString("jrId"), "jride", joinedrideindividualdata.getString("ownerCustomerNumber"), "");
+                                ridedata info = new ridedata(joinedrideindividualdata.getString("source"), joinedrideindividualdata.getString("destination"), joinedrideindividualdata.getString("date"), joinedrideindividualdata.getString("jrId"), "jride", joinedrideindividualdata.getString("ownerCustomerNumber"),joinedrideindividualdata.getString("overview_polyline"));
+                                ridedataArray.add(info);
+                            }
+                            else if(islatlongonpathofride(convertStringtoLatlong(SharedPreferenceManager.getPreference("myrideId_sourcelat"),SharedPreferenceManager.getPreference("myrideId_sourcelong")),convertStringtoLatlong(SharedPreferenceManager.getPreference("myrideId_destinationlat"),SharedPreferenceManager.getPreference("myrideId_destinationlong")),PolyUtil.decode(joinedrideindividualdata.getString("overview_polyline")))){
+                                ridedata info = new ridedata(joinedrideindividualdata.getString("source"), joinedrideindividualdata.getString("destination"), joinedrideindividualdata.getString("date"), joinedrideindividualdata.getString("jrId"), "jride", joinedrideindividualdata.getString("ownerCustomerNumber"),joinedrideindividualdata.getString("overview_polyline"));
                                 ridedataArray.add(info);
                             }
                         }
