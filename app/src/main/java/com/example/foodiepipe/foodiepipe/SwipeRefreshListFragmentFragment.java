@@ -14,6 +14,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.foodpipe.android.helper.JSONParser;
+import com.google.maps.android.PolyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -145,7 +146,7 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRides", "POST",
                         params);
-
+                // PolyUtil.isLocationOnPath();
 
 
                 JSONObject jObj = new JSONObject(json);

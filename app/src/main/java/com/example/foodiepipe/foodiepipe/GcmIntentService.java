@@ -150,6 +150,28 @@ public class GcmIntentService extends IntentService {
                 Log.i(TAG,"in the penultimate line");
                 mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         }
+            else if(data.equals("YouAreTheNewOwner") || data.equals("OwnerHasExitedTheRide") ||data.equals("FellowRiderHasExited")){
+                String ownerrideid = msg.getString("jrId");
+                mNotificationManager = (NotificationManager)
+                        this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                Intent getridedetails = new Intent(this,showupcomingridedetails.class);
+                getridedetails.putExtra("rideId",ownerrideid);
+                PendingIntent contentIntent = PendingIntent.getActivity(this, 0, getridedetails, 0);
+                String message = msg.getString("message");
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(this)
+                                .setSmallIcon(R.drawable.ic_launcher)
+                                .setContentTitle(message)
+                                .setStyle(new NotificationCompat.InboxStyle()
+                                        .setBigContentTitle(message));
+
+
+                mBuilder.setContentIntent(contentIntent);
+                mBuilder.setAutoCancel(true);
+                Log.i(TAG,"in the penultimate line");
+                mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+            }
         else if(data.equals("rejectedByTheOwner")){
                 String ownerrideid = msg.getString("ownerrideid");
                 mNotificationManager = (NotificationManager)
