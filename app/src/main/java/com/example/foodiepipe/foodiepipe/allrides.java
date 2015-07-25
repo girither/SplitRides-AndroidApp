@@ -211,7 +211,7 @@ public class allrides extends Fragment implements AdapterView.OnItemClickListene
                     JSONArray rides = jObj.getJSONArray("rides");
                     for(int i=0; i<rides.length(); i++){
                         JSONObject rideindividualdata = rides.getJSONObject(i);
-                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("rideId"),"ride",rideindividualdata.getString("customerNumber"));
+                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("rideId"),"ride",rideindividualdata.getString("customerNumber"),rideindividualdata.getString(""));
                         ridedataArray.add(info);
                     }
                 }

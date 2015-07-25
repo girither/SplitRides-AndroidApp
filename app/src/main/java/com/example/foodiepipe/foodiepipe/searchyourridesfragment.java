@@ -52,6 +52,7 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
             SharedPreferenceManager.setPreference("myride_source", rideobj.getSource());
             SharedPreferenceManager.setPreference("myride_destination", rideobj.getDestination());
             SharedPreferenceManager.setPreference("myrideId", rideobj.getRideId());
+            SharedPreferenceManager.setPreference("myrideId_encodedpolyline",rideobj.getEncodedpolyline());
             SharedPreferenceManager.setPreference("myrideId_timechoice", rideobj.getTodayortomorrow().toLowerCase().trim());
             startActivity(searchrides);
         }
@@ -159,6 +160,7 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
         }
 
     }
+
     public class getmyridetask extends AsyncTask<Void, Void, List<ridedata>> {
 
 
@@ -187,7 +189,7 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
                     JSONArray rides = jObj.getJSONArray("rides");
                     for(int i=0; i<rides.length(); i++){
                         JSONObject rideindividualdata = rides.getJSONObject(i);
-                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("rideId"),"ride",rideindividualdata.getString("customerNumber"));
+                        ridedata info = new ridedata(rideindividualdata.getString("source"),rideindividualdata.getString("destination"),rideindividualdata.getString("date"),rideindividualdata.getString("rideId"),"ride",rideindividualdata.getString("customerNumber"),rideindividualdata.getString("overview_polyline"));
                         ridedataArray.add(info);
                     }
                 }
@@ -195,7 +197,6 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             return ridedataArray;
         }
 

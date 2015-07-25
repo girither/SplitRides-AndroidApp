@@ -1,19 +1,16 @@
 package com.example.foodiepipe.foodiepipe;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.foodpipe.android.helper.JSONParser;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.PolyUtil;
 
 import org.json.JSONArray;
@@ -119,7 +116,25 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
         new DummyBackgroundTask().execute();
     }
 
+    private Boolean islatlongonpathofride(LatLng source,LatLng destination,java.util.List<LatLng> polylinelatlong) {
+        Boolean ispickpointonpath = PolyUtil.isLocationOnPath(source, polylinelatlong, true, 1.0);
+        Boolean isdroppointonpath = PolyUtil.isLocationOnPath(source, polylinelatlong, true, 1.0);
+        if(ispickpointonpath && isdroppointonpath)
+        {
+           return true;
+        }
+        else{
+           return false;
+        }
+    }
 
+    public LatLng convertStringtoLatlong(String lat,String lng)
+    {
+        double lati = Double.parseDouble(lat);
+        double lngi = Double.parseDouble(lng);
+        LatLng newlatlong = new LatLng(lati, lngi);
+        return newlatlong;
+    }
     /**
      * Dummy {@link AsyncTask} which simulates a long running task to fetch new cheeses.
      */
@@ -128,6 +143,7 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
         @Override
         protected List<ridedata> doInBackground(Void... param) {
             List<ridedata> ridedataArray = new ArrayList<ridedata>();
+            java.util.List<LatLng> polylinelatlong = PolyUtil.decode(SharedPreferenceManager.getPreference("myrideId_encodedpolyline"));
             // Building Parameters
             /*List<NameValuePair> params = new ArrayList<NameValuePair>();
 
@@ -139,14 +155,11 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
             try {
                 JSONObject params = new JSONObject();
                 params.put("timeChoice",SharedPreferenceManager.getPreference("myrideId_timechoice"));
-                params.put("sourceRideSearchRadius", Integer.toString(SharedPreferenceManager.getIntPreference("source_search_radius")));
-                params.put("destinationRideSearchRadius",Integer.toString(SharedPreferenceManager.getIntPreference("destination_search_radius")));
                 params.put("rideId",SharedPreferenceManager.getPreference("myrideId"));
-
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest("http://radiant-peak-3095.herokuapp.com/getRides", "POST",
                         params);
-                // PolyUtil.isLocationOnPath();
+
 
 
                 JSONObject jObj = new JSONObject(json);
@@ -155,16 +168,20 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
                         JSONArray rides = jObj.getJSONArray("rides");
                         for (int i = 0; i < rides.length(); i++) {
                             JSONObject rideindividualdata = rides.getJSONObject(i);
-                            ridedata info = new ridedata(rideindividualdata.getString("source"), rideindividualdata.getString("destination"), rideindividualdata.getString("date"), rideindividualdata.getString("rideId"), "ride", rideindividualdata.getString("customerNumber"));
-                            ridedataArray.add(info);
+                            if(islatlongonpathofride(convertStringtoLatlong(rideindividualdata.getString("pickUpLat"),rideindividualdata.getString("pickUpLng")),convertStringtoLatlong(rideindividualdata.getString("dropLat"),rideindividualdata.getString("dropLng")),polylinelatlong)) {
+                                ridedata info = new ridedata(rideindividualdata.getString("source"), rideindividualdata.getString("destination"), rideindividualdata.getString("date"), rideindividualdata.getString("rideId"), "ride", rideindividualdata.getString("customerNumber"), "");
+                                ridedataArray.add(info);
+                            }
                         }
                     }
                     else if(jObj.has("jRides")) {
                         JSONArray jrides = jObj.getJSONArray("jRides");
                         for (int i = 0; i < jrides.length(); i++) {
                             JSONObject joinedrideindividualdata = jrides.getJSONObject(i);
-                            ridedata info = new ridedata(joinedrideindividualdata.getString("source"), joinedrideindividualdata.getString("destination"), joinedrideindividualdata.getString("date"), joinedrideindividualdata.getString("jrId"), "jride", joinedrideindividualdata.getString("ownerCustomerNumber"));
-                            ridedataArray.add(info);
+                            if(islatlongonpathofride(convertStringtoLatlong(joinedrideindividualdata.getString("pickUpLat"),joinedrideindividualdata.getString("pickUpLng")),convertStringtoLatlong(joinedrideindividualdata.getString("dropLat"),joinedrideindividualdata.getString("dropLng")),polylinelatlong)) {
+                                ridedata info = new ridedata(joinedrideindividualdata.getString("source"), joinedrideindividualdata.getString("destination"), joinedrideindividualdata.getString("date"), joinedrideindividualdata.getString("jrId"), "jride", joinedrideindividualdata.getString("ownerCustomerNumber"), "");
+                                ridedataArray.add(info);
+                            }
                         }
                     }
                 }

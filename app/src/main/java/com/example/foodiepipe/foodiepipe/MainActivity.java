@@ -352,8 +352,6 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         SharedPreferenceManager.setApplicationContext(getApplicationContext());
         onregister();
-        SharedPreferenceManager.setPreference("source_search_radius", 15);
-        SharedPreferenceManager.setPreference("destination_search_radius",15);
         SharedPreferenceManager.setPreference("notificationcount",0);
     FacebookSdk.sdkInitialize(this.getApplicationContext());
 

@@ -11,6 +11,16 @@ public class ridedata {
     String date;
     String ridestatus;
 
+    public String getEncodedpolyline() {
+        return encodedpolyline;
+    }
+
+    public void setEncodedpolyline(String encodedpolyline) {
+        this.encodedpolyline = encodedpolyline;
+    }
+
+    String encodedpolyline;
+
     public String getRidestatus() {
         return ridestatus;
     }
@@ -146,12 +156,13 @@ public class ridedata {
         this.destination = destination;
         this.date = date;
     }
-    public ridedata(String source,String destination,String date,String rideId,String rideFlag,String rideownercustomernumber) {
+    public ridedata(String source,String destination,String date,String rideId,String rideFlag,String rideownercustomernumber,String encodedpolyline) {
         this.source = source;
         this.destination = destination;
         this.date = date;
         this.rideId = rideId;
         this.rideFlag = rideFlag;
         this.rideownercustomernumber = rideownercustomernumber;
+        this.encodedpolyline = encodedpolyline;
     }
 }
