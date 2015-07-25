@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.PolyUtil;
@@ -57,6 +58,27 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
             startActivity(getinduvidualrides);
         }
         getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ConnectionDetector cd = new ConnectionDetector(getActivity().getApplicationContext());
+        if (!cd.isConnectingToInternet()) {
+            List<ridedata> noresultsarray = new ArrayList<ridedata>();
+            ridedata info = new ridedata(null,null,null);
+            info.setNoresults("No Internet Available Currently");
+            noresultsarray.add(info);
+            adapter = new noresultsadapter(getActivity(),noresultsarray);
+
+            // Set the adapter between the ListView and its backing data.
+            setListAdapter(adapter);
+
+        }
+        else {
+            searchridetask = new DummyBackgroundTask();
+            searchridetask.execute();
+        }
     }
 
     // BEGIN_INCLUDE (setup_views)
@@ -117,8 +139,8 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
     }
 
     private Boolean islatlongonpathofride(LatLng source,LatLng destination,java.util.List<LatLng> polylinelatlong) {
-        Boolean ispickpointonpath = PolyUtil.isLocationOnPath(source, polylinelatlong, true, 1.0);
-        Boolean isdroppointonpath = PolyUtil.isLocationOnPath(source, polylinelatlong, true, 1.0);
+        Boolean ispickpointonpath = PolyUtil.isLocationOnPath(source, polylinelatlong, true, 2000.0);
+        Boolean isdroppointonpath = PolyUtil.isLocationOnPath(destination, polylinelatlong, true, 2000.0);
         if(ispickpointonpath && isdroppointonpath)
         {
            return true;

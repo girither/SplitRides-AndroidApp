@@ -309,6 +309,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     public class startridetask extends AsyncTask<Void, Void,String > {
 
         private final String mRideId;
+        String message;
 
 
 
@@ -341,7 +342,12 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
-                     data = jObj.getString("success");
+                    if(jObj.has("success")) {
+                        data = jObj.getString("success");
+                    }
+                    else if(jObj.has("failure")) {
+                        data = jObj.getString("failure");
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -354,11 +360,11 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         protected void onPostExecute(final String success) {
 
             pDialog.dismiss();
-            if(success != null){
+            if(success != null && success.equals("success")){
                 startride.setVisibility(View.GONE);
                 exitride.setVisibility(View.GONE);
             }
-            else{
+            else if(success != null && success.equals("failure")){
                 Toast.makeText(showupcomingridedetails.this,
                         "Something went wrong while sending request. Please try again", Toast.LENGTH_LONG).show();
             }
