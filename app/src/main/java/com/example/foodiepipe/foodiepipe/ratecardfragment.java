@@ -33,11 +33,11 @@ public class ratecardfragment extends DialogFragment {
 
         builder.setView(dialogView);
         TextView rateText = (TextView)dialogView.findViewById(R.id.estimatecost_value);
-        rateText.setText(mRateText.getPrice());
+        rateText.setText(getResources().getString(R.string.Rs)+" "+mRateText.getPrice());
         TextView ratedistance = (TextView)dialogView.findViewById(R.id.distance_value);
-        ratedistance.setText(mRateText.getDistance());
+        ratedistance.setText(mRateText.getDistance() +" Km");
         TextView ratetime = (TextView)dialogView.findViewById(R.id.trip_time_value);
-        ratetime.setText(mRateText.getTime());
+        ratetime.setText(mRateText.getTime() +" min");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
