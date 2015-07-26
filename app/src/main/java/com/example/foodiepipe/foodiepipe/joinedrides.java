@@ -38,7 +38,6 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
     private ProgressBar bar;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {
