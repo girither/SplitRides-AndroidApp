@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
 
 import org.json.JSONArray;
@@ -62,6 +63,24 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
                         + " must implement OnDataChangedListener");
             }
         }
+
+    public void onResume() {
+        super.onResume();
+        ConnectionDetector cd = new ConnectionDetector(getActivity().getApplicationContext());
+        if (!cd.isConnectingToInternet()) {
+            List<ridedata> noresultsarray = new ArrayList<ridedata>();
+            ridedata info = new ridedata(null,null,null);
+            info.setNoresults("No Internet Available Currently");
+            noresultsarray.add(info);
+            myallnotificationdataadapter_noresults = new SampleAdapter_noresults(noresultsarray);
+            mGridView_noresults.setAdapter(myallnotificationdataadapter_noresults);
+
+        }
+        else {
+            mnotificationTask = new getallnotificationtask();
+            mnotificationTask.execute((Void) null);
+        }
+    }
 
         @Override
         public void onItemClick(AdapterView<?> container, View view, int position, long id) {
