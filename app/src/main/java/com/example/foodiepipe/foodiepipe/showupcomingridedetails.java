@@ -232,7 +232,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 @Override
                 public void onClick(View v) {
                     StringBuilder latlongbuilder = new StringBuilder();
-                    latlongbuilder.append("geo:").append(droplatlongposition).append("?q=").append(droplatlongposition).append("(Pickuppoint)");
+                    latlongbuilder.append("geo:").append(droplatlongposition).append("?q=").append(droplatlongposition).append("(Droppoint)");
                     Uri gmmIntentUri = Uri.parse(latlongbuilder.toString());
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
