@@ -70,6 +70,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
         estimaterequest = (Button) findViewById(R.id.estimeaterequest);
         acceptrequest.setOnClickListener(this);
         rejectrequest.setOnClickListener(this);
+        estimaterequest.setOnClickListener(this);
         Bundle extras = getIntent().getExtras();
         String requestId = (!extras.getString("requestId").isEmpty())?extras.getString("requestId"):SharedPreferenceManager.getPreference("currentrequestId");
         SharedPreferenceManager.setPreference("currentrequestId",requestId);
