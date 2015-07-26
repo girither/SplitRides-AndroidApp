@@ -69,14 +69,14 @@ public class notificationdata {
 
 
 
-    public notificationdata(String destination, String source, String date, String requestId) {
+    public notificationdata(String source,String destination, String date, String requestId) {
         this.destination = destination;
         this.source = source;
         this.date = date;
         this.requestId = requestId;
     }
 
-    public notificationdata(String destination, String source, String date,List<customer> customerlistdata,String requestId) {
+    public notificationdata(String source,String destination, String date,List<customer> customerlistdata,String requestId) {
         this.destination = destination;
         this.source = source;
         this.date = date;
@@ -84,7 +84,7 @@ public class notificationdata {
         this.requestId = requestId;
     }
 
-    public notificationdata(String destination, String source, String date,List<customer> customerlistdata,String rideId,String ownerrideid) {
+    public notificationdata(String source,String destination,String date,List<customer> customerlistdata,String rideId,String ownerrideid) {
         this.destination = destination;
         this.source = source;
         this.date = date;
