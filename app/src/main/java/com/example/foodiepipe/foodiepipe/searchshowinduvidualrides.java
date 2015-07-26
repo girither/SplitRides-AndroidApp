@@ -420,7 +420,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                 params.put("requestingCustomerNumber", mrequestingCustomerNumber);
                 params.put("rRideId", mrRideId);
                 // getting JSON string from URL
-                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"/sendRequestToJoinTheRideOrJoinedRide", "POST",
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"sendRequestToJoinTheRideOrJoinedRide", "POST",
                         params);
 
 
