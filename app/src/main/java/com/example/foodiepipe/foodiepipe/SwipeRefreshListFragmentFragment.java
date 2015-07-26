@@ -130,8 +130,8 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
     }
 
     private Boolean islatlongonpathofride(LatLng source,LatLng destination,java.util.List<LatLng> polylinelatlong) {
-        Boolean ispickpointonpath = PolyUtil.isLocationOnPath(source, polylinelatlong, true, 2000.0);
-        Boolean isdroppointonpath = PolyUtil.isLocationOnPath(destination, polylinelatlong, true, 2000.0);
+        Boolean ispickpointonpath = PolyUtil.isLocationOnPath(source, polylinelatlong, true, 4000.0);
+        Boolean isdroppointonpath = PolyUtil.isLocationOnPath(destination, polylinelatlong, true, 4000.0);
         if(ispickpointonpath && isdroppointonpath)
         {
            return true;
@@ -218,23 +218,29 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
         protected void onPostExecute(List<ridedata> result) {
             super.onPostExecute(result);
             setRefreshing(false);
-            if(getActivity()!= null) {
-                if (!result.isEmpty()) {
-                    adapter = new customridedataadapter(getActivity(), result);
+            try {
+                if (getActivity() != null) {
+                    if (!result.isEmpty()) {
+                        adapter = new customridedataadapter(getActivity(), result);
 
-                    // Set the adapter between the ListView and its backing data.
-                    setListAdapter(adapter);
-                } else {
-                    List<ridedata> noresultsarray = new ArrayList<ridedata>();
-                    ridedata info = new ridedata(null, null, null);
-                    info.setNoresults("No Results Available Currently");
-                    noresultsarray.add(info);
-                    adapter = new noresultsadapter(getActivity(), noresultsarray);
+                        // Set the adapter between the ListView and its backing data.
+                        setListAdapter(adapter);
+                    } else {
+                        List<ridedata> noresultsarray = new ArrayList<ridedata>();
+                        ridedata info = new ridedata(null, null, null);
+                        info.setNoresults("No Results Available Currently");
+                        noresultsarray.add(info);
+                        adapter = new noresultsadapter(getActivity(), noresultsarray);
 
-                    // Set the adapter between the ListView and its backing data.
-                    setListAdapter(adapter);
+                        // Set the adapter between the ListView and its backing data.
+                        setListAdapter(adapter);
+                    }
                 }
             }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
 
     }

@@ -210,22 +210,27 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
 
             super.onPostExecute(ridedataArray);
             setRefreshing(false);
-            if(getActivity()!= null) {
-                if (!ridedataArray.isEmpty()) {
-                    adapter = new customridedataadapter(getActivity(), ridedataArray);
+            try {
+                if (getActivity() != null) {
+                    if (!ridedataArray.isEmpty()) {
+                        adapter = new customridedataadapter(getActivity(), ridedataArray);
 
-                    // Set the adapter between the ListView and its backing data.
-                    setListAdapter(adapter);
-                } else {
-                    List<ridedata> noresultsarray = new ArrayList<ridedata>();
-                    ridedata info = new ridedata(null, null, null);
-                    info.setNoresults("No Results Available Currently");
-                    noresultsarray.add(info);
-                    adapter = new noresultsadapter_searchrides(getActivity(), noresultsarray);
+                        // Set the adapter between the ListView and its backing data.
+                        setListAdapter(adapter);
+                    } else {
+                        List<ridedata> noresultsarray = new ArrayList<ridedata>();
+                        ridedata info = new ridedata(null, null, null);
+                        info.setNoresults("No Results Available Currently");
+                        noresultsarray.add(info);
+                        adapter = new noresultsadapter_searchrides(getActivity(), noresultsarray);
 
-                    // Set the adapter between the ListView and its backing data.
-                    setListAdapter(adapter);
+                        // Set the adapter between the ListView and its backing data.
+                        setListAdapter(adapter);
+                    }
                 }
+            }
+            catch (Exception e){
+                e.printStackTrace();
             }
         }
 
