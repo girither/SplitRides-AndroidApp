@@ -21,15 +21,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SwipeRefreshListFragmentFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SwipeRefreshListFragmentFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
 
     private static final String LOG_TAG = SwipeRefreshListFragmentFragment.class.getSimpleName();
@@ -227,22 +218,22 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
         protected void onPostExecute(List<ridedata> result) {
             super.onPostExecute(result);
             setRefreshing(false);
-            if(!result.isEmpty()){
-                adapter = new customridedataadapter(getActivity(),result);
+            if(getActivity()!= null) {
+                if (!result.isEmpty()) {
+                    adapter = new customridedataadapter(getActivity(), result);
 
-                // Set the adapter between the ListView and its backing data.
-                setListAdapter(adapter);
-            }
-            else
-            {
-                List<ridedata> noresultsarray = new ArrayList<ridedata>();
-                ridedata info = new ridedata(null,null,null);
-                info.setNoresults("No Results Available Currently");
-                noresultsarray.add(info);
-                adapter = new noresultsadapter(getActivity(),noresultsarray);
+                    // Set the adapter between the ListView and its backing data.
+                    setListAdapter(adapter);
+                } else {
+                    List<ridedata> noresultsarray = new ArrayList<ridedata>();
+                    ridedata info = new ridedata(null, null, null);
+                    info.setNoresults("No Results Available Currently");
+                    noresultsarray.add(info);
+                    adapter = new noresultsadapter(getActivity(), noresultsarray);
 
-                // Set the adapter between the ListView and its backing data.
-                setListAdapter(adapter);
+                    // Set the adapter between the ListView and its backing data.
+                    setListAdapter(adapter);
+                }
             }
         }
 
