@@ -291,7 +291,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
                     JSONObject ride = jObj.getJSONObject("requesterRide");
-                    String ownerride = jObj.getString("requesterRide");
+                    String ownerrideid = jObj.getString("ownerRide");
                     JSONObject customerindividualdata = jObj.getJSONObject("requesterCustomerProfile");
                     StringBuilder latlongbuilder = new StringBuilder();
                     latlongbuilder.append(ride.getString("pickUpLat")).append(",").append(ride.getString("pickUpLng"));
@@ -300,7 +300,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                     List<customer> customerlistdata = new ArrayList<customer>();
                     customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"");
                     customerlistdata.add(customeradapterdata);
-                    info = new notificationdata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"),ownerride);
+                    info = new notificationdata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"),ownerrideid);
 
                 }
             } catch (JSONException e) {
