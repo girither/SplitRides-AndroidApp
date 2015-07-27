@@ -191,8 +191,8 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
                             }
                         }
                     }
-                    else if(jObj.has("jRides")) {
-                        JSONArray jrides = jObj.getJSONArray("jRides");
+                    if(jObj.has("joinedRides")) {
+                        JSONArray jrides = jObj.getJSONArray("joinedRides");
                         for (int i = 0; i < jrides.length(); i++) {
                             JSONObject joinedrideindividualdata = jrides.getJSONObject(i);
                             if(islatlongonpathofride(convertStringtoLatlong(joinedrideindividualdata.getString("pickUpLat"),joinedrideindividualdata.getString("pickUpLng")),convertStringtoLatlong(joinedrideindividualdata.getString("dropLat"),joinedrideindividualdata.getString("dropLng")),polylinelatlong)) {
