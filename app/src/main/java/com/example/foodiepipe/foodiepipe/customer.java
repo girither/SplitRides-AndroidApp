@@ -7,6 +7,16 @@ public class customer {
     private String customerName;
     private String customerEmail;
 
+    public String getCustomernumber() {
+        return customernumber;
+    }
+
+    public void setCustomernumber(String customernumber) {
+        this.customernumber = customernumber;
+    }
+
+    private String customernumber;
+
     public String getProfileId() {
         return profileId;
     }
@@ -41,13 +51,14 @@ public class customer {
         return customerPhoneNumber;
     }
 
-    public customer(String customerName, String customerEmail, String customerPhoneNumber,String latLong,String droplatlong,String profileId) {
+    public customer(String customerName, String customerEmail, String customerPhoneNumber,String latLong,String droplatlong,String profileId,String customernumber) {
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.customerPhoneNumber = customerPhoneNumber;
         this.latLong = latLong;
         this.dropLatlong = droplatlong;
         this.profileId = profileId;
+        this.customernumber = customernumber;
     }
 
     public void setCustomerPhoneNumber(String customerPhoneNumber) {

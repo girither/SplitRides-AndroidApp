@@ -315,10 +315,11 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         }
                         for(int i=0; i<customerdata.length(); i++){
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
-                            customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),customerindividualdata.getString("phoneNumber"),customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"");
+                            customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),customerindividualdata.getString("phoneNumber"),customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"));
                             customerlistdata.add(customeradapterdata);
                         }
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata,ride.getString("rideId"));
+                        SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("ownerCustomerNumber"));
                     }
                     else if(jObj.has("ride")){
                         JSONObject ride = jObj.getJSONObject("ride");
@@ -327,7 +328,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         latlongbuilder.append(ride.getString("pickUpLat")).append(",").append(ride.getString("pickUpLng"));
                         StringBuilder latlongbuilder_droppoint = new StringBuilder();
                         latlongbuilder_droppoint.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
-                        customer customeradapterdata = new customer(customerdata.getString("name"),customerdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString(),latlongbuilder_droppoint.toString(),customerdata.has("profileId")?customerdata.getString("profileId"):"");
+                        customer customeradapterdata = new customer(customerdata.getString("name"),customerdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString(),latlongbuilder_droppoint.toString(),customerdata.has("profileId")?customerdata.getString("profileId"):"",customerdata.getString("customerNumber"));
                         List<customer> customerlistdata = new ArrayList<customer>();
                         if(ride.has("requestMatrix")) {
                             if(!ride.isNull("requestMatrix")) {
@@ -340,6 +341,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         }
                         customerlistdata.add(customeradapterdata);
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata, ride.getString("rideId"));
+                        SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("customerNumber"));
                     }
                   }
             } catch (JSONException e) {

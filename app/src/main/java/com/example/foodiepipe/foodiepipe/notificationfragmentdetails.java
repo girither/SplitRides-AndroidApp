@@ -216,6 +216,12 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
             ((TextView) convertView.findViewById(R.id.rideownernamevalue)).setText(mSamples.get(position).getCustomerName());
             ((TextView) convertView.findViewById(R.id.rideownerphonenumbervalue)).setText(mSamples.get(position).getCustomerPhoneNumber());
             ((ProfilePictureView)convertView.findViewById(R.id.profilePicture)).setProfileId(mSamples.get(position).getProfileId());
+            if(mSamples.get(position).getCustomernumber().equals(SharedPreferenceManager.getPreference("owner_customernumber"))) {
+                ((TextView) convertView.findViewById(R.id.role_label)).setText("Owner");
+            }
+            else{
+                ((TextView) convertView.findViewById(R.id.role_label)).setText("Partner");
+            }
             final String latlongposition = mSamples.get(position).getLatLong();
             final String droplatlongposition = mSamples.get(position).getDropLatlong();
             ((Button)convertView.findViewById(R.id.see_pickup_point)).setOnClickListener(new View.OnClickListener() {
@@ -298,9 +304,10 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                     StringBuilder latlongbuilder_droppoint = new StringBuilder();
                     latlongbuilder_droppoint.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
                     List<customer> customerlistdata = new ArrayList<customer>();
-                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"");
+                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"));
                     customerlistdata.add(customeradapterdata);
                     info = new notificationdata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"),ownerrideid);
+                    SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("customerNumber"));
 
                 }
             } catch (JSONException e) {

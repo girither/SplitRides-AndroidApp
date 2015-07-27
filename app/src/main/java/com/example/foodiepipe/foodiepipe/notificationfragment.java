@@ -211,6 +211,9 @@ public class notificationfragment extends Fragment implements AdapterView.OnItem
             protected void onPreExecute() {
                 super.onPreExecute();
                 bar.setVisibility(View.VISIBLE);
+                allnotificationform.setVisibility(View.GONE);
+                noresultsform.setVisibility(View.GONE);
+
 
             }
             @Override
