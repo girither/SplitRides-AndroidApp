@@ -151,9 +151,6 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    SharedPreferenceManager.setPreference("startrides", false);
-                                    SharedPreferenceManager.setPreference("stoprides", true);
-                                    stoplocationservice();
                                     String locationstring = SharedPreferenceManager.getPreference("locationstringdata");
                                     if (locationstring != null && !locationstring.isEmpty()) {
                                         new endridetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
@@ -174,7 +171,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 startActivityForResult(selectcabprovider_estimate,PICK_CABPROVIDER_RESULT_FROMESIMATE);
                 break;
             case R.id.exitride:
-                new exitjoinedride(SharedPreferenceManager.getPreference("currentride_rideid"),SharedPreferenceManager.getPreference("customerNumber")).execute();
+                new exitjoinedride(SharedPreferenceManager.getPreference("currentride_rideid"),SharedPreferenceManager.getPreference("customerNumber"),"exit").execute();
                 break;
         }
     }
@@ -260,10 +257,10 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 if(!SharedPreferenceManager.getBooleanPreference("startrides")) {
-                    SharedPreferenceManager.setPreference("startrides", true);
+                    Bundle extras = data.getExtras();
+                    String cabprovidervalue = extras.getString("cabprovider");
                     SharedPreferenceManager.setPreference("started_jrride", SharedPreferenceManager.getPreference("currentride_rideid"));
-                    startlocationservice();
-                    new startridetask(SharedPreferenceManager.getPreference("started_jrride")).execute();
+                    new startridetask(cabprovidervalue,SharedPreferenceManager.getPreference("started_jrride")).execute();
                 }
                 else{
                     Toast.makeText(showupcomingridedetails.this,
@@ -309,11 +306,14 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     public class startridetask extends AsyncTask<Void, Void,String > {
 
         private final String mRideId;
+        private final String mcabprovidervalue;
         String message = "";
 
 
 
-        startridetask(String RideId) {
+        startridetask(String cabprovidervalue,String RideId) {
+
+            mcabprovidervalue = cabprovidervalue;
             mRideId = RideId;
         }
 
@@ -333,7 +333,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
             try {
                 JSONObject params = new JSONObject();
-                params.put("rideId", mRideId);
+                params.put("jrId", mRideId);
+                params.put("serviceProvider",mcabprovidervalue);
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest(mainurl.geturl() +"startRide", "POST",
                         params);
@@ -365,6 +366,9 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             if(success != null && success.equals("success")){
                 startride.setVisibility(View.GONE);
                 exitride.setVisibility(View.GONE);
+                endride.setVisibility(View.VISIBLE);
+                SharedPreferenceManager.setPreference("startrides", true);
+                startlocationservice();
             }
             else if(success != null && success.equals("failure")){
                 Toast.makeText(showupcomingridedetails.this,
@@ -410,7 +414,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
             try {
                 JSONObject params = new JSONObject();
-                params.put("rideId", mRideId);
+                params.put("jrId", mRideId);
                 params.put("latLngString",mlatlongstring);
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest(mainurl.geturl() +"endRide", "POST",
@@ -433,6 +437,9 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         protected void onPostExecute(final ratecardobject data) {
                 pDialog.dismiss();
                 if(data != null){
+                    SharedPreferenceManager.setPreference("startrides", false);
+                    SharedPreferenceManager.setPreference("stoprides", true);
+                    stoplocationservice();
                     SharedPreferenceManager.setPreference("locationstringdata", "");
                     DialogFragment billFragment = new billcardfragment(data);
                     billFragment.show(getFragmentManager(), "ratepicker");
@@ -453,11 +460,13 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
         private final String jrId;
         private final String mcustomerNumber;
+        private final String maction;
 
 
-        exitjoinedride(String joinedrideId, String customerNumber) {
+        exitjoinedride(String joinedrideId, String customerNumber,String action) {
             jrId=joinedrideId;
             mcustomerNumber = customerNumber;
+            maction = action;
         }
 
         @Override
@@ -476,7 +485,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             try {
                 JSONObject params = new JSONObject();
                 params.put("jrId", jrId);
-                params.put("customerNumber",mcustomerNumber);
+                // params.put("customerNumber",mcustomerNumber);
+                params.put("action",maction);
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest(mainurl.geturl() +"removeFromTheJoinedRide", "POST",
                         params);
@@ -697,10 +707,14 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 }
                 if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("accepted")){
                     endride.setVisibility(View.GONE);
+                    SharedPreferenceManager.setPreference("startrides", false);
+                    SharedPreferenceManager.setPreference("stoprides", true);
                 }
                 else if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("started")){
                     startride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
+                    SharedPreferenceManager.setPreference("startrides", true);
+                    SharedPreferenceManager.setPreference("stoprides", false);
                 }
                 todayortomorrowheader.setText(todayortomorrow);
                 timeofday.setText(timeofrides);

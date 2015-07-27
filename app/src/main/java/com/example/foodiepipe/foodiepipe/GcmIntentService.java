@@ -221,7 +221,7 @@ public class GcmIntentService extends IntentService {
             try {
                 JSONObject params = new JSONObject();
                 params.put("jrId", mjrId);
-                params.put("distanceTravelled",mdistanceTravelled);
+                params.put("latLngString",mdistanceTravelled);
 
                 String json = jsonParser.makeHttpRequest(mainurl.geturl() +"startRideDistanceTravelled", "POST",
                         params);
@@ -274,7 +274,7 @@ public class GcmIntentService extends IntentService {
             try {
                 JSONObject params = new JSONObject();
                 params.put("jrId", mjrId);
-                params.put("distanceTravelled",mdistanceTravelled);
+                params.put("latLngString",mdistanceTravelled);
 
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest(mainurl.geturl() +"endRideDistanceTravelled", "POST",
