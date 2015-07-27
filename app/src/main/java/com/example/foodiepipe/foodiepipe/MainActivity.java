@@ -847,7 +847,6 @@ public class MainActivity extends ActionBarActivity
              //   showFragment(SIGNUPPAGE, false);
            // }
            // else{
-
             showFragment(LOGINPAGE, false);
             //}
 
