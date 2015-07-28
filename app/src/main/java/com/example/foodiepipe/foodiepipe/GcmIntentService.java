@@ -100,7 +100,7 @@ public class GcmIntentService extends IntentService {
 
             Intent getnotificationdetails = new Intent(this,notificationfragmentdetails.class);
             getnotificationdetails.putExtra("requestId", requestID);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getnotificationdetails, 0);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getnotificationdetails, PendingIntent.FLAG_CANCEL_CURRENT);
             String source = msg.getString("source");
             String destination =msg.getString("destination");
             String customername = msg.getString("requesterCustomerName");
@@ -130,7 +130,7 @@ public class GcmIntentService extends IntentService {
 
                 Intent getridedetails = new Intent(this,showupcomingridedetails.class);
                 getridedetails.putExtra("rideId",ownerrideid);
-                PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getridedetails, 0);
+                PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getridedetails, PendingIntent.FLAG_CANCEL_CURRENT);
                 String emailId = msg.getString("ownerCustomerEmail");
                 String customername = msg.getString("ownerCustomerName");
                 String phonenumber = msg.getString("ownerPhoneNumber");
@@ -157,7 +157,7 @@ public class GcmIntentService extends IntentService {
 
                 Intent getridedetails = new Intent(this,showupcomingridedetails.class);
                 getridedetails.putExtra("rideId",ownerrideid);
-                PendingIntent contentIntent = PendingIntent.getActivity(this, 0, getridedetails, 0);
+                PendingIntent contentIntent = PendingIntent.getActivity(this, 0, getridedetails, PendingIntent.FLAG_CANCEL_CURRENT);
                 String message = msg.getString("message");
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(this)
@@ -179,7 +179,7 @@ public class GcmIntentService extends IntentService {
 
                 Intent getridedetails = new Intent(this,searchshowinduvidualrides.class);
                 getridedetails.putExtra("rideId",ownerrideid);
-                PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getridedetails, 0);
+                PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getridedetails, PendingIntent.FLAG_CANCEL_CURRENT);
                 String customername = msg.getString("ownerCustomerName");
                 String emailId = msg.getString("ownerCustomerEmail");
                 NotificationCompat.Builder mBuilder =
