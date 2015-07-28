@@ -353,6 +353,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 {
                     acceptrequest.setVisibility(View.GONE);
                     rejectrequest.setVisibility(View.GONE);
+                    estimaterequest.setVisibility(View.GONE);
                 }
                 todayortomorrowheader.setText(todayortomorrow);
                 timeofday.setText(timeofrides);

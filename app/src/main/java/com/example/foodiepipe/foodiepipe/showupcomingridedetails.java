@@ -642,8 +642,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                             if(!ride.isNull("statusMatrix")) {
                                 JSONObject statusmatrix = ride.getJSONObject("statusMatrix");
                                 if (statusmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
-                                    JSONObject requestobject = statusmatrix.getJSONObject(SharedPreferenceManager.getPreference("customerNumber"));
-                                    status = requestobject.getString("status");
+                                    status = statusmatrix.getString(SharedPreferenceManager.getPreference("customerNumber"));
+                                    // status = requestobject.getString("status");
                                 }
                             }
                         }
@@ -715,7 +715,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     exitride.setVisibility(View.GONE);
                     hideeditmenuitem.setVisible(false);
                 }
-                if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("accepted")){
+                if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("notstarted")){
                     endride.setVisibility(View.GONE);
                     SharedPreferenceManager.setPreference("startrides", false);
                     SharedPreferenceManager.setPreference("stoprides", true);

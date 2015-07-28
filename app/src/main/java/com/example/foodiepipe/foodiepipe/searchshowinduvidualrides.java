@@ -340,7 +340,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                             }
                         }
                         customerlistdata.add(customeradapterdata);
-                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata, ride.getString("rideId"));
+                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata, ride.getString("jrId"));
                         SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("customerNumber"));
                     }
                   }
