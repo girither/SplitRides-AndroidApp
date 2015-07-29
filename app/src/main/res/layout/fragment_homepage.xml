@@ -5,6 +5,29 @@
     android:background="#F2F2F2"
     android:orientation="vertical">
 
+    <!--TextView
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="65dp"
+        android:id="@+id/choose_a_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select a City"
+        android:textColor="#A52A2A"
+        android:autoLink="web"
+        android:textAppearance="?android:attr/textAppearanceSmall" /-->
+
+
+    <!--Spinner
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/border_edittextbox"
+        android:id="@+id/spinner" /-->
+
     <GridView android:id="@android:id/list"
         android:layout_marginTop="60dp"
         style="@style/Widget.SampleDashboard.Grid"

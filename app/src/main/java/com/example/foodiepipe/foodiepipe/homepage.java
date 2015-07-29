@@ -8,9 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 /**
@@ -21,7 +26,7 @@ import android.widget.TextView;
  * Use the {@link homepage#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class homepage extends Fragment implements AdapterView.OnItemClickListener {
+public class homepage extends Fragment implements AdapterView.OnItemClickListener,AdapterView.OnItemSelectedListener {
     private Sample[] mSamples;
     private GridView mGridView;
 
@@ -41,8 +46,39 @@ public class homepage extends Fragment implements AdapterView.OnItemClickListene
         mGridView = (GridView)view.findViewById(android.R.id.list);
         mGridView.setAdapter(new SampleAdapter());
         mGridView.setOnItemClickListener(this);
+        /*Spinner spinner = (Spinner)view.findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.city_array, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);*/
         return view;
     }
+
+
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        // An item was selected. You can retrieve the selected item using
+        String optionSelected = parent.getItemAtPosition(pos).toString();
+        switch(optionSelected) {
+            case "bengaluru":
+                break;
+            case "delhi":
+                break;
+            case "hyderabad":
+                break;
+            case "chennai":
+                break;
+            case "mumbai":
+                break;
+        }
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

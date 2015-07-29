@@ -491,7 +491,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             try {
                 JSONObject params = new JSONObject();
                 params.put("jrId", jrId);
-                if(!mcustomerNumber.equals(SharedPreferenceManager.getPreference("owner_customernumber"))) {
+                if(!mcustomerNumber.equals(SharedPreferenceManager.getPreference("customerNumber"))) {
                     params.put("customerNumber", mcustomerNumber);
                 }
                 params.put("action",maction);

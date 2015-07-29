@@ -163,7 +163,7 @@ public class GcmIntentService extends IntentService {
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_launcher)
                                 .setContentTitle(message)
-                                .setStyle(new NotificationCompat.InboxStyle()
+                                .setStyle(new NotificationCompat.BigTextStyle()
                                         .setBigContentTitle(message));
 
 
