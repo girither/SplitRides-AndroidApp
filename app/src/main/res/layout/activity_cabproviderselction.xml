@@ -18,7 +18,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Click to Start Ride"
+        android:text="Click to select a Cab Provider"
         android:textColor="@color/teal"
         android:id="@+id/textView2" />
 
