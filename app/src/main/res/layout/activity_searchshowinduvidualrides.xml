@@ -196,6 +196,20 @@
                     android:text="REQUEST\nSENT" />
             </TableRow>
 
+            <TextView
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="You sent a request and was rejected by the owner"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/request_rejected_text" />
+
+
         </LinearLayout>
    </ScrollView>
         </LinearLayout>

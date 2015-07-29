@@ -39,6 +39,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
     JSONParser jsonParser = new JSONParser();
     TextView ridefromheader_source,ridefromheader_destination,todayortomorrowheader,timeofday,rideownernamevalue,rideowneremailvalue,rideownerphonevalue;
     getindividualriddetailsetask individualridestask;
+    TextView requestreject;
     Button sendrequesttojoinride,requestalreadysent,estimaterideindividual;
     ProgressBar bar;
     LinearLayout detailform;
@@ -71,6 +72,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         estimaterideindividual.setOnClickListener(this);
         sendrequesttojoinride.setOnClickListener(this);
         requestalreadysent =(Button)findViewById(R.id.request_alreadysent);
+        requestreject = (TextView)findViewById(R.id.reject_request);
         Bundle extras = getIntent().getExtras();
         String rideOwnerCustomerNumber = (!extras.getString("ownercustomernumber").isEmpty())?extras.getString("ownercustomernumber"):SharedPreferenceManager.getPreference("ownercustomernumber");
         SharedPreferenceManager.setPreference("ownercustomernumber",rideOwnerCustomerNumber);
@@ -368,12 +370,16 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                 String todayortomorrow = (currentDate.equals(dateOfRides))?"Today":"Tomorrow";
                 todayortomorrowheader.setText(todayortomorrow);
                 timeofday.setText(timeofrides);
-                if (ridedataobject.getStatus() != null && (ridedataobject.getStatus().equals("requestsent") || ridedataobject.getStatus().equals("accepted")|| ridedataobject.getStatus().equals("rejected"))) {
+                if (ridedataobject.getStatus() != null && (ridedataobject.getStatus().equals("requestsent") || ridedataobject.getStatus().equals("accepted"))) {
                     requestalreadysent.setVisibility(View.VISIBLE);
                     sendrequesttojoinride.setVisibility(View.GONE);
                 } else {
                     requestalreadysent.setVisibility(View.GONE);
                     sendrequesttojoinride.setVisibility(View.VISIBLE);
+                }
+                if(ridedataobject.getStatus().equals("rejected"))
+                {
+                    requestreject.setVisibility(View.VISIBLE);
                 }
                 customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
                 mGridView.setAdapter(customerlistadapter);
