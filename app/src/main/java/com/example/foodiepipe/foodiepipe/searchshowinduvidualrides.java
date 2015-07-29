@@ -74,8 +74,6 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         requestalreadysent =(Button)findViewById(R.id.request_alreadysent);
         requestreject = (TextView)findViewById(R.id.request_rejected_text);
         Bundle extras = getIntent().getExtras();
-        String rideOwnerCustomerNumber = (!extras.getString("ownercustomernumber").isEmpty())?extras.getString("ownercustomernumber"):SharedPreferenceManager.getPreference("ownercustomernumber");
-        SharedPreferenceManager.setPreference("ownercustomernumber",rideOwnerCustomerNumber);
         String rideId = (!extras.getString("rideId").isEmpty())?extras.getString("rideId"):SharedPreferenceManager.getPreference("owner_rideid");
         SharedPreferenceManager.setPreference("owner_rideid",rideId);
         new getindividualriddetailsetask(rideId).execute();
@@ -101,7 +99,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                 startActivityForResult(selectcabprovider_estimate,PICK_CABPROVIDER_RESULT_FROMESIMATE);
                 break;
             case R.id.send_request_joinride:
-                new sendrequesttojoinridetask(SharedPreferenceManager.getPreference("owner_rideid"),SharedPreferenceManager.getPreference("ownercustomernumber"),SharedPreferenceManager.getPreference("customerNumber"),SharedPreferenceManager.getPreference("myrideId")).execute();
+                new sendrequesttojoinridetask(SharedPreferenceManager.getPreference("owner_rideid"),SharedPreferenceManager.getPreference("owner_customernumber"),SharedPreferenceManager.getPreference("customerNumber"),SharedPreferenceManager.getPreference("myrideId")).execute();
                 break;
         }
     }

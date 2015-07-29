@@ -45,7 +45,6 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
         {
             Intent getinduvidualrides = new Intent(getActivity(),searchshowinduvidualrides.class);
             getinduvidualrides.putExtra("rideId", rideobj.getRideId());
-            getinduvidualrides.putExtra("ownercustomernumber", rideobj.getRideownercustomernumber());
             startActivity(getinduvidualrides);
         }
         getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);
