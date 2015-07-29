@@ -318,7 +318,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                             customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),customerindividualdata.getString("phoneNumber"),customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"));
                             customerlistdata.add(customeradapterdata);
                         }
-                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata,ride.getString("rideId"));
+                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata,ride.getString("jrId"));
                         SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("ownerCustomerNumber"));
                     }
                     else if(jObj.has("ride")){
@@ -377,7 +377,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                 }
                 if(ridedataobject.getStatus() != null && ridedataobject.getStatus().equals("rejected"))
                 {
-                    requestreject.setVisibility(View.VISIBLE);
+                    // requestreject.setVisibility(View.VISIBLE);
                 }
                 customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
                 mGridView.setAdapter(customerlistadapter);

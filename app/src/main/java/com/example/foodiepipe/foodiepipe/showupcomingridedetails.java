@@ -717,14 +717,21 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 }
                 if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("notstarted")){
                     endride.setVisibility(View.GONE);
-                    SharedPreferenceManager.setPreference("startrides", false);
-                    SharedPreferenceManager.setPreference("stoprides", true);
+                    if(!SharedPreferenceManager.getBooleanPreference("startrides")){
+                        SharedPreferenceManager.setPreference("stoprides", true);
+                    }
+
                 }
                 else if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("started")){
                     startride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
-                    SharedPreferenceManager.setPreference("startrides", true);
-                    SharedPreferenceManager.setPreference("stoprides", false);
+                    if(SharedPreferenceManager.getBooleanPreference("startrides")){
+                        SharedPreferenceManager.setPreference("stoprides", false);
+                    }
+                    else {
+                        SharedPreferenceManager.setPreference("startrides", true);
+                        SharedPreferenceManager.setPreference("stoprides", false);
+                    }
                 }
                 todayortomorrowheader.setText(todayortomorrow);
                 timeofday.setText(timeofrides);
