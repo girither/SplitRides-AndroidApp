@@ -72,7 +72,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         estimaterideindividual.setOnClickListener(this);
         sendrequesttojoinride.setOnClickListener(this);
         requestalreadysent =(Button)findViewById(R.id.request_alreadysent);
-        requestreject = (TextView)findViewById(R.id.reject_request);
+        requestreject = (TextView)findViewById(R.id.request_rejected_text);
         Bundle extras = getIntent().getExtras();
         String rideOwnerCustomerNumber = (!extras.getString("ownercustomernumber").isEmpty())?extras.getString("ownercustomernumber"):SharedPreferenceManager.getPreference("ownercustomernumber");
         SharedPreferenceManager.setPreference("ownercustomernumber",rideOwnerCustomerNumber);
