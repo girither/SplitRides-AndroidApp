@@ -377,7 +377,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                     requestalreadysent.setVisibility(View.GONE);
                     sendrequesttojoinride.setVisibility(View.VISIBLE);
                 }
-                if(ridedataobject.getStatus().equals("rejected"))
+                if(ridedataobject.getStatus() != null && ridedataobject.getStatus().equals("rejected"))
                 {
                     requestreject.setVisibility(View.VISIBLE);
                 }
