@@ -316,7 +316,8 @@ public class ratecard  extends Fragment implements GoogleApiClient.OnConnectionF
                 params.put("sourceLng", msourcelong);
                 params.put("destinationLat",mdestinationlat);
                 params.put("destinationLng",mdestinationlong);
-                params.put("city","bengaluru");
+                String[] address = mAutocompleteView.getText().toString().split(",");
+                params.put("city",address[address.length - 3].trim().toLowerCase());
                 // getting JSON string from URL
                 String json = jsonParser.makeHttpRequest(mainurl.geturl() + "rateCardEstimationWithServiceProviders", "POST",
                         params);
