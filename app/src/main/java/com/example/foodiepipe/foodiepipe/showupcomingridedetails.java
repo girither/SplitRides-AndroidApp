@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.widget.ProfilePictureView;
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
@@ -60,6 +65,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     Intent startlocationservice;
     MenuItem hideeditmenuitem;
 
+    private String profileId = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +184,9 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
     private class CustomerAdapter extends BaseAdapter {
         private List<customer> mSamples;
+        private StringBuilder friendsCountMsg = new StringBuilder();
+        private Integer friendsCount = 0;
+
         public CustomerAdapter(List<customer> myDataset) {
             mSamples = myDataset;
         }
@@ -216,6 +225,23 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             else{
                 ((TextView) convertView.findViewById(R.id.role_value)).setText("Partner");
             }
+
+            TextView friendsMsgView = (TextView)convertView.findViewById(R.id.commonFriendsCount);
+
+            if(friendsMsgView != null && mSamples != null && mSamples.get(position) != null) {
+                friendsCount = mSamples.get(position).getMutualFriendsCount();
+
+                friendsCountMsg.append(friendsCount.toString());
+                friendsCountMsg.append(" mutual friend");
+                if(friendsCount > 1 || friendsCount == 0) {
+                    friendsCountMsg.append("s");
+                }
+
+                friendsMsgView.setText(friendsCountMsg.toString());
+                friendsCountMsg.delete(0, friendsCountMsg.length());
+                friendsCount = 0;
+            }
+
             final String latlongposition = mSamples.get(position).getLatLong();
             final String droplatlongposition = mSamples.get(position).getDropLatlong();
             ((Button)convertView.findViewById(R.id.see_pickup_point)).setOnClickListener(new View.OnClickListener() {
@@ -622,6 +648,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         protected ridedata doInBackground(Void... param) {
             ridedata info = null;
             String status = null;
+            Integer friendsCount = 0;
+            String userProfileId = null;
 
             try {
                 JSONObject params = new JSONObject();
@@ -649,7 +677,12 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         }
                         for (int i = 0; i < customerdata.length(); i++) {
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
-                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"));
+
+                            userProfileId = customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"";
+                            if(!userProfileId.equals("")) {
+                                friendsCount = getMutualFriendsCount(userProfileId);
+                            }
+                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"), friendsCount);
                             customerlistdata.add(customeradapterdata);
                         }
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"),status);
@@ -665,6 +698,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"), ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerdata.has("profileId")?customerdata.getString("profileId"):"",customerdata.getString("customerNumber"));
                         List<customer> customerlistdata = new ArrayList<customer>();
                         customerlistdata.add(customeradapterdata);
+                        profileId = customeradapterdata.getProfileId();
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"ride",ride.getString("rideId"));
                         SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("customerNumber"));
                     }
@@ -755,5 +789,78 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         protected void onCancelled() {
             individualridestask = null;
         }
+
+        private Integer getMutualFriendsCount(String profileId) {
+            Integer mutualCount = 0;
+
+            Bundle paramsObject = new Bundle();
+            paramsObject.putString("fields", "context.fields(mutual_friends)");
+            JSONObject responseJSON = null;
+            GraphResponse gr = new GraphRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    "/" + profileId,
+                    paramsObject,
+                    HttpMethod.GET,
+                    new GraphRequest.Callback() {
+                        public void onCompleted(GraphResponse graphResponse) {
+                            Log.d("Mutual Friend Data : ", graphResponse.getJSONObject().toString());
+                        }
+                    }
+            ).executeAndWait();
+
+            try {
+                responseJSON = gr.getJSONObject().getJSONObject("summary");
+                mutualCount = Integer.parseInt(responseJSON.getString("total_count"));
+            } catch (Exception e) {
+                Log.e("Error occured :", e.getMessage());
+            }
+
+            return mutualCount;
+        }
     }
+
+    /*public class MutualFriendsTask extends AsyncTask<Void, Void, Void> {
+        private String userId = null;
+
+        public MutualFriendsTask(String userId) {
+            this.userId = userId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Bundle paramsObject = new Bundle();
+            paramsObject.putString("fields", "context.fields(mutual_friends)");
+            JSONObject responseJSON1 = null;
+            GraphResponse gr = new GraphRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    "/" + this.userId,
+                    paramsObject,
+                    HttpMethod.GET,
+                    new GraphRequest.Callback() {
+                        public void onCompleted(GraphResponse graphResponse) {
+                            JSONObject responseJSON = graphResponse.getJSONObject();
+                        }
+                    }
+            ).executeAndWait();
+
+            responseJSON1 = gr.getJSONObject();
+            Log.i("Data : ", responseJSON1.toString());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+    }*/
 }

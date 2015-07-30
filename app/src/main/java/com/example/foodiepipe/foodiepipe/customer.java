@@ -61,6 +61,17 @@ public class customer {
         this.customernumber = customernumber;
     }
 
+    public customer(String customerName, String customerEmail, String customerPhoneNumber,String latLong,String droplatlong,String profileId, String customernumber, Integer mutualFriendsCount) {
+        this.customerName = customerName;
+        this.customerEmail = customerEmail;
+        this.customerPhoneNumber = customerPhoneNumber;
+        this.latLong = latLong;
+        this.dropLatlong = droplatlong;
+        this.profileId = profileId;
+        this.customernumber = customernumber;
+        this.mutualFriendsCount = mutualFriendsCount;
+    }
+
     public void setCustomerPhoneNumber(String customerPhoneNumber) {
         this.customerPhoneNumber = customerPhoneNumber;
     }
@@ -82,4 +93,14 @@ public class customer {
     }
 
     private String customerPhoneNumber;
+
+    private Integer mutualFriendsCount = 0;
+
+    public void setMutualFriendsCount(Integer mutualFriendsCount) {
+        this.mutualFriendsCount = mutualFriendsCount;
+    }
+
+    public Integer getMutualFriendsCount() {
+        return mutualFriendsCount;
+    }
 }
