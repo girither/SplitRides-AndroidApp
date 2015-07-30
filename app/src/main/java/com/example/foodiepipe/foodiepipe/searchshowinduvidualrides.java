@@ -138,6 +138,12 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
             ((TextView) convertView.findViewById(R.id.rideownernamevalue)).setText(mSamples.get(position).getCustomerName());
             ((TextView) convertView.findViewById(R.id.rideownerphonenumbervalue)).setText(mSamples.get(position).getCustomerPhoneNumber());
             ((ProfilePictureView)convertView.findViewById(R.id.profilePicture)).setProfileId(mSamples.get(position).getProfileId());
+            if(mSamples.get(position).getCustomernumber().equals(SharedPreferenceManager.getPreference("owner_customernumber"))) {
+                ((TextView) convertView.findViewById(R.id.role_value)).setText("Owner");
+            }
+            else{
+                ((TextView) convertView.findViewById(R.id.role_value)).setText("Partner");
+            }
             final String latlongposition = mSamples.get(position).getLatLong();
             final String droplatlongposition = mSamples.get(position).getDropLatlong();
             ((Button)convertView.findViewById(R.id.see_pickup_point)).setOnClickListener(new View.OnClickListener() {
