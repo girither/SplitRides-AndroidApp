@@ -310,6 +310,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         JSONObject ride = jObj.getJSONObject("jride");
                         JSONArray customerdata = jObj.getJSONArray("builtDetails");
                         List<customer> customerlistdata = new ArrayList<customer>();
+                        status = "";
                         if(ride.has("requestMatrix")) {
                             if(!ride.isNull("requestMatrix")) {
                                 JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
