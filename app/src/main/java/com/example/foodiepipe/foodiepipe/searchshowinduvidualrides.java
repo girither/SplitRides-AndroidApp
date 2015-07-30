@@ -368,17 +368,17 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                 String todayortomorrow = (currentDate.equals(dateOfRides))?"Today":"Tomorrow";
                 todayortomorrowheader.setText(todayortomorrow);
                 timeofday.setText(timeofrides);
-                if (ridedataobject.getStatus() != null && (ridedataobject.getStatus().equals("requestsent") || ridedataobject.getStatus().equals("accepted"))) {
+                if (ridedataobject.getStatus() != null && (ridedataobject.getStatus().equals("requestsent") || ridedataobject.getStatus().equals("accepted")||ridedataobject.getStatus().equals("rejected"))) {
                     requestalreadysent.setVisibility(View.VISIBLE);
                     sendrequesttojoinride.setVisibility(View.GONE);
                 } else {
                     requestalreadysent.setVisibility(View.GONE);
                     sendrequesttojoinride.setVisibility(View.VISIBLE);
                 }
-                if(ridedataobject.getStatus() != null && ridedataobject.getStatus().equals("rejected"))
+                /*if(ridedataobject.getStatus() != null )
                 {
                     // requestreject.setVisibility(View.VISIBLE);
-                }
+                }*/
                 customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
                 mGridView.setAdapter(customerlistadapter);
                 customerlistadapter.notifyDataSetChanged();
