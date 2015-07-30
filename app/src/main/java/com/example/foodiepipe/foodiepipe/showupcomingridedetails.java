@@ -226,20 +226,23 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 ((TextView) convertView.findViewById(R.id.role_value)).setText("Partner");
             }
 
-            TextView friendsMsgView = (TextView)convertView.findViewById(R.id.commonFriendsCount);
+            //Setting mutual friends details
+            if(mSamples.get(position).getMutualFriendsCount() != null) {
+                TextView friendsMsgView = (TextView)convertView.findViewById(R.id.commonFriendsCount);
 
-            if(friendsMsgView != null && mSamples != null && mSamples.get(position) != null) {
-                friendsCount = mSamples.get(position).getMutualFriendsCount();
+                if(friendsMsgView != null && mSamples != null && mSamples.get(position) != null) {
+                    friendsCount = mSamples.get(position).getMutualFriendsCount();
 
-                friendsCountMsg.append(friendsCount.toString());
-                friendsCountMsg.append(" mutual friend");
-                if(friendsCount > 1 || friendsCount == 0) {
-                    friendsCountMsg.append("s");
+                    friendsCountMsg.append(friendsCount.toString());
+                    friendsCountMsg.append(" mutual friend");
+                    if(friendsCount > 1 || friendsCount == 0) {
+                        friendsCountMsg.append("s");
+                    }
+
+                    friendsMsgView.setText(friendsCountMsg.toString());
+                    friendsCountMsg.delete(0, friendsCountMsg.length());
+                    friendsCount = 0;
                 }
-
-                friendsMsgView.setText(friendsCountMsg.toString());
-                friendsCountMsg.delete(0, friendsCountMsg.length());
-                friendsCount = 0;
             }
 
             final String latlongposition = mSamples.get(position).getLatLong();
@@ -791,28 +794,35 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         }
 
         private Integer getMutualFriendsCount(String profileId) {
-            Integer mutualCount = 0;
+            Integer mutualCount = null;
 
             Bundle paramsObject = new Bundle();
             paramsObject.putString("fields", "context.fields(mutual_friends)");
             JSONObject responseJSON = null;
-            GraphResponse gr = new GraphRequest(
-                    AccessToken.getCurrentAccessToken(),
-                    "/" + profileId,
-                    paramsObject,
-                    HttpMethod.GET,
-                    new GraphRequest.Callback() {
-                        public void onCompleted(GraphResponse graphResponse) {
-                            Log.d("Mutual Friend Data : ", graphResponse.getJSONObject().toString());
-                        }
-                    }
-            ).executeAndWait();
+            AccessToken fbAccessToken = AccessToken.getCurrentAccessToken();
+            String fbUserId = fbAccessToken.getUserId();
 
-            try {
-                responseJSON = gr.getJSONObject().getJSONObject("summary");
-                mutualCount = Integer.parseInt(responseJSON.getString("total_count"));
-            } catch (Exception e) {
-                Log.e("Error occured :", e.getMessage());
+            if(!fbUserId.equals(profileId)) {
+                GraphResponse gr = new GraphRequest(
+                        fbAccessToken,
+                        "/" + profileId,
+                        paramsObject,
+                        HttpMethod.GET,
+                        new GraphRequest.Callback() {
+                            public void onCompleted(GraphResponse graphResponse) {
+                                Log.d("Mutual Friend Data : ", graphResponse.getJSONObject().toString());
+                            }
+                        }
+                ).executeAndWait();
+
+                try {
+                    responseJSON = gr.getJSONObject().getJSONObject("context");
+                    responseJSON = responseJSON.getJSONObject("mutual_friends");
+                    responseJSON = responseJSON.getJSONObject("summary");
+                    mutualCount = Integer.parseInt(responseJSON.getString("total_count"));
+                } catch (Exception e) {
+                    Log.e("Error occured :", e.getMessage());
+                }
             }
 
             return mutualCount;
