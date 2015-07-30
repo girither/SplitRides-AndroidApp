@@ -337,6 +337,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         latlongbuilder_droppoint.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
                         customer customeradapterdata = new customer(customerdata.getString("name"),customerdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString(),latlongbuilder_droppoint.toString(),customerdata.has("profileId")?customerdata.getString("profileId"):"",customerdata.getString("customerNumber"));
                         List<customer> customerlistdata = new ArrayList<customer>();
+                        status = "";
                         if(ride.has("requestMatrix")) {
                             if(!ride.isNull("requestMatrix")) {
                                 JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
