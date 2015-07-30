@@ -94,7 +94,7 @@ public class customer {
 
     private String customerPhoneNumber;
 
-    private Integer mutualFriendsCount = 0;
+    private Integer mutualFriendsCount;
 
     public void setMutualFriendsCount(Integer mutualFriendsCount) {
         this.mutualFriendsCount = mutualFriendsCount;
