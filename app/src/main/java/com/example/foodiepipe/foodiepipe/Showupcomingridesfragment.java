@@ -215,22 +215,26 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
         protected void onPostExecute(List<ridedata> result) {
             super.onPostExecute(result);
             setRefreshing(false);
-            if(!result.isEmpty()){
-                adapter = new customridedataadapter(getActivity(),result);
+            try {
+                if (getActivity() != null) {
+                    if (!result.isEmpty()) {
+                        adapter = new customridedataadapter(getActivity(), result);
 
-                // Set the adapter between the ListView and its backing data.
-                setListAdapter(adapter);
-            }
-            else
-            {
-                List<ridedata> noresultsarray = new ArrayList<ridedata>();
-                ridedata info = new ridedata(null,null,null);
-                info.setNoresults("No Results Available Currently");
-                noresultsarray.add(info);
-                adapter = new noresultsadapter_searchrides(getActivity(),noresultsarray);
+                        // Set the adapter between the ListView and its backing data.
+                        setListAdapter(adapter);
+                    } else {
+                        List<ridedata> noresultsarray = new ArrayList<ridedata>();
+                        ridedata info = new ridedata(null, null, null);
+                        info.setNoresults("No Results Available Currently");
+                        noresultsarray.add(info);
+                        adapter = new noresultsadapter_searchrides(getActivity(), noresultsarray);
 
-                // Set the adapter between the ListView and its backing data.
-                setListAdapter(adapter);
+                        // Set the adapter between the ListView and its backing data.
+                        setListAdapter(adapter);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
