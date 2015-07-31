@@ -74,7 +74,7 @@ public class Locationservice extends Service implements LocationListener,
 
         // Sets the fastest rate for active location updates. This interval is exact, and your
         // application will never receive updates faster than this value.
-        mLocationRequest.setFastestInterval(7500);
+        mLocationRequest.setFastestInterval(15000);
 
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);

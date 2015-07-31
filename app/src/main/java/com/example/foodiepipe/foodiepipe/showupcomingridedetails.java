@@ -31,6 +31,7 @@ import com.facebook.HttpMethod;
 import com.facebook.login.widget.ProfilePictureView;
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,7 +48,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
     private getindividualriddetailsetask myrideTask = null;
     JSONParser jsonParser = new JSONParser();
-    TextView ridefromheader_source,ridefromheader_destination,todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
+    ExpandableTextView ridefromheader_source_expander,ridefromheader_destination_expander;
+    TextView todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
     getindividualriddetailsetask individualridestask;
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
     protected final static String LOCATION_KEY = "location-key";
@@ -75,8 +77,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ridefromheader_source = (TextView) findViewById(R.id.rideFromTextHeader_source);
-        ridefromheader_destination = (TextView)findViewById(R.id.rideFromTextHeader_destination);
+        ridefromheader_source_expander = (ExpandableTextView) findViewById(R.id.expand_text_view);
+        ridefromheader_destination_expander= (ExpandableTextView)findViewById(R.id.expand_text_view_destination);
         todayortomorrowheader = (TextView) findViewById(R.id.rideday);
         timeofday = (TextView) findViewById(R.id.ridetime);
         rideownernamevalue = (TextView) findViewById(R.id.rideownernamevalue);
@@ -144,14 +146,14 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         }
         switch(view.getId()) {
             case R.id.startride:
-                if(SharedPreferenceManager.getBooleanPreference("stoprides")) {
+               // if(SharedPreferenceManager.getBooleanPreference("stoprides")) {
                     Intent selectcabprovider = new Intent(showupcomingridedetails.this, cabproviderselction.class);
                     startActivityForResult(selectcabprovider, PICK_CABPROVIDER_RESULT);
-                }
+               // }
 
                 break;
             case R.id.endride:
-                if(SharedPreferenceManager.getBooleanPreference("startrides")) {
+              //  if(SharedPreferenceManager.getBooleanPreference("startrides")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(showupcomingridedetails.this);
                     builder.setMessage("Do You want to end the ride?")
                             .setCancelable(false)
@@ -170,7 +172,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     });
                     AlertDialog alert = builder.create();
                     alert.show();
-                }
+                // }
                 break;
             case R.id.estimeateride:
                 Intent selectcabprovider_estimate = new Intent(showupcomingridedetails.this,cabproviderselction.class);
@@ -291,16 +293,16 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         if (requestCode == PICK_CABPROVIDER_RESULT) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                if(!SharedPreferenceManager.getBooleanPreference("startrides")) {
+                //if(!SharedPreferenceManager.getBooleanPreference("startrides")) {
                     Bundle extras = data.getExtras();
                     String cabprovidervalue = extras.getString("cabprovider");
                     SharedPreferenceManager.setPreference("started_jrride", SharedPreferenceManager.getPreference("currentride_rideid"));
                     new startridetask(cabprovidervalue,SharedPreferenceManager.getPreference("started_jrride")).execute();
-                }
-                else{
-                    Toast.makeText(showupcomingridedetails.this,
-                            "You have already started a Ride. PLease end it to start another one", Toast.LENGTH_LONG).show();
-                }
+                //}
+                //else{
+                 //   Toast.makeText(showupcomingridedetails.this,
+                 //           "You have already started a Ride. PLease end it to start another one", Toast.LENGTH_LONG).show();
+               //s }
             }
         }
         else if(requestCode == PICK_CABPROVIDER_RESULT_FROMESIMATE){
@@ -403,6 +405,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 exitride.setVisibility(View.GONE);
                 endride.setVisibility(View.VISIBLE);
                 SharedPreferenceManager.setPreference("startrides", true);
+                SharedPreferenceManager.setPreference("locationstringdata", "");
                 startlocationservice();
             }
             else if(success != null && success.equals("failure")){
@@ -719,8 +722,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             bar.setVisibility(View.GONE);
             detailform.setVisibility((ridedataobject!=null)?View.VISIBLE:View.GONE);
             if(ridedataobject != null ){
-                ridefromheader_source.setText(ridedataobject.getSource());
-                ridefromheader_destination.setText(ridedataobject.getDestination());
+                ridefromheader_source_expander.setText(ridedataobject.getSource());
+                ridefromheader_destination_expander.setText(ridedataobject.getDestination());
                 String dateOfRides = ridedataobject.getDate().split("T")[0];
                 String timeofrides = ridedataobject.getDate().split("T")[1];
                 timeofrides = timeofrides.split(".000Z")[0];
