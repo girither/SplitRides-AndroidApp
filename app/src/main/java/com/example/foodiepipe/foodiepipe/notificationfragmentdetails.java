@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.facebook.login.widget.ProfilePictureView;
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +37,8 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
 
     private getindividualnotificationdetailsetask mynotificationTask = null;
     JSONParser jsonParser = new JSONParser();
-    TextView ridefromheader_source,ridefromheader_destination, todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
+    ExpandableTextView ridefromheader_source_expander,ridefromheader_destination_expander;
+    TextView todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
     getindividualnotificationdetailsetask individualnotificationstask;
     ProgressBar bar;
     Button acceptrequest, rejectrequest,estimaterequest,viewyourride;
@@ -55,8 +57,8 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ridefromheader_source = (TextView) findViewById(R.id.rideFromTextHeader_source);
-        ridefromheader_destination = (TextView)findViewById(R.id.rideFromTextHeader_destination);
+        ridefromheader_source_expander = (ExpandableTextView) findViewById(R.id.expand_text_view);
+        ridefromheader_destination_expander= (ExpandableTextView)findViewById(R.id.expand_text_view_destination);
         todayortomorrowheader = (TextView) findViewById(R.id.rideday);
         timeofday = (TextView) findViewById(R.id.ridetime);
         viewyourride = (Button) findViewById(R.id.view_your_ride);
@@ -332,8 +334,8 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
             detailform.setVisibility((notificationdataobject!=null)?View.VISIBLE:View.GONE);
             if(notificationdataobject != null ){
                 globalnotificationdataobject = notificationdataobject;
-                ridefromheader_source.setText(notificationdataobject.getSource());
-                ridefromheader_destination.setText(notificationdataobject.getDestination());
+                ridefromheader_source_expander.setText(notificationdataobject.getSource());
+                ridefromheader_destination_expander.setText(notificationdataobject.getDestination());
                 String dateOfRides = notificationdataobject.getDate().split("T")[0];
                 String timeofrides = notificationdataobject.getDate().split("T")[1];
                 timeofrides = timeofrides.split(".000Z")[0];

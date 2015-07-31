@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.facebook.login.widget.ProfilePictureView;
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +38,8 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
 
     private getindividualriddetailsetask myrideTask = null;
     JSONParser jsonParser = new JSONParser();
-    TextView ridefromheader_source,ridefromheader_destination,todayortomorrowheader,timeofday,rideownernamevalue,rideowneremailvalue,rideownerphonevalue;
+    ExpandableTextView ridefromheader_source_expander,ridefromheader_destination_expander;
+    TextView todayortomorrowheader,timeofday,rideownernamevalue,rideowneremailvalue,rideownerphonevalue;
     getindividualriddetailsetask individualridestask;
     TextView requestreject;
     Button sendrequesttojoinride,requestalreadysent,estimaterideindividual;
@@ -56,8 +58,8 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SharedPreferenceManager.setApplicationContext(getApplicationContext());
-        ridefromheader_source = (TextView) findViewById(R.id.rideFromTextHeader_source);
-        ridefromheader_destination = (TextView)findViewById(R.id.rideFromTextHeader_destination);
+        ridefromheader_source_expander = (ExpandableTextView) findViewById(R.id.expand_text_view);
+        ridefromheader_destination_expander= (ExpandableTextView)findViewById(R.id.expand_text_view_destination);
         todayortomorrowheader = (TextView)findViewById(R.id.rideday);
         timeofday = (TextView)findViewById(R.id.ridetime);
         rideownernamevalue = (TextView)findViewById(R.id.rideownernamevalue);
@@ -365,8 +367,8 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
             bar.setVisibility(View.GONE);
             detailform.setVisibility((ridedataobject!=null)?View.VISIBLE:View.GONE);
             if(ridedataobject != null ){
-                ridefromheader_source.setText(ridedataobject.getSource());
-                ridefromheader_destination.setText(ridedataobject.getDestination());
+                ridefromheader_source_expander.setText(ridedataobject.getSource());
+                ridefromheader_destination_expander.setText(ridedataobject.getDestination());
                 String dateOfRides = ridedataobject.getDate().split("T")[0];
                 String timeofrides = ridedataobject.getDate().split("T")[1];
                 timeofrides = timeofrides.split(".000Z")[0];
