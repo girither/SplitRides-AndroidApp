@@ -39,7 +39,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
     TextView ridefromheader_source,ridefromheader_destination, todayortomorrowheader, timeofday, rideownernamevalue, rideowneremailvalue, rideownerphonevalue;
     getindividualnotificationdetailsetask individualnotificationstask;
     ProgressBar bar;
-    Button acceptrequest, rejectrequest,estimaterequest;
+    Button acceptrequest, rejectrequest,estimaterequest,viewyourride;
     LinearLayout detailform;
     CustomerAdapter customerlistadapter;
     static final int PICK_CABPROVIDER_RESULT_FROMESIMATE = 2;
@@ -59,6 +59,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
         ridefromheader_destination = (TextView)findViewById(R.id.rideFromTextHeader_destination);
         todayortomorrowheader = (TextView) findViewById(R.id.rideday);
         timeofday = (TextView) findViewById(R.id.ridetime);
+        viewyourride = (Button) findViewById(R.id.view_your_ride);
         rideownernamevalue = (TextView) findViewById(R.id.rideownernamevalue);
         rideowneremailvalue = (TextView) findViewById(R.id.rideowneremailvalue);
         rideownerphonevalue = (TextView) findViewById(R.id.rideownerphonenumbervalue);
@@ -71,6 +72,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
         acceptrequest.setOnClickListener(this);
         rejectrequest.setOnClickListener(this);
         estimaterequest.setOnClickListener(this);
+        viewyourride.setOnClickListener(this);
         Bundle extras = getIntent().getExtras();
         String requestId = (!extras.getString("requestId").isEmpty())?extras.getString("requestId"):SharedPreferenceManager.getPreference("currentrequestId");
         SharedPreferenceManager.setPreference("currentrequestId",requestId);
@@ -99,6 +101,12 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
             case R.id.estimeaterequest:
                 Intent selectcabprovider_estimate = new Intent(notificationfragmentdetails.this,cabproviderselction.class);
                 startActivityForResult(selectcabprovider_estimate,PICK_CABPROVIDER_RESULT_FROMESIMATE);
+                break;
+            case R.id.view_your_ride:
+                Intent getinduvidualrides = new Intent(this,showupcomingridedetails.class);
+                getinduvidualrides.putExtra("rideId", globalnotificationdataobject.getOwnerrideid());
+                startActivity(getinduvidualrides);
+                overridePendingTransition(R.animator.activity_in, R.animator.activity_out);
         }
 
     }
@@ -217,10 +225,10 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
             ((TextView) convertView.findViewById(R.id.rideownerphonenumbervalue)).setText(mSamples.get(position).getCustomerPhoneNumber());
             ((ProfilePictureView)convertView.findViewById(R.id.profilePicture)).setProfileId(mSamples.get(position).getProfileId());
             if(mSamples.get(position).getCustomernumber().equals(SharedPreferenceManager.getPreference("owner_customernumber"))) {
-                ((TextView) convertView.findViewById(R.id.role_label)).setText("Owner");
+                ((TextView) convertView.findViewById(R.id.role_value)).setText("Owner");
             }
             else{
-                ((TextView) convertView.findViewById(R.id.role_label)).setText("Partner");
+                ((TextView) convertView.findViewById(R.id.role_value)).setText("Partner");
             }
             final String latlongposition = mSamples.get(position).getLatLong();
             final String droplatlongposition = mSamples.get(position).getDropLatlong();

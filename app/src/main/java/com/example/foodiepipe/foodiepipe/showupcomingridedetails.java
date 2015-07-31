@@ -476,8 +476,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     SharedPreferenceManager.setPreference("stoprides", true);
                     stoplocationservice();
                     SharedPreferenceManager.setPreference("locationstringdata", "");
-                    DialogFragment billFragment = new billcardfragment(data);
-                    billFragment.show(getFragmentManager(), "ratepicker");
+                    //DialogFragment billFragment = new billcardfragment(data);
+                    //billFragment.show(getFragmentManager(), "ratepicker");
                 }
             else{
                 Toast.makeText(showupcomingridedetails.this,
@@ -754,7 +754,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 }
                 if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("notstarted")){
                     endride.setVisibility(View.GONE);
-                    if(!SharedPreferenceManager.getBooleanPreference("startrides")){
+                    if(!(SharedPreferenceManager.getBooleanPreference("startrides"))){
                         SharedPreferenceManager.setPreference("stoprides", true);
                     }
 
