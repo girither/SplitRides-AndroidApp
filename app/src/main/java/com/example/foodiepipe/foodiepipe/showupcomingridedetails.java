@@ -241,6 +241,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         friendsCountMsg.append("s");
                     }
 
+                    friendsCountMsg.append(" on facebook");
+
                     friendsMsgView.setText(friendsCountMsg.toString());
                     friendsCountMsg.delete(0, friendsCountMsg.length());
                     friendsCount = 0;
@@ -803,28 +805,31 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             paramsObject.putString("fields", "context.fields(mutual_friends)");
             JSONObject responseJSON = null;
             AccessToken fbAccessToken = AccessToken.getCurrentAccessToken();
-            String fbUserId = fbAccessToken.getUserId();
 
-            if(!fbUserId.equals(profileId)) {
-                GraphResponse gr = new GraphRequest(
-                        fbAccessToken,
-                        "/" + profileId,
-                        paramsObject,
-                        HttpMethod.GET,
-                        new GraphRequest.Callback() {
-                            public void onCompleted(GraphResponse graphResponse) {
-                                Log.d("Mutual Friend Data : ", graphResponse.getJSONObject().toString());
+            if(fbAccessToken != null) {
+                String fbUserId = fbAccessToken.getUserId();
+
+                if(!fbUserId.equals(profileId)) {
+                    GraphResponse gr = new GraphRequest(
+                            fbAccessToken,
+                            "/" + profileId,
+                            paramsObject,
+                            HttpMethod.GET,
+                            new GraphRequest.Callback() {
+                                public void onCompleted(GraphResponse graphResponse) {
+                                    Log.d("Mutual Friend Data : ", graphResponse.getJSONObject().toString());
+                                }
                             }
-                        }
-                ).executeAndWait();
+                    ).executeAndWait();
 
-                try {
-                    responseJSON = gr.getJSONObject().getJSONObject("context");
-                    responseJSON = responseJSON.getJSONObject("mutual_friends");
-                    responseJSON = responseJSON.getJSONObject("summary");
-                    mutualCount = Integer.parseInt(responseJSON.getString("total_count"));
-                } catch (Exception e) {
-                    Log.e("Error occured :", e.getMessage());
+                    try {
+                        responseJSON = gr.getJSONObject().getJSONObject("context");
+                        responseJSON = responseJSON.getJSONObject("mutual_friends");
+                        responseJSON = responseJSON.getJSONObject("summary");
+                        mutualCount = Integer.parseInt(responseJSON.getString("total_count"));
+                    } catch (Exception e) {
+                        Log.e("Error occured :", e.getMessage());
+                    }
                 }
             }
 

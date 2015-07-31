@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.widget.ProfilePictureView;
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
@@ -194,6 +199,9 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
 
     private class CustomerAdapter extends BaseAdapter {
         private List<customer> mSamples;
+        private StringBuilder friendsCountMsg = new StringBuilder();
+        private Integer friendsCount = 0;
+
         public CustomerAdapter(List<customer> myDataset) {
             mSamples = myDataset;
         }
@@ -232,6 +240,28 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
             else{
                 ((TextView) convertView.findViewById(R.id.role_value)).setText("Partner");
             }
+
+            //Setting mutual friends details
+            if(mSamples.get(position).getMutualFriendsCount() != null) {
+                TextView friendsMsgView = (TextView)convertView.findViewById(R.id.commonFriendsCount);
+
+                if(friendsMsgView != null && mSamples != null && mSamples.get(position) != null) {
+                    friendsCount = mSamples.get(position).getMutualFriendsCount();
+
+                    friendsCountMsg.append(friendsCount.toString());
+                    friendsCountMsg.append(" mutual friend");
+                    if(friendsCount > 1 || friendsCount == 0) {
+                        friendsCountMsg.append("s");
+                    }
+
+                    friendsCountMsg.append(" on facebook");
+                    
+                    friendsMsgView.setText(friendsCountMsg.toString());
+                    friendsCountMsg.delete(0, friendsCountMsg.length());
+                    friendsCount = 0;
+                }
+            }
+
             final String latlongposition = mSamples.get(position).getLatLong();
             final String droplatlongposition = mSamples.get(position).getDropLatlong();
             ((Button)convertView.findViewById(R.id.see_pickup_point)).setOnClickListener(new View.OnClickListener() {
@@ -293,6 +323,8 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
         @Override
         protected notificationdata doInBackground(Void... param) {
             notificationdata info = null;
+            Integer friendsCount = 0;
+            String userProfileId = null;
 
             try {
                 JSONObject params = new JSONObject();
@@ -313,8 +345,15 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                     latlongbuilder.append(ride.getString("pickUpLat")).append(",").append(ride.getString("pickUpLng"));
                     StringBuilder latlongbuilder_droppoint = new StringBuilder();
                     latlongbuilder_droppoint.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
+
+
+                    userProfileId = customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"";
+                    if(!userProfileId.equals("")) {
+                        friendsCount = getMutualFriendsCount(userProfileId);
+                    }
+
                     List<customer> customerlistdata = new ArrayList<customer>();
-                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"));
+                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"), friendsCount);
                     customerlistdata.add(customeradapterdata);
                     info = new notificationdata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"),ownerrideid);
                     SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("customerNumber"));
@@ -375,6 +414,44 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
         @Override
         protected void onCancelled() {
             individualnotificationstask = null;
+        }
+
+        private Integer getMutualFriendsCount(String profileId) {
+            Integer mutualCount = null;
+
+            Bundle paramsObject = new Bundle();
+            paramsObject.putString("fields", "context.fields(mutual_friends)");
+            JSONObject responseJSON = null;
+            AccessToken fbAccessToken = AccessToken.getCurrentAccessToken();
+
+            if(fbAccessToken != null) {
+                String fbUserId = fbAccessToken.getUserId();
+
+                if(!fbUserId.equals(profileId)) {
+                    GraphResponse gr = new GraphRequest(
+                            fbAccessToken,
+                            "/" + profileId,
+                            paramsObject,
+                            HttpMethod.GET,
+                            new GraphRequest.Callback() {
+                                public void onCompleted(GraphResponse graphResponse) {
+                                    Log.d("Mutual Friend Data : ", graphResponse.getJSONObject().toString());
+                                }
+                            }
+                    ).executeAndWait();
+
+                    try {
+                        responseJSON = gr.getJSONObject().getJSONObject("context");
+                        responseJSON = responseJSON.getJSONObject("mutual_friends");
+                        responseJSON = responseJSON.getJSONObject("summary");
+                        mutualCount = Integer.parseInt(responseJSON.getString("total_count"));
+                    } catch (Exception e) {
+                        Log.e("Error occured :", e.getMessage());
+                    }
+                }
+            }
+
+            return mutualCount;
         }
     }
     public class acceptorrejecttojoinridetask extends AsyncTask<Void, Void, Boolean > {
