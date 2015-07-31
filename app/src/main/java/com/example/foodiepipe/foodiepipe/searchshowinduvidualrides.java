@@ -386,7 +386,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         if(ride.has("requestMatrix")) {
                             if(!ride.isNull("requestMatrix")) {
                                 JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
-                                if (requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
+                                if (requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber")) && !requestmatrix.isNull(SharedPreferenceManager.getPreference("customerNumber"))) {
                                     JSONObject requestobject = requestmatrix.getJSONObject(SharedPreferenceManager.getPreference("customerNumber"));
                                     status = requestobject.getString("status");
                                 }

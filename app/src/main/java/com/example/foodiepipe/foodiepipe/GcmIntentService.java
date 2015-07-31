@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -21,9 +20,7 @@ import org.json.JSONObject;
  * Created by gbm on 6/30/15.
  */
 public class GcmIntentService extends IntentService {
-    public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
-    NotificationCompat.Builder builder;
     JSONParser jsonParser = new JSONParser();
 
     public GcmIntentService() {
@@ -40,35 +37,15 @@ public class GcmIntentService extends IntentService {
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
 
-        if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
-            /*
-             * Filter messages based on message type. Since it is likely that GCM will be
-             * extended in the future with new message types, just ignore any message types you're
-             * not interested in, or that you don't recognize.
-             */
+        if (!extras.isEmpty()) {
+            final int notificationID = (int) (Math.random() * 100000000);
             Log.i(TAG,"inside the extras.isEmpty clause");
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
                 Log.i(TAG,"inside the first if clause");
-                //sendNotification(extras.toString());
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
                 Log.i(TAG,"inside the first else if clause");
-               // sendNotification("Deleted messages on server: " + extras.toString());
-                // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // This loop represents the service doing some work.
-                Log.i(TAG,"inside the second else if clause");
-                for (int i = 0; i < 5; i++) {
-                    Log.i(TAG, "Working... " + (i + 1)
-                            + "/5 @ " + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                    }
-                }
-                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
-                // Post notification of received message.
-                sendNotification(extras);
-                Log.i(TAG, "Received: " + extras.toString());
+                sendNotification(extras,notificationID);
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -78,7 +55,7 @@ public class GcmIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(Bundle msg) {
+    private void sendNotification(Bundle msg,final int aNotificationID) {
         String data ="";
         if(msg != null) {
            data = msg.getString("NotificationType");
@@ -100,6 +77,8 @@ public class GcmIntentService extends IntentService {
 
             Intent getnotificationdetails = new Intent(this,notificationfragmentdetails.class);
             getnotificationdetails.putExtra("requestId", requestID);
+              //  getnotificationdetails.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                //        Intent.FLAG_ACTIVITY_CLEAR_TASK);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getnotificationdetails, PendingIntent.FLAG_CANCEL_CURRENT);
             String source = msg.getString("source");
             String destination =msg.getString("destination");
@@ -121,7 +100,7 @@ public class GcmIntentService extends IntentService {
                 mBuilder.setAutoCancel(true);
 
             Log.i(TAG,"in the penultimate line");
-            mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+            mNotificationManager.notify(aNotificationID, mBuilder.build());
         }
         else if(data.equals("acceptedByTheOwner")){
                 String ownerrideid = msg.getString("ownerrideid");
@@ -130,6 +109,8 @@ public class GcmIntentService extends IntentService {
 
                 Intent getridedetails = new Intent(this,showupcomingridedetails.class);
                 getridedetails.putExtra("rideId",ownerrideid);
+                //getridedetails.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                       // Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getridedetails, PendingIntent.FLAG_CANCEL_CURRENT);
                 String emailId = msg.getString("ownerCustomerEmail");
                 String customername = msg.getString("ownerCustomerName");
@@ -148,7 +129,7 @@ public class GcmIntentService extends IntentService {
                 mBuilder.setContentIntent(contentIntent);
                 mBuilder.setAutoCancel(true);
                 Log.i(TAG,"in the penultimate line");
-                mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+                mNotificationManager.notify(aNotificationID, mBuilder.build());
         }
             else if(data.equals("YouAreTheNewOwner") || data.equals("OwnerHasExitedTheRide") ||data.equals("FellowRiderHasExited")){
                 String ownerrideid = msg.getString("jrId");
@@ -157,6 +138,8 @@ public class GcmIntentService extends IntentService {
 
                 Intent getridedetails = new Intent(this,showupcomingridedetails.class);
                 getridedetails.putExtra("rideId",ownerrideid);
+                //getridedetails.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                  //      Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent contentIntent = PendingIntent.getActivity(this, 0, getridedetails, PendingIntent.FLAG_CANCEL_CURRENT);
                 String message = msg.getString("message");
                 NotificationCompat.Builder mBuilder =
@@ -170,7 +153,7 @@ public class GcmIntentService extends IntentService {
                 mBuilder.setContentIntent(contentIntent);
                 mBuilder.setAutoCancel(true);
                 Log.i(TAG,"in the penultimate line");
-                mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+                mNotificationManager.notify(aNotificationID, mBuilder.build());
             }
         else if(data.equals("rejectedByTheOwner")){
                 String ownerrideid = msg.getString("ownerrideid");
@@ -179,6 +162,8 @@ public class GcmIntentService extends IntentService {
 
                 Intent getridedetails = new Intent(this,searchshowinduvidualrides.class);
                 getridedetails.putExtra("rideId",ownerrideid);
+                //getridedetails.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                  //      Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getridedetails, PendingIntent.FLAG_CANCEL_CURRENT);
                 String customername = msg.getString("ownerCustomerName");
                 String emailId = msg.getString("ownerCustomerEmail");
@@ -195,7 +180,7 @@ public class GcmIntentService extends IntentService {
                 mBuilder.setContentIntent(contentIntent);
                 mBuilder.setAutoCancel(true);
                 Log.i(TAG,"in the penultimate line");
-                mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+                mNotificationManager.notify(aNotificationID, mBuilder.build());
         }
       }
 
