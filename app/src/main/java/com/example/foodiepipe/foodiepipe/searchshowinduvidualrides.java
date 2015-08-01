@@ -487,6 +487,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         private final String mownerCustomerNumber;
         private final String mrequestingCustomerNumber;
         private final String mrRideId;
+        String data = "";
 
         sendrequesttojoinridetask(String RideId,String ownerCustomerNumber,String requestingCustomerNumber,String rRideId ) {
             mRideId = RideId;
@@ -524,8 +525,14 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null) {
-                    String message = jObj.getString("success");
-                    return true;
+                    if(jObj.has("success")) {
+                        String message = jObj.getString("success");
+                        return true;
+                    }
+                    else if(jObj.has("failure")) {
+                        data = jObj.getString("message");
+                        return false;
+                    }
                 }
 
             } catch (JSONException e) {
@@ -547,7 +554,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                 requestalreadysent.setVisibility(View.GONE);
                 sendrequesttojoinride.setVisibility(View.VISIBLE);
                 Toast.makeText(searchshowinduvidualrides.this,
-                        "Something went wrong while sending request. Please try again", Toast.LENGTH_LONG).show();
+                        data, Toast.LENGTH_LONG).show();
             }
 
         }
