@@ -131,7 +131,7 @@ public class GcmIntentService extends IntentService {
                 Log.i(TAG,"in the penultimate line");
                 mNotificationManager.notify(aNotificationID, mBuilder.build());
         }
-            else if(data.equals("YouAreTheNewOwner") || data.equals("OwnerHasExitedTheRide") ||data.equals("FellowRiderHasExited")){
+            else if(data.equals("YouAreTheNewOwner") || data.equals("OwnerHasExitedTheRide") ||data.equals("fellowRiderHasLeft")){
                 String ownerrideid = msg.getString("jrId");
                 mNotificationManager = (NotificationManager)
                         this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -151,6 +151,20 @@ public class GcmIntentService extends IntentService {
 
 
                 mBuilder.setContentIntent(contentIntent);
+                mBuilder.setAutoCancel(true);
+                Log.i(TAG,"in the penultimate line");
+                mNotificationManager.notify(aNotificationID, mBuilder.build());
+            }
+            else if(data.equals("fellowRiderHasLeftWithJoinedRideRemoved")){
+                mNotificationManager = (NotificationManager)
+                        this.getSystemService(Context.NOTIFICATION_SERVICE);
+                String message = msg.getString("message");
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(this)
+                                .setSmallIcon(R.drawable.ic_launcher)
+                                .setContentTitle(message)
+                                .setStyle(new NotificationCompat.BigTextStyle()
+                                        .setBigContentTitle(message));
                 mBuilder.setAutoCancel(true);
                 Log.i(TAG,"in the penultimate line");
                 mNotificationManager.notify(aNotificationID, mBuilder.build());
