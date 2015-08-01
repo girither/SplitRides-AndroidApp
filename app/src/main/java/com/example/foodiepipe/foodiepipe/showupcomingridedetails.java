@@ -146,14 +146,14 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         }
         switch(view.getId()) {
             case R.id.startride:
-               // if(SharedPreferenceManager.getBooleanPreference("stoprides")) {
+                if(SharedPreferenceManager.getBooleanPreference("stoprides")) {
                     Intent selectcabprovider = new Intent(showupcomingridedetails.this, cabproviderselction.class);
                     startActivityForResult(selectcabprovider, PICK_CABPROVIDER_RESULT);
-               // }
+                }
 
                 break;
             case R.id.endride:
-              //  if(SharedPreferenceManager.getBooleanPreference("startrides")) {
+                if(SharedPreferenceManager.getBooleanPreference("startrides")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(showupcomingridedetails.this);
                     builder.setMessage("Do You want to end the ride?")
                             .setCancelable(false)
@@ -172,7 +172,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     });
                     AlertDialog alert = builder.create();
                     alert.show();
-                // }
+                 }
                 break;
             case R.id.estimeateride:
                 Intent selectcabprovider_estimate = new Intent(showupcomingridedetails.this,cabproviderselction.class);
@@ -295,16 +295,16 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         if (requestCode == PICK_CABPROVIDER_RESULT) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                //if(!SharedPreferenceManager.getBooleanPreference("startrides")) {
+                if(!SharedPreferenceManager.getBooleanPreference("startrides")) {
                     Bundle extras = data.getExtras();
                     String cabprovidervalue = extras.getString("cabprovider");
                     SharedPreferenceManager.setPreference("started_jrride", SharedPreferenceManager.getPreference("currentride_rideid"));
                     new startridetask(cabprovidervalue,SharedPreferenceManager.getPreference("started_jrride")).execute();
-                //}
-                //else{
-                 //   Toast.makeText(showupcomingridedetails.this,
-                 //           "You have already started a Ride. PLease end it to start another one", Toast.LENGTH_LONG).show();
-               //s }
+                }
+                else{
+                    Toast.makeText(showupcomingridedetails.this,
+                            "You have already started a Ride. PLease end it to start another one", Toast.LENGTH_LONG).show();
+                }
             }
         }
         else if(requestCode == PICK_CABPROVIDER_RESULT_FROMESIMATE){
@@ -407,6 +407,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 exitride.setVisibility(View.GONE);
                 endride.setVisibility(View.VISIBLE);
                 SharedPreferenceManager.setPreference("startrides", true);
+                SharedPreferenceManager.setPreference("stoprides", false);
                 SharedPreferenceManager.setPreference("locationstringdata", "");
                 startlocationservice();
             }
@@ -762,7 +763,6 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     if(!(SharedPreferenceManager.getBooleanPreference("startrides"))){
                         SharedPreferenceManager.setPreference("stoprides", true);
                     }
-
                 }
                 else if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("started")){
                     startride.setVisibility(View.GONE);
