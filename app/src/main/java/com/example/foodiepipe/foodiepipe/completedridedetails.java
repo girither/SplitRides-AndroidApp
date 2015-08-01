@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -33,6 +34,8 @@ public class completedridedetails extends ActionBarActivity {
     LinearLayout detailform;
     SplitRideAdapter splitridelistadapter;
     ExpandableHeightGridView mGridView;
+    GridView mGridView_noresults;
+    SampleAdapter_noresults  rideshare_noresults;
     getindividualcompletedridetask individualcompletedridestask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class completedridedetails extends ActionBarActivity {
         detailform = (LinearLayout) findViewById(R.id.completedridedatashow);
         mGridView = (ExpandableHeightGridView)findViewById(android.R.id.list);
         mGridView.setExpanded(true);
+        mGridView_noresults = (GridView) findViewById(R.id.no_results_return_list);
         Bundle extras = getIntent().getExtras();
         String currentuniqueid = extras.getString("uniqueId");
         String uniqueId = (currentuniqueid!= null && !currentuniqueid.isEmpty())?extras.getString("uniqueId"):SharedPreferenceManager.getPreference("currentride_uniqueid");
@@ -112,6 +116,41 @@ public class completedridedetails extends ActionBarActivity {
             ((TextView) convertView.findViewById(R.id.fare_for_distance_value)).setText(mSamples.get(position).getFareForThisLeg());
             ((TextView) convertView.findViewById(R.id.fare_for_time_value)).setText(mSamples.get(position).getFareForTimeSpentInThisLeg());
             ((TextView) convertView.findViewById(R.id.partners_value)).setText(TextUtils.join(",",mSamples.get(position).getPartners()));
+            return convertView;
+        }
+    }
+
+    private class SampleAdapter_noresults extends BaseAdapter {
+        private List<ridedata> mSamples;
+        public SampleAdapter_noresults(List<ridedata> myDataset) {
+            mSamples = myDataset;
+        }
+
+        @Override
+        public int getCount() {
+            return mSamples.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mSamples.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return mSamples.get(position).hashCode();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup container) {
+            if (convertView == null) {
+                convertView = getLayoutInflater().inflate(R.layout.noresults_searchrides,
+                        container, false);
+            }
+            TextView noresultsview = (TextView) convertView.findViewById(R.id.text1);
+            noresultsview.setText(mSamples.get(position).getNoresults());
+            // Lookup view for data population
+
             return convertView;
         }
     }
@@ -183,17 +222,29 @@ public class completedridedetails extends ActionBarActivity {
             bar.setVisibility(View.GONE);
             detailform.setVisibility((completedridedataobject!=null)?View.VISIBLE:View.GONE);
             if(completedridedataobject != null ){
-                base_fare.setText(completedridedataobject.getBaseFare());
-                fare_distance.setText(completedridedataobject.getPfareForDistanceTravelled());
-                fare_time.setText(completedridedataobject.getFareForTimeSpent());
-                total_fare.setText(completedridedataobject.getTotalFare());
+                base_fare.setText(getResources().getString(R.string.Rs)+" "+completedridedataobject.getBaseFare());
+                fare_distance.setText(getResources().getString(R.string.Rs)+" "+completedridedataobject.getPfareForDistanceTravelled());
+                fare_time.setText(getResources().getString(R.string.Rs)+" "+completedridedataobject.getFareForTimeSpent());
+                total_fare.setText(getResources().getString(R.string.Rs)+" "+completedridedataobject.getTotalFare());
                 String timeofrides_start = completedridedataobject.getRideStartedAt().split(" ")[1];
                 String timeofrides_end = completedridedataobject.getRideEndedAt().split(" ")[1];
                 ridestart_time.setText(timeofrides_start);
                 rideend_time.setText(timeofrides_end);
-                splitridelistadapter = new SplitRideAdapter(completedridedataobject.getListofsplitfare());
-                mGridView.setAdapter(splitridelistadapter);
-                splitridelistadapter.notifyDataSetChanged();
+                mGridView.setVisibility(!completedridedataobject.getListofsplitfare().isEmpty() ? View.VISIBLE : View.GONE);
+                mGridView_noresults.setVisibility(!completedridedataobject.getListofsplitfare().isEmpty() ? View.GONE : View.VISIBLE);
+                if(!completedridedataobject.getListofsplitfare().isEmpty()) {
+                    splitridelistadapter = new SplitRideAdapter(completedridedataobject.getListofsplitfare());
+                    mGridView.setAdapter(splitridelistadapter);
+                    splitridelistadapter.notifyDataSetChanged();
+                }
+                else{
+                    List<ridedata> noresultsarray = new ArrayList<ridedata>();
+                    ridedata info = new ridedata(null,null,null);
+                    info.setNoresults("No rides shared currently.");
+                    noresultsarray.add(info);
+                    rideshare_noresults = new SampleAdapter_noresults(noresultsarray);
+                    mGridView_noresults.setAdapter(rideshare_noresults);
+                }
             }
         }
 

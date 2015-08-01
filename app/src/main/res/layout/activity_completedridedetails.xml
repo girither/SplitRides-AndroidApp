@@ -232,6 +232,19 @@
             android:scrollbarStyle="outsideOverlay" />
 
 
+        <GridView android:id="@+id/no_results_return_list"
+            style="@style/Widget.SampleDashboard.Grid"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingLeft="@dimen/horizontal_page_margin"
+            android:paddingRight="@dimen/horizontal_page_margin"
+            android:paddingBottom="@dimen/vertical_page_margin"
+            android:scrollbarStyle="outsideOverlay" />
+
+
 
 
     </LinearLayout>
