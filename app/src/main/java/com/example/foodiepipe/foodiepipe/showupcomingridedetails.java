@@ -63,6 +63,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     ExpandableHeightGridView mGridView;
     static final int PICK_CABPROVIDER_RESULT = 1;
     static final int PICK_CABPROVIDER_RESULT_FROMESIMATE = 2;
+    static final int SHOW_BILL = 3;
     private PendingIntent pendingIntent;
     Intent startlocationservice;
     MenuItem hideeditmenuitem;
@@ -315,6 +316,12 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 new estimateridetask(cabprovidervalue, SharedPreferenceManager.getPreference("currentride_rideid"), Integer.toString(0), "").execute();
             }
         }
+        else if(requestCode == SHOW_BILL){
+            if (resultCode == Activity.RESULT_OK) {
+                finish();
+            }
+        }
+
     }
 
     @Override
@@ -484,7 +491,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     billfragmentactivity.putExtra("price",data.getPrice());
                     billfragmentactivity.putExtra("distance", data.getDistance());
                     billfragmentactivity.putExtra("time",data.getTime());
-                    startActivity(billfragmentactivity);
+                    startActivityForResult(billfragmentactivity, SHOW_BILL);
                 }
             else{
                 Toast.makeText(showupcomingridedetails.this,

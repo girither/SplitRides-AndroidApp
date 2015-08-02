@@ -1,5 +1,7 @@
 package com.example.foodiepipe.foodiepipe;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,7 +38,7 @@ public class billcardfragment extends ActionBarActivity implements View.OnClickL
         ratedistance.setText(distance+" Km");
         TextView ratetime = (TextView)findViewById(R.id.trip_time_value);
         ratetime.setText(time + " min");
-        okcool = (Button) findViewById(R.id.startride);
+        okcool = (Button) findViewById(R.id.ok_cool);
         okcool.setOnClickListener(this);
     }
 
@@ -53,7 +55,8 @@ public class billcardfragment extends ActionBarActivity implements View.OnClickL
         }
         switch(view.getId()) {
             case R.id.ok_cool:
-                finish();
+                Intent intent = new Intent();
+                setResult (Activity.RESULT_OK, intent);
                 finish();
                 break;
         }
