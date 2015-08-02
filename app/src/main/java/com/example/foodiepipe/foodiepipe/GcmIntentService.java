@@ -144,13 +144,13 @@ public class GcmIntentService extends IntentService {
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_launcher)
                                 .setContentTitle(message)
-                                .setStyle(new NotificationCompat.BigTextStyle()
+                                .setStyle(new NotificationCompat.InboxStyle()
+                                        .addLine(message)
                                         .setBigContentTitle(message));
 
 
                 mBuilder.setContentIntent(contentIntent);
                 mBuilder.setAutoCancel(true);
-                Log.i(TAG,"in the penultimate line");
                 mNotificationManager.notify(aNotificationID, mBuilder.build());
             }
             else if(data.equals("fellowRiderHasLeftWithJoinedRideRemoved")){
@@ -161,10 +161,10 @@ public class GcmIntentService extends IntentService {
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_launcher)
                                 .setContentTitle(message)
-                                .setStyle(new NotificationCompat.BigTextStyle()
+                                .setStyle(new NotificationCompat.InboxStyle()
+                                        .addLine(message)
                                         .setBigContentTitle(message));
                 mBuilder.setAutoCancel(true);
-                Log.i(TAG,"in the penultimate line");
                 mNotificationManager.notify(aNotificationID, mBuilder.build());
             }
         else if(data.equals("rejectedByTheOwner")){

@@ -33,7 +33,7 @@ public class completedridedetails extends ActionBarActivity {
     ProgressBar bar;
     LinearLayout detailform;
     SplitRideAdapter splitridelistadapter;
-    ExpandableHeightGridView mGridView;
+    GridView mGridView;
     GridView mGridView_noresults;
     SampleAdapter_noresults  rideshare_noresults;
     getindividualcompletedridetask individualcompletedridestask;
@@ -52,8 +52,7 @@ public class completedridedetails extends ActionBarActivity {
         rideend_time = (TextView) findViewById(R.id.rideend_time);
         bar = (ProgressBar) findViewById(R.id.completedridedetails_progress);
         detailform = (LinearLayout) findViewById(R.id.completedridedatashow);
-        mGridView = (ExpandableHeightGridView)findViewById(android.R.id.list);
-        mGridView.setExpanded(true);
+        mGridView = (GridView)findViewById(android.R.id.list);
         mGridView_noresults = (GridView) findViewById(R.id.no_results_return_list);
         Bundle extras = getIntent().getExtras();
         String currentuniqueid = extras.getString("uniqueId");
@@ -113,8 +112,8 @@ public class completedridedetails extends ActionBarActivity {
                         container, false);
             }
 
-            ((TextView) convertView.findViewById(R.id.fare_for_distance_value)).setText(mSamples.get(position).getFareForThisLeg());
-            ((TextView) convertView.findViewById(R.id.fare_for_time_value)).setText(mSamples.get(position).getFareForTimeSpentInThisLeg());
+            ((TextView) convertView.findViewById(R.id.fare_for_distance_value)).setText(getResources().getString(R.string.Rs)+" "+mSamples.get(position).getFareForThisLeg());
+            ((TextView) convertView.findViewById(R.id.fare_for_time_value)).setText(getResources().getString(R.string.Rs)+" "+mSamples.get(position).getFareForTimeSpentInThisLeg());
             ((TextView) convertView.findViewById(R.id.partners_value)).setText(TextUtils.join(",",mSamples.get(position).getPartners()));
             return convertView;
         }
@@ -235,7 +234,6 @@ public class completedridedetails extends ActionBarActivity {
                 if(!completedridedataobject.getListofsplitfare().isEmpty()) {
                     splitridelistadapter = new SplitRideAdapter(completedridedataobject.getListofsplitfare());
                     mGridView.setAdapter(splitridelistadapter);
-                    splitridelistadapter.notifyDataSetChanged();
                 }
                 else{
                     List<ridedata> noresultsarray = new ArrayList<ridedata>();

@@ -220,7 +220,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/ride_share_details" />
 
-        <com.example.foodiepipe.foodiepipe.ExpandableHeightGridView android:id="@android:id/list"
+        <GridView android:id="@android:id/list"
             style="@style/Widget.SampleDashboard.Grid"
             android:layout_width="match_parent"
             android:layout_marginTop="10dp"
