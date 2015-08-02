@@ -189,8 +189,8 @@ public class completedridedetails extends ActionBarActivity {
                 if(jObj != null){
                     if (jObj.has("completedRides")) {
                         JSONObject completedride = jObj.getJSONObject("completedRides");
-                        if(completedride.has("statusMatrix")) {
-                            JSONArray somematrix = jObj.getJSONArray("someMatrix");
+                        if(completedride.has("someMatrix")) {
+                            JSONArray somematrix = completedride.getJSONArray("someMatrix");
                             for (int i = 0; i < somematrix.length(); i++) {
                                 JSONObject splitfaredetails = somematrix.getJSONObject(i);
                                 JSONArray partnerarray = splitfaredetails.getJSONArray("partners");
