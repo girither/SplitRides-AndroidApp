@@ -1,49 +1,66 @@
 package com.example.foodiepipe.foodiepipe;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.foodpipe.android.helper.ConnectionDetector;
 
 /**
  * Created by gbm on 7/24/15.
  */
-public class billcardfragment extends DialogFragment {
+public class billcardfragment extends ActionBarActivity implements View.OnClickListener {
 
-    ratecardobject mRateText;
 
-    public billcardfragment(ratecardobject textView) {
-        mRateText = textView;
-    }
+    private Toolbar toolbar;
+    private Button okcool;
 
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        View dialogView = inflater.inflate(R.layout.rate_billfragment, null);
-
-        builder.setView(dialogView);
-        TextView rateText = (TextView)dialogView.findViewById(R.id.totalcost_value);
-        rateText.setText(getResources().getString(R.string.Rs)+" "+mRateText.getPrice());
-        TextView ratedistance = (TextView)dialogView.findViewById(R.id.distance_value);
-        ratedistance.setText(mRateText.getDistance()+" Km");
-        TextView ratetime = (TextView)dialogView.findViewById(R.id.trip_time_value);
-        ratetime.setText(mRateText.getTime() +" min");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                  getActivity().finish();
-            }
-        });
-        return builder.create();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.rate_billfragment);
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+        Bundle extras = getIntent().getExtras();
+        String price = extras.getString("price");
+        String distance = extras.getString("distance");
+        String time = extras.getString("time");
+        TextView rateText = (TextView)findViewById(R.id.totalcost_value);
+        rateText.setText(getResources().getString(R.string.Rs) + " " + price);
+        TextView ratedistance = (TextView)findViewById(R.id.distance_value);
+        ratedistance.setText(distance+" Km");
+        TextView ratetime = (TextView)findViewById(R.id.trip_time_value);
+        ratetime.setText(time + " min");
+        okcool = (Button) findViewById(R.id.startride);
+        okcool.setOnClickListener(this);
     }
+
+    public void onClick(View view) {
+        ConnectionDetector cd = new ConnectionDetector(billcardfragment.this.getApplicationContext());
+
+        // Check if Internet present
+        if (!cd.isConnectingToInternet()) {
+            // Internet Connection is not present
+            Toast.makeText(billcardfragment.this,
+                    "Internet Connection Error Please connect to working Internet connection", Toast.LENGTH_LONG).show();
+            // stop executing code by return
+            return;
+        }
+        switch(view.getId()) {
+            case R.id.ok_cool:
+                finish();
+                finish();
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+    }
+
 }

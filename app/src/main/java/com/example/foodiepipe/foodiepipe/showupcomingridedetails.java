@@ -159,6 +159,9 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+                                    SharedPreferenceManager.setPreference("startrides", false);
+                                    SharedPreferenceManager.setPreference("stoprides", true);
+                                    stoplocationservice();
                                     String locationstring = SharedPreferenceManager.getPreference("locationstringdata");
                                     if (locationstring != null && !locationstring.isEmpty()) {
                                         new endridetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
@@ -478,12 +481,12 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         protected void onPostExecute(final ratecardobject data) {
                 pDialog.dismiss();
                 if(data != null){
-                    SharedPreferenceManager.setPreference("startrides", false);
-                    SharedPreferenceManager.setPreference("stoprides", true);
-                    stoplocationservice();
                     SharedPreferenceManager.setPreference("locationstringdata", "");
-                    //DialogFragment billFragment = new billcardfragment(data);
-                    //billFragment.show(getFragmentManager(), "ratepicker");
+                    Intent billfragmentactivity = new Intent(getApplicationContext(),billcardfragment.class);
+                    billfragmentactivity.putExtra("price",data.getPrice());
+                    billfragmentactivity.putExtra("distance", data.getDistance());
+                    billfragmentactivity.putExtra("time",data.getTime());
+                    startActivity(billfragmentactivity);
                 }
             else{
                 Toast.makeText(showupcomingridedetails.this,
