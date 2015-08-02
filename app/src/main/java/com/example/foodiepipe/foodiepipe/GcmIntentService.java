@@ -62,11 +62,9 @@ public class GcmIntentService extends IntentService {
         }
             if(data.equals("StartRideDistanceTravelled")){
                 new startridewithdistancetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
-                SharedPreferenceManager.setPreference("locationstringdata","");
             }
             else if(data.equals("EndRideDistanceTravelled")){
                 new endridewithdistancetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
-                SharedPreferenceManager.setPreference("locationstringdata","");
             }
             else if(data.equals("requestToJoinTheRide")){
             String requestID = msg.getString("requestId");
@@ -241,7 +239,7 @@ public class GcmIntentService extends IntentService {
         @Override
         protected void onPostExecute(final String success) {
             if(success != null){
-
+                SharedPreferenceManager.setPreference("locationstringdata","");
             }
         }
 
@@ -295,7 +293,7 @@ public class GcmIntentService extends IntentService {
         @Override
         protected void onPostExecute(final String success) {
             if(success != null){
-
+                SharedPreferenceManager.setPreference("locationstringdata","");
             }
         }
 
