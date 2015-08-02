@@ -153,7 +153,6 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
                 break;
             case R.id.endride:
-                if(SharedPreferenceManager.getBooleanPreference("startrides")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(showupcomingridedetails.this);
                     builder.setMessage("Do You want to end the ride?")
                             .setCancelable(false)
@@ -175,7 +174,6 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     });
                     AlertDialog alert = builder.create();
                     alert.show();
-                 }
                 break;
             case R.id.estimeateride:
                 Intent selectcabprovider_estimate = new Intent(showupcomingridedetails.this,cabproviderselction.class);
