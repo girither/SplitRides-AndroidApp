@@ -510,6 +510,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         private final String jrId;
         private final String mcustomerNumber;
         private final String maction;
+        String data = "";
 
 
         exitjoinedride(String joinedrideId, String customerNumber,String action) {
@@ -546,13 +547,19 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
-                    success = jObj.getString("success");
-                    return true;
+                    if(jObj.has("success")) {
+                        success= jObj.getString("success");
+                        return true;
+                    }
+                    else if(jObj.has("failure")) {
+                        data = jObj.getString("message");
+                        return false;
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
+            data =  "Something went wrong while sending request. Please try again";
             return false;
         }
 
@@ -565,7 +572,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             }
             else{
                 Toast.makeText(showupcomingridedetails.this,
-                        "Something went wrong while sending request. Please try again", Toast.LENGTH_LONG).show();
+                        data, Toast.LENGTH_LONG).show();
             }
         }
 
