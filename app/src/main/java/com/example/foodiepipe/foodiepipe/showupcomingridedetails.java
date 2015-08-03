@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,6 +32,17 @@ import com.facebook.HttpMethod;
 import com.facebook.login.widget.ProfilePictureView;
 import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import org.json.JSONArray;
@@ -43,7 +55,9 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class showupcomingridedetails extends ActionBarActivity implements View.OnClickListener {
+public class showupcomingridedetails extends ActionBarActivity implements View.OnClickListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
 
 
     private getindividualriddetailsetask myrideTask = null;
@@ -63,10 +77,12 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     ExpandableHeightGridView mGridView;
     static final int PICK_CABPROVIDER_RESULT = 1;
     static final int PICK_CABPROVIDER_RESULT_FROMESIMATE = 2;
+    static final int  REQUEST_CHECK_SETTINGS = 1000;
     static final int SHOW_BILL = 3;
     private PendingIntent pendingIntent;
     Intent startlocationservice;
     MenuItem hideeditmenuitem;
+    private GoogleApiClient mGoogleApiClient;
 
     private String profileId = null;
 
@@ -104,26 +120,9 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         SharedPreferenceManager.setPreference("currentride_rideid",rideId);
         new getindividualriddetailsetask(rideId).execute();
 
-        startlocationservice = new Intent(this,Locationservice.class);
-        /*Intent alarmIntent = new Intent(showupcomingridedetails.this, Alarmreciever.class);
-        pendingIntent = PendingIntent.getBroadcast(showupcomingridedetails.this, 0, alarmIntent, 0);*/
-    }
-    //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-
-/*
-    public void startalarm() {
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        int interval = 1000 * 3 * 60;
-        SharedPreferenceManager.setPreference("stoprides",false);
-        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+        startlocationservice = new Intent(getApplicationContext(),Locationservice.class);
     }
 
-    public void stopalarm() {
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        manager.cancel(pendingIntent);
-        //Toast.makeText(this, "Alarm Canceled", Toast.LENGTH_SHORT).show();
-    }
-*/
     public void startlocationservice(){
         this.startService(startlocationservice);
     }
@@ -132,7 +131,73 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         this.stopService(startlocationservice);
     }
 
+    public void fetchlocation() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(showupcomingridedetails.this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this).build();
+            mGoogleApiClient.connect();
 
+            LocationRequest locationRequest = LocationRequest.create();
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            locationRequest.setInterval(15 * 1000);
+            locationRequest.setFastestInterval(15 * 1000);
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(locationRequest);
+
+            //**************************
+            builder.setAlwaysShow(true); //this is the key ingredient
+            //**************************
+
+            PendingResult<LocationSettingsResult> result =
+                    LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+            result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+                @Override
+                public void onResult(LocationSettingsResult result) {
+                    final Status status = result.getStatus();
+                    final LocationSettingsStates state = result.getLocationSettingsStates();
+                    switch (status.getStatusCode()) {
+                        case LocationSettingsStatusCodes.SUCCESS:
+                            Intent selectcabprovider = new Intent(showupcomingridedetails.this, cabproviderselction.class);
+                            startActivityForResult(selectcabprovider, PICK_CABPROVIDER_RESULT);
+                            break;
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            // Location settings are not satisfied. But could be fixed by showing the user
+                            // a dialog.
+                            try {
+                                // Show the dialog by calling startResolutionForResult(),
+                                // and check the result in onActivityResult().
+                                status.startResolutionForResult(
+                                        showupcomingridedetails.this, REQUEST_CHECK_SETTINGS);
+                            } catch (IntentSender.SendIntentException e) {
+                                // Ignore the error.
+                            }
+                            break;
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            // Location settings are not satisfied. However, we have no way to fix the
+                            // settings so we won't show the dialog.
+                            break;
+                    }
+                }
+            });
+        }
+    }
+
+
+    @Override
+    public void onConnected(Bundle bundle) {
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 
     public void onClick(View view) {
         ConnectionDetector cd = new ConnectionDetector(showupcomingridedetails.this.getApplicationContext());
@@ -148,8 +213,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         switch(view.getId()) {
             case R.id.startride:
                 if(SharedPreferenceManager.getBooleanPreference("stoprides")) {
-                    Intent selectcabprovider = new Intent(showupcomingridedetails.this, cabproviderselction.class);
-                    startActivityForResult(selectcabprovider, PICK_CABPROVIDER_RESULT);
+                    fetchlocation();
                 }
 
                 break;
@@ -293,7 +357,20 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        Intent selectcabprovider = new Intent(showupcomingridedetails.this, cabproviderselction.class);
+                        startActivityForResult(selectcabprovider, PICK_CABPROVIDER_RESULT);
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
         if (requestCode == PICK_CABPROVIDER_RESULT) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
