@@ -36,11 +36,12 @@ public class customridedataadapter extends ArrayAdapter<ridedata> {
         TextView joinedride_label = (TextView) convertView.findViewById(R.id.joinedride_title);
         if(Ridedata.getRideFlag().equals("jride"))
         {
-             joinedride_label.setText("JOINED RIDE");
-        }
-        else if(Ridedata.getRideFlag().equals("jride") && Ridedata.getJoinedridestatus().equals("started"))
-        {
-            joinedride_label.setText("RIDE STARTED");
+            if(Ridedata.getJoinedridestatus().equals("started")) {
+                joinedride_label.setText("RIDE STARTED");
+            }
+            else{
+                joinedride_label.setText("JOINED RIDE");
+            }
         }
         else
         {
