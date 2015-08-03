@@ -3,6 +3,9 @@ package com.example.foodiepipe.foodiepipe;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -20,11 +23,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.login.widget.ProfilePictureView;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +74,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+    private ImageView googleProfileImage;
 
     public NavigationDrawerFragment() {
     }
@@ -94,11 +100,21 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
 
 
-        public void setUserDetails(String usernamedetails,String email,String id)
+        public void setUserDetails(String usernamedetails,String email,String id, String profileType)
     {
         username.setText(usernamedetails);
         useremail.setText(email);
-        profilepic.setProfileId(id);
+
+        if(profileType != null && profileType.equals("google")) {
+            ImageLoadTask loadImage = new ImageLoadTask(id);
+            loadImage.execute();
+            googleProfileImage.setVisibility(View.VISIBLE);
+            profilepic.setVisibility(View.INVISIBLE);
+        } else {
+            profilepic.setProfileId(id);
+            googleProfileImage.setVisibility(View.INVISIBLE);
+            profilepic.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -139,6 +155,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         useremail = (TextView) view.findViewById(R.id.txtUserEmail);
         profilepic = (ProfilePictureView)view.findViewById(R.id.profilePicture);
         mDrawerList = (RecyclerView) view.findViewById(R.id.drawerList);
+        googleProfileImage = (ImageView) view.findViewById(R.id.imgAvatar);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mDrawerList.setLayoutManager(layoutManager);
@@ -349,5 +366,38 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
+
+
+    public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
+
+        private String imageURLStr;
+
+        ImageLoadTask(String imageUrlStr) {
+            this.imageURLStr = imageUrlStr;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... param) {
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inSampleSize = 1;
+            URL imageURL = null;
+            Bitmap imageBitmap = null;
+
+            try {
+                imageURL = new URL(imageURLStr);
+                imageBitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream(), null, bmOptions);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Error occured while loading image", "Resource error occured");
+            }
+
+            return imageBitmap;
+        }
+
+        @Override
+        protected void onPostExecute(final Bitmap imageAsBitMap) {
+            googleProfileImage.setImageBitmap(imageAsBitMap);
+        }
+    }
 
 }

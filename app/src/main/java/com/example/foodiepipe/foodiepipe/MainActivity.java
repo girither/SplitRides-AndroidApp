@@ -108,6 +108,8 @@ public class MainActivity extends ActionBarActivity
     GoogleCloudMessaging gcm;
     //AtomicInteger msgId = new AtomicInteger();
 
+    private String googleProfilePicUrl = "";
+
     String regid;
 
 
@@ -662,10 +664,12 @@ public class MainActivity extends ActionBarActivity
                 gender = "other";
             }
             email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+
+            googleProfilePicUrl = currentPerson.getImage().getUrl();
         }
         mSignInProgress = STATE_DEFAULT;
         if(mTokenTask == null) {
-            mTokenTask = new Retrieveauthtokengoogle(Plus.AccountApi.getAccountName(mGoogleApiClient), personName, email,gender);
+            mTokenTask = new Retrieveauthtokengoogle(Plus.AccountApi.getAccountName(mGoogleApiClient), personName, email,gender, googleProfilePicUrl);
             mTokenTask.execute((Void) null);
         }
 
@@ -859,7 +863,8 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-        mNavigationDrawerFragment.setUserDetails(SharedPreferenceManager.getPreference("name"),SharedPreferenceManager.getPreference("email"),SharedPreferenceManager.getPreference("id"));
+        String profileImg = SharedPreferenceManager.getPreference("profileImage");
+        mNavigationDrawerFragment.setUserDetails(SharedPreferenceManager.getPreference("name"),SharedPreferenceManager.getPreference("email"), (profileImg != null && profileImg.trim().length() > 0) ? profileImg : SharedPreferenceManager.getPreference("id"), SharedPreferenceManager.getPreference("profile"));
     }
     public void singoutfromapp()
     {
@@ -966,6 +971,7 @@ public class MainActivity extends ActionBarActivity
                     SharedPreferenceManager.setPreference("customerNumber",customerNumber);
                     SharedPreferenceManager.setPreference("email",email);
                     SharedPreferenceManager.setPreference("profile",mProfile);
+                    SharedPreferenceManager.setPreference("profileImage", mProfileId);
                     return true;
                 }
 
@@ -1022,13 +1028,15 @@ public class MainActivity extends ActionBarActivity
         private final String mEmail;
         private final String mName;
         private final String mGender;
+        private final String mProfileImageUrl;
 
 
-        Retrieveauthtokengoogle(String accountName,String name,String email,String gender) {
-          maccountName = accountName;
-          mEmail = email;
-          mName = name;
-          mGender = gender;
+        Retrieveauthtokengoogle(String accountName,String name,String email,String gender, String profileImageUrl) {
+            maccountName = accountName;
+            mEmail = email;
+            mName = name;
+            mGender = gender;
+            mProfileImageUrl = profileImageUrl;
         }
         @Override
         protected void onPreExecute() {
@@ -1061,7 +1069,7 @@ public class MainActivity extends ActionBarActivity
             pDialog.dismiss();
             if(result!=null)
             {
-                mAuthTask = new UserLoginTask(mEmail,"",mName,"google","",result,mGender,getRegistrationId(getApplicationContext()));
+                mAuthTask = new UserLoginTask(mEmail,"",mName,"google",(mProfileImageUrl != null && mProfileImageUrl.length() > 0) ? mProfileImageUrl : "",result,mGender,getRegistrationId(getApplicationContext()));
                 mAuthTask.execute((Void) null);
             }
             else
