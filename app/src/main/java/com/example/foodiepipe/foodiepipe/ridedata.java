@@ -10,6 +10,15 @@ public class ridedata {
     String source;
     String date;
     String ridestatus;
+    String joinedridestatus="";
+
+    public String getJoinedridestatus() {
+        return joinedridestatus;
+    }
+
+    public void setJoinedridestatus(String joinedridestatus) {
+        this.joinedridestatus = joinedridestatus;
+    }
 
     public String getSourcelat() {
         return sourcelat;
@@ -164,7 +173,7 @@ public class ridedata {
         this.rideId = rideId;
         this.status = status;
     }
-    public ridedata(String source,String destination,String date,List<customer> customerlistdata,String rideflag,String rideId,String rideStatus) {
+    public ridedata(String source,String destination,String date,List<customer> customerlistdata,String rideflag,String rideId,String rideStatus,String joinedridestatus) {
         this.source = source;
         this.destination = destination;
         this.date = date;
@@ -172,6 +181,7 @@ public class ridedata {
         this.rideFlag = rideflag;
         this.rideId = rideId;
         this.ridestatus = rideStatus;
+        this.joinedridestatus = joinedridestatus;
     }
     public ridedata(String source,String destination,String date,List<customer> customerlistdata,String rideflag,String rideId) {
         this.source = source;
@@ -193,7 +203,7 @@ public class ridedata {
         this.destination = destination;
         this.date = date;
     }
-    public ridedata(String source,String destination,String date,String rideId,String rideFlag,String rideownercustomernumber,String encodedpolyline) {
+    public ridedata(String source,String destination,String date,String rideId,String rideFlag,String rideownercustomernumber,String encodedpolyline,String joinedridestatus) {
         this.source = source;
         this.destination = destination;
         this.date = date;
@@ -201,6 +211,7 @@ public class ridedata {
         this.rideFlag = rideFlag;
         this.rideownercustomernumber = rideownercustomernumber;
         this.encodedpolyline = encodedpolyline;
+        this.joinedridestatus = joinedridestatus;
     }
     public ridedata(String source,String destination,String date,String rideId,String rideFlag,String rideownercustomernumber,String encodedpolyline, String sourcelat,String sourcelong ,String destinationlat,String destinationlng) {
         this.source = source;

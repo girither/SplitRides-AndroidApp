@@ -38,6 +38,10 @@ public class customridedataadapter extends ArrayAdapter<ridedata> {
         {
              joinedride_label.setText("JOINED RIDE");
         }
+        else if(Ridedata.getRideFlag().equals("jride") && Ridedata.getJoinedridestatus().equals("started"))
+        {
+            joinedride_label.setText("RIDE STARTED");
+        }
         else
         {
              joinedride_label.setText("SINGLE RIDE");

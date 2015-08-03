@@ -709,7 +709,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                             customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"), friendsCount);
                             customerlistdata.add(customeradapterdata);
                         }
-                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"),status);
+                        info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"),status,ride.getString("status"));
                         SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("ownerCustomerNumber"));
                     }
                     else if(jObj.has("ride")) {
@@ -773,13 +773,20 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                     exitride.setVisibility(View.GONE);
                     hideeditmenuitem.setVisible(false);
                 }
-                if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("notstarted")){
+                if(ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("notstarted") && ridedataobject.getRidestatus().equals("notstarted")){
                     endride.setVisibility(View.GONE);
                     if(!(SharedPreferenceManager.getBooleanPreference("startrides"))){
                         SharedPreferenceManager.setPreference("stoprides", true);
                     }
                 }
-                else if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("started")){
+                else if(ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("started") && ridedataobject.getRidestatus().equals("notstarted")){
+                    endride.setVisibility(View.GONE);
+                    exitride.setVisibility(View.GONE);
+                    if(!(SharedPreferenceManager.getBooleanPreference("startrides"))){
+                        SharedPreferenceManager.setPreference("stoprides", true);
+                    }
+                }
+                else if(ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("started") && ridedataobject.getRidestatus().equals("started")){
                     startride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
                     if(SharedPreferenceManager.getBooleanPreference("startrides")){
