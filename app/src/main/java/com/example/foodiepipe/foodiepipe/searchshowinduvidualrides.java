@@ -538,7 +538,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
+            data =  "Something went wrong while sending request. Please try again";
             return false;
         }
 
