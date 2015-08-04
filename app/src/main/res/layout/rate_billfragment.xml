@@ -110,5 +110,5 @@
         android:textColor="#FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:text="OK COOL" />
+        android:text="GOT IT" />
 </LinearLayout>
