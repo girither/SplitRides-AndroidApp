@@ -55,11 +55,11 @@ public class Locationservice extends Service implements LocationListener,
     public void onLocationChanged(Location mCurrentLocation) {
         StringBuilder locationstringbuilder = new StringBuilder();
         String locationstring = SharedPreferenceManager.getPreference("locationstringdata");
-        if(locationstring != null) {
+        if(locationstring != null && mCurrentLocation !=null) {
             locationstringbuilder.append(locationstring).append(mCurrentLocation.getLatitude()).append(",").append(mCurrentLocation.getLongitude()).append("|");
             SharedPreferenceManager.setPreference("locationstringdata", locationstringbuilder.toString());
         }
-        else{
+        else if(mCurrentLocation !=null){
             locationstringbuilder.append(mCurrentLocation.getLatitude()).append(",").append(mCurrentLocation.getLongitude()).append("|");
             SharedPreferenceManager.setPreference("locationstringdata", locationstringbuilder.toString());
         }
