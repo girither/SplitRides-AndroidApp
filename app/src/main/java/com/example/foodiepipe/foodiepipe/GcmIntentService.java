@@ -66,6 +66,13 @@ public class GcmIntentService extends IntentService {
             else if(data.equals("EndRideDistanceTravelled")){
                 new endridewithdistancetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
             }
+            else if(data.equals("OwnerHasEndedTheRide")){
+                SharedPreferenceManager.setPreference("startrides", false);
+                SharedPreferenceManager.setPreference("stoprides", true);
+                Intent startlocationservice = new Intent(getApplicationContext(),Locationservice.class);
+                this.stopService(startlocationservice);
+                new endridewhenownerends(msg.getString("rideid"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
+            }
             else if(data.equals("requestToJoinTheRide")){
             String requestID = msg.getString("requestId");
                 int count = SharedPreferenceManager.getIntPreference("notificationcount");
@@ -121,12 +128,12 @@ public class GcmIntentService extends IntentService {
                                 .setStyle(new NotificationCompat.InboxStyle()
                                         .addLine("email Id :" + emailId)
                                         .setBigContentTitle("Ride Request accepted by " + customername)
-                                        .setSummaryText("Phone Number :"+phonenumber));
+                                        .setSummaryText("Phone Number :" + phonenumber));
 
 
                 mBuilder.setContentIntent(contentIntent);
                 mBuilder.setAutoCancel(true);
-                Log.i(TAG,"in the penultimate line");
+                Log.i(TAG, "in the penultimate line");
                 mNotificationManager.notify(aNotificationID, mBuilder.build());
         }
             else if(data.equals("YouAreTheNewOwner") || data.equals("OwnerHasExitedTheRide") ||data.equals("fellowRiderHasLeft")){
@@ -294,6 +301,65 @@ public class GcmIntentService extends IntentService {
         protected void onPostExecute(final String success) {
             if(success != null){
                 SharedPreferenceManager.setPreference("locationstringdata","");
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+
+        }
+    }
+    public class endridewhenownerends extends AsyncTask<Void, Void,ratecardobject> {
+
+        private final String mjrId;
+        private final String mdistanceTravelled;
+
+
+        endridewhenownerends(String jRideId,String distancetravelled) {
+
+            mjrId = jRideId;
+            mdistanceTravelled = distancetravelled;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected ratecardobject doInBackground(Void... param) {
+            ratecardobject data = null;
+
+            try {
+                JSONObject params = new JSONObject();
+                params.put("jrId", mjrId);
+                params.put("latLngString",mdistanceTravelled);
+
+                // getting JSON string from URL
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"endRide", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    data = new ratecardobject(jObj.getString("totalSharedFare"),jObj.getString("distanceTravelled"),jObj.getString("totalTimeSpent"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(final ratecardobject data) {
+            if(data != null){
+                SharedPreferenceManager.setPreference("locationstringdata", "");
+                Intent billfragmentactivity = new Intent(getApplicationContext(),billcardfragment.class);
+                billfragmentactivity.putExtra("price",data.getPrice());
+                billfragmentactivity.putExtra("distance", data.getDistance());
+                billfragmentactivity.putExtra("time",data.getTime());
+                startActivity(billfragmentactivity);
             }
         }
 
