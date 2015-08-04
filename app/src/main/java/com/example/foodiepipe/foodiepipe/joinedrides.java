@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.foodpipe.android.helper.ConnectionDetector;
 import com.foodpipe.android.helper.JSONParser;
 
 import org.json.JSONArray;
@@ -73,7 +74,19 @@ public class joinedrides extends Fragment implements AdapterView.OnItemClickList
     @Override
     public void onResume() {
         super.onResume();
-        new getjoinedridetask().execute((Void) null);
+        ConnectionDetector cd = new ConnectionDetector(getActivity().getApplicationContext());
+        if (!cd.isConnectingToInternet()) {
+            noresultsform.setVisibility(View.VISIBLE);
+            List<ridedata> noresultsarray = new ArrayList<ridedata>();
+            ridedata info = new ridedata(null,null,null);
+            info.setNoresults("No Internet Available Currently");
+            noresultsarray.add(info);
+            myallridedataadapter_noresults = new SampleAdapter_noresults(noresultsarray);
+            mGridView_noresults.setAdapter(myallridedataadapter_noresults);
+        }
+        else {
+            new getjoinedridetask().execute((Void) null);
+        }
     }
 
     private class SampleAdapter extends BaseAdapter {

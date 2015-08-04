@@ -863,6 +863,12 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         SharedPreferenceManager.setPreference("stoprides", true);
                     }
                 }
+                else if(ridedataobject.getRidestatus() != null && ridedataobject.getRidestatus().equals("ended")){
+                    startride.setVisibility(View.GONE);
+                    endride.setVisibility(View.GONE);
+                    estimateride.setVisibility(View.GONE);
+                    exitride.setVisibility(View.GONE);
+                }
                 else if(ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("started") && ridedataobject.getRidestatus().equals("started")){
                     startride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
