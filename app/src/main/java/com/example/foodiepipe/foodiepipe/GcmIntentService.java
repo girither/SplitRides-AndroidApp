@@ -356,9 +356,10 @@ public class GcmIntentService extends IntentService {
             if(data != null){
                 SharedPreferenceManager.setPreference("locationstringdata", "");
                 Intent billfragmentactivity = new Intent(getApplicationContext(),billcardfragment.class);
-                billfragmentactivity.putExtra("price",data.getPrice());
+                billfragmentactivity.putExtra("price", data.getPrice());
                 billfragmentactivity.putExtra("distance", data.getDistance());
-                billfragmentactivity.putExtra("time",data.getTime());
+                billfragmentactivity.putExtra("time", data.getTime());
+                billfragmentactivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(billfragmentactivity);
             }
         }
