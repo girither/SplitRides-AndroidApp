@@ -96,7 +96,7 @@
                     style="@style/Widget.SampleDashboard.Item.Description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="BASE FARE                  :"/>
+                    android:text="BASE FARE                   :"/>
 
                 <TextView
                     android:id="@+id/base_fare_value"
@@ -117,7 +117,7 @@
                     style="@style/Widget.SampleDashboard.Item.Description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FARE FOR DISTANCE :"/>
+                    android:text="FARE FOR DISTANCE  :"/>
 
                 <TextView
                     android:id="@+id/fare_distance_value"
@@ -138,7 +138,7 @@
                     style="@style/Widget.SampleDashboard.Item.Description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FARE FOR TIME          :"/>
+                    android:text="FARE FOR TIME           :"/>
 
                 <TextView
                     android:id="@+id/fare_time_value"
@@ -159,7 +159,7 @@
                     style="@style/Widget.SampleDashboard.Item.MyRideTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TOTAL FARE       :"/>
+                    android:text="TOTAL FARE               :"/>
 
                 <TextView
                     android:id="@+id/total_fare_value"
