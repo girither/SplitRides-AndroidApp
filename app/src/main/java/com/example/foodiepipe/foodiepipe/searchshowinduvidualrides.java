@@ -373,7 +373,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
 
                             userProfileId = customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"";
-                            if(!userProfileId.equals("")) {
+                            if(!userProfileId.equals("") && !userProfileId.startsWith("http")) {
                                 friendsCount = getMutualFriendsCount(userProfileId);
                             }
 

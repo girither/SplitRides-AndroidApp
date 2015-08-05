@@ -795,7 +795,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
 
                             userProfileId = customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"";
-                            if(!userProfileId.equals("")) {
+                            if(!userProfileId.equals("") && !userProfileId.startsWith("http")) {
                                 friendsCount = getMutualFriendsCount(userProfileId);
                             }
                             customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"), friendsCount);

@@ -16,11 +16,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.foodiepipe.foodiepipe.util.ImageLoadTask;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -241,6 +243,20 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 ((TextView) convertView.findViewById(R.id.role_value)).setText("Partner");
             }
 
+            //Show profile picture from user social profile.
+            ImageView profileImg = (ImageView)convertView.findViewById(R.id.googleProfilePicture);
+            ProfilePictureView fbProfileImg = (ProfilePictureView) convertView.findViewById(R.id.profilePicture);
+            if(mSamples.get(position).getProfileId().startsWith("http")) {
+                ImageLoadTask loadImg = new ImageLoadTask(mSamples.get(position).getProfileId(), profileImg);
+                loadImg.execute();
+                profileImg.setVisibility(View.VISIBLE);
+                fbProfileImg.setVisibility(View.INVISIBLE);
+            } else {
+                fbProfileImg.setProfileId(mSamples.get(position).getProfileId());
+                profileImg.setVisibility(View.INVISIBLE);
+                fbProfileImg.setVisibility(View.VISIBLE);
+            }
+
             //Setting mutual friends details
             if(mSamples.get(position).getMutualFriendsCount() != null) {
                 TextView friendsMsgView = (TextView)convertView.findViewById(R.id.commonFriendsCount);
@@ -348,7 +364,7 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
 
 
                     userProfileId = customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"";
-                    if(!userProfileId.equals("")) {
+                    if(!userProfileId.equals("") && !userProfileId.startsWith("http")) {
                         friendsCount = getMutualFriendsCount(userProfileId);
                     }
 
