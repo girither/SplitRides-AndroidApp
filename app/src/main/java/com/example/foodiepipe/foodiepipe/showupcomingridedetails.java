@@ -20,11 +20,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.foodiepipe.foodiepipe.util.ImageLoadTask;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -286,7 +288,20 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             ((TextView) convertView.findViewById(R.id.rideowneremailvalue)).setText(mSamples.get(position).getCustomerEmail());
             ((TextView) convertView.findViewById(R.id.rideownernamevalue)).setText(mSamples.get(position).getCustomerName());
             ((TextView) convertView.findViewById(R.id.rideownerphonenumbervalue)).setText(mSamples.get(position).getCustomerPhoneNumber());
-            ((ProfilePictureView)convertView.findViewById(R.id.profilePicture)).setProfileId(mSamples.get(position).getProfileId());
+
+            ImageView profileImg = (ImageView)convertView.findViewById(R.id.googleProfilePicture);
+            ProfilePictureView fbProfileImg = (ProfilePictureView) convertView.findViewById(R.id.profilePicture);
+            if(mSamples.get(position).getProfileId().startsWith("http")) {
+                ImageLoadTask loadImg = new ImageLoadTask(mSamples.get(position).getProfileId(), profileImg);
+                loadImg.execute();
+                profileImg.setVisibility(View.VISIBLE);
+                fbProfileImg.setVisibility(View.INVISIBLE);
+            } else {
+                fbProfileImg.setProfileId(mSamples.get(position).getProfileId());
+                profileImg.setVisibility(View.INVISIBLE);
+                fbProfileImg.setVisibility(View.VISIBLE);
+            }
+
             if(mSamples.get(position).getCustomernumber().equals(SharedPreferenceManager.getPreference("owner_customernumber"))) {
                 ((TextView) convertView.findViewById(R.id.role_value)).setText("Owner");
             }
@@ -941,49 +956,4 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             return mutualCount;
         }
     }
-
-    /*public class MutualFriendsTask extends AsyncTask<Void, Void, Void> {
-        private String userId = null;
-
-        public MutualFriendsTask(String userId) {
-            this.userId = userId;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            Bundle paramsObject = new Bundle();
-            paramsObject.putString("fields", "context.fields(mutual_friends)");
-            JSONObject responseJSON1 = null;
-            GraphResponse gr = new GraphRequest(
-                    AccessToken.getCurrentAccessToken(),
-                    "/" + this.userId,
-                    paramsObject,
-                    HttpMethod.GET,
-                    new GraphRequest.Callback() {
-                        public void onCompleted(GraphResponse graphResponse) {
-                            JSONObject responseJSON = graphResponse.getJSONObject();
-                        }
-                    }
-            ).executeAndWait();
-
-            responseJSON1 = gr.getJSONObject();
-            Log.i("Data : ", responseJSON1.toString());
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }
-    }*/
 }

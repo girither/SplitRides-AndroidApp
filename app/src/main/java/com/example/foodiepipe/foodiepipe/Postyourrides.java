@@ -801,7 +801,7 @@ public class Postyourrides extends ActionBarActivity
                     customerDropLatLong.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
                     customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"),
                                                                 ride.getString("phoneNumber"), customerLatLongString.toString(),
-                                                                customerDropLatLong.toString(),customerdata.getString("profileId"),customerdata.getString("ownerCustomerNumber"));
+                                                                customerDropLatLong.toString(),customerdata.getString("profileId"),customerdata.getString("customerNumber"));
                     List<customer> customerlistdata = new ArrayList<customer>();
                     customerlistdata.add(customeradapterdata);
                     rideDetails = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"ride",ride.getString("rideId"));
@@ -818,34 +818,38 @@ public class Postyourrides extends ActionBarActivity
             Date rideDate = null, currentDate = new Date();
             String dayDate = null;
 
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                rideDate = sdf.parse(ridedataobject.getDate());
+            if(ridedataobject != null) {
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    rideDate = sdf.parse(ridedataobject.getDate());
 
-                if(rideDate.getDate() == currentDate.getDate()) {
-                    dayDate = "Today";
-                } else if(rideDate.after(currentDate)) {
-                    dayDate = "Tomorrow";
+                    if(rideDate.getDate() == currentDate.getDate()) {
+                        dayDate = "Today";
+                    } else if(rideDate.after(currentDate)) {
+                        dayDate = "Tomorrow";
+                    }
+                } catch (ParseException pe) {
+                    pe.printStackTrace();
                 }
-            } catch (ParseException pe) {
-                pe.printStackTrace();
-            }
 
-            mAutocompleteView.setText(ridedataobject.getSource());
-            mAutocompleteView_destination.setText(ridedataobject.getDestination());
-            mPhonenumber.setText(ridedataobject.getCustomerlistdata().get(0).getCustomerPhoneNumber());
-            settimetextView.setText(rideDate.getHours() + ":" + rideDate.getMinutes() + ":" + rideDate.getSeconds());
-            setlatlongtextView.setText(ridedataobject.getCustomerlistdata().get(0).getLatLong());
-            setlatlongtextView_droppoint.setText(ridedataobject.getCustomerlistdata().get(0).getDropLatlong());
-            latlongcordsource = convertStringtoLatlong(ridedataobject.getCustomerlistdata().get(0).getLatLong());
-            latlongcorddestination = convertStringtoLatlong(ridedataobject.getCustomerlistdata().get(0).getDropLatlong());
-            hiddenRideID = ridedataobject.getRideId();
+                mAutocompleteView.setText(ridedataobject.getSource());
+                mAutocompleteView_destination.setText(ridedataobject.getDestination());
+                mPhonenumber.setText(ridedataobject.getCustomerlistdata().get(0).getCustomerPhoneNumber());
+                settimetextView.setText(rideDate.getHours() + ":" + rideDate.getMinutes() + ":" + rideDate.getSeconds());
+                setlatlongtextView.setText(ridedataobject.getCustomerlistdata().get(0).getLatLong());
+                setlatlongtextView_droppoint.setText(ridedataobject.getCustomerlistdata().get(0).getDropLatlong());
+                latlongcordsource = convertStringtoLatlong(ridedataobject.getCustomerlistdata().get(0).getLatLong());
+                latlongcorddestination = convertStringtoLatlong(ridedataobject.getCustomerlistdata().get(0).getDropLatlong());
+                hiddenRideID = ridedataobject.getRideId();
 
-            Spinner spinner = (Spinner) findViewById(R.id.spinner);
-            if(dayDate.equals("Tomorrow")) {
-                spinner.setSelection(1);
+                Spinner spinner = (Spinner) findViewById(R.id.spinner);
+                if(dayDate.equals("Tomorrow")) {
+                    spinner.setSelection(1);
+                } else {
+                    spinner.setSelection(0);
+                }
             } else {
-                spinner.setSelection(0);
+                Log.e("Error occured", "ridedata object is null");
             }
         }
     }

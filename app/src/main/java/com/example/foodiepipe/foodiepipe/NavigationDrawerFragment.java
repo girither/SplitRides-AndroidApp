@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.foodiepipe.foodiepipe.util.ImageLoadTask;
 import com.facebook.login.widget.ProfilePictureView;
 
 import java.net.URL;
@@ -106,7 +107,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         useremail.setText(email);
 
         if(profileType != null && profileType.equals("google")) {
-            ImageLoadTask loadImage = new ImageLoadTask(id);
+            ImageLoadTask loadImage = new ImageLoadTask(id, googleProfileImage);
             loadImage.execute();
             googleProfileImage.setVisibility(View.VISIBLE);
             profilepic.setVisibility(View.INVISIBLE);
@@ -366,38 +367,4 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
-
-
-    public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
-
-        private String imageURLStr;
-
-        ImageLoadTask(String imageUrlStr) {
-            this.imageURLStr = imageUrlStr;
-        }
-
-        @Override
-        protected Bitmap doInBackground(Void... param) {
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            bmOptions.inSampleSize = 1;
-            URL imageURL = null;
-            Bitmap imageBitmap = null;
-
-            try {
-                imageURL = new URL(imageURLStr);
-                imageBitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream(), null, bmOptions);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e("Error occured while loading image", "Resource error occured");
-            }
-
-            return imageBitmap;
-        }
-
-        @Override
-        protected void onPostExecute(final Bitmap imageAsBitMap) {
-            googleProfileImage.setImageBitmap(imageAsBitMap);
-        }
-    }
-
 }
