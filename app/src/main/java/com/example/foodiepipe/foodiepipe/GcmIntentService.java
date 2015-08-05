@@ -177,6 +177,26 @@ public class GcmIntentService extends IntentService {
                 mBuilder.setAutoCancel(true);
                 mNotificationManager.notify(aNotificationID, mBuilder.build());
             }
+            else if(data.equals("OwnerHasEndedTheRideDontPostEndRide")){
+                String ownerrideid = msg.getString("rideid");
+                mNotificationManager = (NotificationManager)
+                        this.getSystemService(Context.NOTIFICATION_SERVICE);
+                Intent getridedetails = new Intent(this,showupcomingridedetails.class);
+                getridedetails.putExtra("rideId",ownerrideid);
+                //getridedetails.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                // Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getridedetails, PendingIntent.FLAG_CANCEL_CURRENT);
+                String message = msg.getString("message");
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(this)
+                                .setSmallIcon(R.drawable.ic_launcher)
+                                .setContentTitle(message)
+                                .setStyle(new NotificationCompat.InboxStyle()
+                                        .addLine(message)
+                                        .setBigContentTitle(message));
+                mBuilder.setAutoCancel(true);
+                mNotificationManager.notify(aNotificationID, mBuilder.build());
+            }
         else if(data.equals("rejectedByTheOwner")){
                 String ownerrideid = msg.getString("ownerrideid");
                 mNotificationManager = (NotificationManager)

@@ -478,7 +478,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                             HttpMethod.GET,
                             new GraphRequest.Callback() {
                                 public void onCompleted(GraphResponse graphResponse) {
-                                    Log.d("Mutual Friend Data : ", graphResponse.getJSONObject().toString());
+                                //    Log.d("Mutual Friend Data : ", graphResponse.getJSONObject().toString());
                                 }
                             }
                     ).executeAndWait();
