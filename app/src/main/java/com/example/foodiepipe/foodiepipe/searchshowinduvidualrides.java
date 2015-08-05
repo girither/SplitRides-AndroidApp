@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -489,7 +488,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         responseJSON = responseJSON.getJSONObject("summary");
                         mutualCount = Integer.parseInt(responseJSON.getString("total_count"));
                     } catch (Exception e) {
-                        Log.e("Error occured :", e.getMessage());
+                       // Log.e("Error occured :", e.getMessage());
                     }
                 }
             }
