@@ -60,6 +60,9 @@ public class GcmIntentService extends IntentService {
         if(msg != null) {
            data = msg.getString("NotificationType");
         }
+        if(data == null){
+          data = "";
+        }
             if(data.equals("StartRideDistanceTravelled")){
                 new startridewithdistancetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
             }
