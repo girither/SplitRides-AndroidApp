@@ -80,8 +80,8 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
          * Create an ArrayAdapter to contain the data for the ListView. Each item in the ListView
          * uses the system-defined simple_list_item_1 layout that contains one TextView.
          */
-        searchridetask = new DummyBackgroundTask();
-        searchridetask.execute();
+        //searchridetask = new DummyBackgroundTask();
+        //searchridetask.execute();
         // BEGIN_INCLUDE (setup_refreshlistener)
         /**
          * Implement {@link SwipeRefreshLayout.OnRefreshListener}. When users do the "swipe to
