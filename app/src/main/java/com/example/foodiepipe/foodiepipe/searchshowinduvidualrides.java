@@ -391,7 +391,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         latlongbuilder_droppoint.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
 
                         userProfileId = customerdata.has("profileId")?customerdata.getString("profileId"):"";
-                        if(!userProfileId.equals("")) {
+                        if(!userProfileId.equals("") && !userProfileId.startsWith("http")) {
                             friendsCount = getMutualFriendsCount(userProfileId);
                         }
 

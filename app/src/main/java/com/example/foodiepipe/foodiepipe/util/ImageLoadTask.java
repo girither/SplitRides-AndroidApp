@@ -33,7 +33,7 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
             imageBitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream(), null, bmOptions);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("Error occured while loading image", "Resource error occured");
+            Log.e("Image loading problem", "Resource error occurred");
         }
 
         return imageBitmap;
