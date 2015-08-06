@@ -246,7 +246,7 @@ public class GcmIntentService extends IntentService {
             String data = null;
 
             try {
-                Thread.sleep((long)(Math.random() * 3000));
+                //Thread.sleep((long)(Math.random() * 3000));
                 JSONObject params = new JSONObject();
                 params.put("jrId", mjrId);
                 params.put("latLngString",mdistanceTravelled);
@@ -263,9 +263,6 @@ public class GcmIntentService extends IntentService {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            catch (InterruptedException e) {
-            }
-
             return data;
         }
 
@@ -302,7 +299,7 @@ public class GcmIntentService extends IntentService {
             String data = null;
 
             try {
-                Thread.sleep((long)(Math.random() * 3000));
+                //Thread.sleep((long)(Math.random() * 3000));
                 JSONObject params = new JSONObject();
                 params.put("jrId", mjrId);
                 params.put("latLngString",mdistanceTravelled);
@@ -319,8 +316,6 @@ public class GcmIntentService extends IntentService {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
-            catch (InterruptedException e) {
             }
 
             return data;
@@ -359,7 +354,6 @@ public class GcmIntentService extends IntentService {
             ratecardobject data = null;
 
             try {
-                Thread.sleep((long)(Math.random() * 3000));
                 JSONObject params = new JSONObject();
                 params.put("jrId", mjrId);
                 params.put("latLngString",mdistanceTravelled);
@@ -376,8 +370,6 @@ public class GcmIntentService extends IntentService {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
-            catch (InterruptedException e) {
             }
 
             return data;
