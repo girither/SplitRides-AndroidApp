@@ -471,6 +471,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             String data = null;
 
             try {
+                Thread.sleep((long)(Math.random() * 3000));
                 JSONObject params = new JSONObject();
                 params.put("jrId", mRideId);
                 params.put("serviceProvider",mcabprovidervalue);
@@ -493,6 +494,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+            catch (InterruptedException e) {
             }
 
             return data;
@@ -554,6 +557,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             ratecardobject data = null;
 
             try {
+                Thread.sleep((long)(Math.random() * 3000));
                 JSONObject params = new JSONObject();
                 params.put("jrId", mRideId);
                 params.put("latLngString",mlatlongstring);
@@ -569,6 +573,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+            catch (InterruptedException e) {
             }
 
             return data;
@@ -625,6 +631,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             String success = null;
 
             try {
+                Thread.sleep((long)(Math.random() * 3000));
                 JSONObject params = new JSONObject();
                 params.put("jrId", jrId);
                 if(!mcustomerNumber.equals(SharedPreferenceManager.getPreference("customerNumber"))) {
@@ -650,6 +657,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+            catch (InterruptedException e) {
             }
             data =  "Something went wrong while sending request. Please try again";
             return false;
