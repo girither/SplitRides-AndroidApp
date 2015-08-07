@@ -212,7 +212,7 @@
                     android:background="#FFF8DC"
                     android:gravity="center"
                     android:drawableLeft="@drawable/send_request"
-                    android:text="SEND\nREQUEST" />
+                    android:text="SEND REQUEST\nTO JOIN RIDE " />
                 <Button
                     android:layout_weight="1"
                     android:id="@+id/request_alreadysent"
@@ -223,7 +223,7 @@
                     android:visibility="gone"
                     android:gravity="center"
                     android:drawableLeft="@drawable/send_request"
-                    android:text="REQUEST\nSENT" />
+                    android:text="REQUEST SENT\nTO JOIN RIDE" />
             </TableRow>
 
             <TextView

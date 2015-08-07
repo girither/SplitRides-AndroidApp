@@ -65,9 +65,11 @@ public class GcmIntentService extends IntentService {
         }
             if(data.equals("StartRideDistanceTravelled")){
                 new startridewithdistancetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
+                Log.e("Error occured :", "StartRideDistanceTravelled");
             }
             else if(data.equals("EndRideDistanceTravelled")){
                 new endridewithdistancetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
+                Log.e("Error occured :", "EndRideDistanceTravelled");
             }
             else if(data.equals("OwnerHasEndedTheRide")){
                 SharedPreferenceManager.setPreference("startrides", false);

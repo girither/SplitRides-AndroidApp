@@ -129,8 +129,8 @@ public class SwipeRefreshListFragmentFragment extends SwipeRefreshListFragment {
     }
 
     private Boolean islatlongonpathofride(LatLng source,LatLng destination,java.util.List<LatLng> polylinelatlong) {
-        Boolean ispickpointonpath = PolyUtil.isLocationOnPath(source, polylinelatlong, true, 4000.0);
-        Boolean isdroppointonpath = PolyUtil.isLocationOnPath(destination, polylinelatlong, true, 4000.0);
+        Boolean ispickpointonpath = PolyUtil.isLocationOnPath(source, polylinelatlong, true, 2000.0);
+        Boolean isdroppointonpath = PolyUtil.isLocationOnPath(destination, polylinelatlong, true, 2000.0);
         if(ispickpointonpath && isdroppointonpath)
         {
            return true;

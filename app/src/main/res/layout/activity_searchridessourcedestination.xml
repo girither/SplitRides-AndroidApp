@@ -134,10 +134,22 @@
                 android:inputType="text" />
             </LinearLayout>
 
+            <TextView
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/info_title"
+                style="@style/Widget.SampleDashboard.Item.showingresultstitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="We give rides en route.Check route now!!"/>
+
             <Button
                 android:layout_marginLeft="140dp"
                 android:layout_marginRight="30dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/open_google_directions"
                 android:background="#E80000"
                 android:textColor="#FFFFFF"
