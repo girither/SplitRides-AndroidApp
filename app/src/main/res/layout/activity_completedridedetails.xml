@@ -220,6 +220,18 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/ride_share_details" />
 
+        <TextView
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Each leg is measured when a partner starts or ends the ride"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/leg_details" />
+
         <GridView android:id="@android:id/list"
             style="@style/Widget.SampleDashboard.Grid"
             android:layout_width="match_parent"

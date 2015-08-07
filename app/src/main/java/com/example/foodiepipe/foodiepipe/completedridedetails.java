@@ -111,8 +111,8 @@ public class completedridedetails extends ActionBarActivity {
                 convertView = getLayoutInflater().inflate(R.layout.splitfare_detail_list,
                         container, false);
             }
-
-            ((TextView) convertView.findViewById(R.id.fare_for_distance_value)).setText(getResources().getString(R.string.Rs)+" "+mSamples.get(position).getFareForThisLeg());
+            ((TextView) convertView.findViewById(R.id.leg_value)).setText(Integer.toString(position+1));
+            ((TextView) convertView.findViewById(R.id.fare_for_distance_value)).setText(getResources().getString(R.string.Rs) + " " + mSamples.get(position).getFareForThisLeg());
             ((TextView) convertView.findViewById(R.id.fare_for_time_value)).setText(getResources().getString(R.string.Rs)+" "+mSamples.get(position).getFareForTimeSpentInThisLeg());
             ((TextView) convertView.findViewById(R.id.partners_value)).setText(TextUtils.join(",",mSamples.get(position).getPartners()));
             return convertView;
