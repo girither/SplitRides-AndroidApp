@@ -2,11 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
-
     defaultConfig {
-        applicationId "com.example.foodiepipe.foodiepipe"
+        applicationId "com.splitrides"
         minSdkVersion 15
         targetSdkVersion 21
         versionCode 1
@@ -25,7 +26,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.google.maps.android:android-maps-utils:0.3+'
     compile 'com.ms-square:expandableTextView:0.1.4'
-    compile "com.google.android.gms:play-services:7.5.+"
+    compile 'com.google.android.gms:play-services:7.5.+'
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'ch.acra:acra:4.6.2'

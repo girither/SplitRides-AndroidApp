@@ -12,13 +12,13 @@
         layout="@layout/tool_bar"
         ></include>
 
-    <fragment android:name="com.example.foodiepipe.foodiepipe.facebookloginFragment"
+    <fragment android:name="com.splitrides.facebookloginFragment"
         android:id="@+id/loginpage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_facebooklogin" />
 
-    <fragment android:name="com.example.foodiepipe.foodiepipe.signupage"
+    <fragment android:name="com.splitrides.signupage"
         android:id="@+id/signuppage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -45,7 +45,7 @@
         <fragment android:id="@+id/navigation_drawer"
             android:layout_width="@dimen/navigation_drawer_width" android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:name="com.example.foodiepipe.foodiepipe.NavigationDrawerFragment"
+            android:name="com.splitrides.NavigationDrawerFragment"
             tools:layout="@layout/fragment_navigation_drawer" />
 
     </android.support.v4.widget.DrawerLayout>

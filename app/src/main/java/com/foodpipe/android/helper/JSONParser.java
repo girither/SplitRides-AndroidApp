@@ -1,7 +1,7 @@
 package com.foodpipe.android.helper;
 import android.util.Log;
 
-import com.example.foodiepipe.foodiepipe.SharedPreferenceManager;
+import com.splitrides.SharedPreferenceManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

@@ -162,7 +162,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.example.foodiepipe.foodiepipe.ExpandableHeightGridView android:id="@+id/customer_list"
+            <com.splitrides.ExpandableHeightGridView
+                android:id="@+id/customer_list"
                 style="@style/Widget.SampleDashboard.Grid"
                 android:layout_width="match_parent"
                 android:layout_marginTop="10dp"
