@@ -832,6 +832,9 @@ public class MainActivity extends ActionBarActivity
         if ( mIsSignedIn ) {
             // if the session is already open,
             // try to show the selection fragment
+            if(hidemenuitem != null) {
+                hidemenuitem.setVisible(true);
+            }
             OnLoginAuthenticated();
             ConnectionDetector cd = new ConnectionDetector(getApplicationContext());
 
