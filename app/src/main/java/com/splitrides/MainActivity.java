@@ -736,7 +736,7 @@ public class MainActivity extends ActionBarActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         hidemenuitem = menu.findItem(R.id.action_signout);
-        if(mIsSignedIn)
+        if(SharedPreferenceManager.getBooleanPreference("mIsSignedIn"))
         {
             hidemenuitem.setVisible(true);
         }
@@ -832,9 +832,10 @@ public class MainActivity extends ActionBarActivity
         if ( mIsSignedIn ) {
             // if the session is already open,
             // try to show the selection fragment
-            if(hidemenuitem != null) {
+           /* if(hidemenuitem != null) {
                 hidemenuitem.setVisible(true);
-            }
+            }*/
+            invalidateOptionsMenu();
             OnLoginAuthenticated();
             ConnectionDetector cd = new ConnectionDetector(getApplicationContext());
 
@@ -877,8 +878,8 @@ public class MainActivity extends ActionBarActivity
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         showFragment(LOGINPAGE, false);
-                        hidemenuitem.setVisible(false);
-
+                        //hidemenuitem.setVisible(false);
+                        invalidateOptionsMenu();
                         SharedPreferenceManager.setPreference("mIsSignedIn", false);
                         String profile = SharedPreferenceManager.getPreference("profile");
 
@@ -993,7 +994,8 @@ public class MainActivity extends ActionBarActivity
             if (success) {
                 //finish();
                 SharedPreferenceManager.setPreference("mIsSignedIn",true);
-                hidemenuitem.setVisible(true);
+                //hidemenuitem.setVisible(true);
+                invalidateOptionsMenu();
                 OnLoginAuthenticated();
             } else {
                 if(mProfile.equals("facebook")||mProfile.equals("google"))
