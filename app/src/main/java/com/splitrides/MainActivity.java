@@ -120,6 +120,7 @@ public class MainActivity extends ActionBarActivity
         }
 
         progressLayout.setTitle(title);
+        progressLayout.setCancelable(false);
         progressLayout.setMessage(message);
         progressLayout.show();
     }
@@ -139,6 +140,17 @@ public class MainActivity extends ActionBarActivity
    @Override
    public void onButtonClick()
    {
+       ConnectionDetector cd = new ConnectionDetector(getApplicationContext());
+
+
+       // Check if Internet present
+       if (!cd.isConnectingToInternet()) {
+           // Internet Connection is not present
+           Toast.makeText(MainActivity.this,
+                   "Internet Connection Error Please connect to working Internet connection", Toast.LENGTH_LONG).show();
+           // stop executing code by return
+           return;
+       }
        showProgressLayout("", "Logging in...");
        onregister();
        mSignInProgress = STATE_SIGN_IN;
