@@ -1,5 +1,6 @@
 package com.splitrides;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -66,7 +67,7 @@ public class MainActivity extends ActionBarActivity
 
     private static final int LOGINPAGE = 0;
     private static final int SIGNUPPAGE = 1;
-
+    static final int  SWITCH_SEARCH_RIDES = 23;
     private static final int RC_SIGN_IN = 0;
     private static final int STATE_DEFAULT = 0;
     private static final int STATE_SIGN_IN = 1;
@@ -829,6 +830,12 @@ public class MainActivity extends ActionBarActivity
                     mGoogleApiClient.connect();
                 }
                 break;
+        }
+        if(requestCode == SWITCH_SEARCH_RIDES){
+            if (resultCode == Activity.RESULT_OK) {
+                Intent startsearchrides = new Intent(this,Searchyourrides.class);
+                startActivity(startsearchrides);
+            }
         }
 
 

@@ -661,10 +661,13 @@ public class Postyourrides extends ActionBarActivity
             pDialog.dismiss();
             String userMessage = null;
             if (success) {
-                finish();
                 if(mRideId != null && !mRideId.trim().equals("")) {
+                    finish();
                     userMessage = "Your Ride was updated succesfully";
                 } else {
+                    Intent intent = new Intent();
+                    setResult (Activity.RESULT_OK, intent);
+                    finish();
                     userMessage = "Your Ride was posted succesfully";
                 }
             } else {

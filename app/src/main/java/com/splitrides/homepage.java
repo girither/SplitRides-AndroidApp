@@ -13,17 +13,10 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link homepage.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link homepage#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class homepage extends Fragment implements AdapterView.OnItemClickListener,AdapterView.OnItemSelectedListener {
     private Sample[] mSamples;
     private GridView mGridView;
+    static final int  SWITCH_SEARCH_RIDES = 23;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -68,7 +61,6 @@ public class homepage extends Fragment implements AdapterView.OnItemClickListene
         // Another interface callback
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -76,7 +68,7 @@ public class homepage extends Fragment implements AdapterView.OnItemClickListene
 
     @Override
     public void onItemClick(AdapterView<?> container, View view, int position, long id) {
-        startActivity(mSamples[position].intent);
+        getActivity().startActivityForResult(mSamples[position].intent,SWITCH_SEARCH_RIDES);
         getActivity().overridePendingTransition(R.animator.activity_in, R.animator.activity_out);
     }
 
