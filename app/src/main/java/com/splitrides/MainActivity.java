@@ -112,6 +112,24 @@ public class MainActivity extends ActionBarActivity
 
     String regid;
 
+    private ProgressDialog progressLayout = null;
+
+    private void showProgressLayout(String title, String message) {
+        if(progressLayout == null) {
+            progressLayout = new ProgressDialog(this);
+        }
+
+        progressLayout.setTitle(title);
+        progressLayout.setMessage(message);
+        progressLayout.show();
+    }
+
+    private void dismissProgressDialog() {
+        if(progressLayout != null && progressLayout.isShowing()) {
+            progressLayout.dismiss();
+            progressLayout = null;
+        }
+    }
 
    @Override
    public void onsinuppageButtonClick() {
@@ -121,6 +139,7 @@ public class MainActivity extends ActionBarActivity
    @Override
    public void onButtonClick()
    {
+       showProgressLayout("", "Logging in...");
        onregister();
        mSignInProgress = STATE_SIGN_IN;
        mGoogleApiClient.connect();
@@ -149,8 +168,7 @@ public class MainActivity extends ActionBarActivity
 
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
     }
 
@@ -1015,6 +1033,7 @@ public class MainActivity extends ActionBarActivity
                     mPasswordView_signup.requestFocus();
                 }
             }
+            dismissProgressDialog();
         }
 
         @Override
