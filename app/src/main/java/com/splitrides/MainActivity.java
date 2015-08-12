@@ -681,10 +681,10 @@ public class MainActivity extends ActionBarActivity
             googleProfilePicUrl = currentPerson.getImage().getUrl();
         }
         mSignInProgress = STATE_DEFAULT;
-        if(mTokenTask == null) {
-            mTokenTask = new Retrieveauthtokengoogle(Plus.AccountApi.getAccountName(mGoogleApiClient), personName, email,gender, googleProfilePicUrl);
-            mTokenTask.execute((Void) null);
-        }
+        dismissProgressDialog();
+        mTokenTask = new Retrieveauthtokengoogle(Plus.AccountApi.getAccountName(mGoogleApiClient), personName, email,gender, googleProfilePicUrl);
+        mTokenTask.execute((Void) null);
+
 
     }
 
@@ -1033,7 +1033,6 @@ public class MainActivity extends ActionBarActivity
                     mPasswordView_signup.requestFocus();
                 }
             }
-            dismissProgressDialog();
         }
 
         @Override
