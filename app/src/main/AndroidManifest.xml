@@ -187,7 +187,6 @@
             android:name=".billcardfragment"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:noHistory="false"
             android:parentActivityName=".MainActivity">
         </activity>
     </application>

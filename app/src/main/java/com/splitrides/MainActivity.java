@@ -200,7 +200,7 @@ public class MainActivity extends ActionBarActivity
         AccessToken token = AccessToken.getCurrentAccessToken();
         onregister();
         if (token == null) {
-            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email", "user_birthday"));
+            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
         }
         else{
             LoginManager.getInstance().logOut();
@@ -350,23 +350,16 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         SharedPreferenceManager.setApplicationContext(getApplicationContext());
         onregister();
-        SharedPreferenceManager.setPreference("notificationcount",0);
-    FacebookSdk.sdkInitialize(this.getApplicationContext());
-
+        SharedPreferenceManager.setPreference("notificationcount", 0);
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-
-
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(final LoginResult loginResult) {
-
-                        final Profile profile = Profile.getCurrentProfile();
-                        SharedPreferenceManager.setPreference("id", profile.getId());
                         GraphRequest request = GraphRequest.newMeRequest(
                                 AccessToken.getCurrentAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
@@ -375,10 +368,12 @@ public class MainActivity extends ActionBarActivity
                                             JSONObject jsonObject,
                                             GraphResponse response) {
                                         try {
+                                            final Profile profile = Profile.getCurrentProfile();
+                                            SharedPreferenceManager.setPreference("id", profile.getId());
                                             email = jsonObject.getString("email");
                                             gender = jsonObject.getString("gender");
                                             if (mAuthTask == null) {
-                                                mAuthTask = new UserLoginTask(email, "", profile.getName(), "facebook",profile.getId(),loginResult.getAccessToken().getToken(),gender,getRegistrationId(getApplicationContext()));
+                                                mAuthTask = new UserLoginTask(email, "", profile.getName(), "facebook", profile.getId(), AccessToken.getCurrentAccessToken().getToken(), gender, getRegistrationId(getApplicationContext()));
                                                 //Log.v("token", loginResult.getAccessToken().getToken());
                                                 mAuthTask.execute((Void) null);
                                             }
