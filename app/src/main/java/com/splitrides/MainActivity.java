@@ -446,6 +446,7 @@ public class MainActivity extends ActionBarActivity
         transaction.commitAllowingStateLoss();
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         //mEmailView = (EditText) findViewById(R.id.enter_email);
 
         //mPasswordView = (EditText) findViewById(R.id.enter_password);
@@ -830,6 +831,10 @@ public class MainActivity extends ActionBarActivity
                     mGoogleApiClient.connect();
                 }
                 break;
+        }
+        if (requestCode == REQ_SIGN_IN_REQUIRED && resultCode == RESULT_OK) {
+            mGoogleApiClient.connect();
+           // new Retrieveauthtokengoogle(email, personName, email,gender, googleProfilePicUrl).execute((Void) null);
         }
         if(requestCode == SWITCH_SEARCH_RIDES){
             if (resultCode == Activity.RESULT_OK) {
