@@ -232,6 +232,7 @@ public class MainActivity extends ActionBarActivity
         onregister();
         if (token == null) {
             LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
+            showProgressLayout("", "Logging in...");
         }
         else{
             LoginManager.getInstance().logOut();
@@ -399,6 +400,7 @@ public class MainActivity extends ActionBarActivity
                                             JSONObject jsonObject,
                                             GraphResponse response) {
                                         try {
+                                            dismissProgressDialog();
                                             final Profile profile = Profile.getCurrentProfile();
                                             SharedPreferenceManager.setPreference("id", profile.getId());
                                             email = jsonObject.getString("email");
@@ -422,11 +424,14 @@ public class MainActivity extends ActionBarActivity
 
                     @Override
                     public void onCancel() {
+                        dismissProgressDialog();
                         LoginManager.getInstance().logOut();
+
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
+                        dismissProgressDialog();
                         LoginManager.getInstance().logOut();
                     }
                 });
