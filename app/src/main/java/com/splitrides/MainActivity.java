@@ -35,7 +35,6 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.foodpipe.android.helper.ConnectionDetector;
@@ -76,6 +75,8 @@ public class MainActivity extends ActionBarActivity
     private String personName="";
     private String email="";
     private String gender="";
+    private String id ="";
+    private String name="";
     private UserLoginTask mAuthTask = null;
     private Retrieveauthtokengoogle mTokenTask = null;
     private ProgressDialog pDialog;
@@ -401,13 +402,13 @@ public class MainActivity extends ActionBarActivity
                                             GraphResponse response) {
                                         try {
                                             dismissProgressDialog();
-                                            final Profile profile = Profile.getCurrentProfile();
-                                            SharedPreferenceManager.setPreference("id", profile.getId());
                                             email = jsonObject.getString("email");
                                             gender = jsonObject.getString("gender");
-                                            if (mAuthTask == null) {
-                                                mAuthTask = new UserLoginTask(email, "", profile.getName(), "facebook", profile.getId(), AccessToken.getCurrentAccessToken().getToken(), gender, getRegistrationId(getApplicationContext()));
-                                                //Log.v("token", loginResult.getAccessToken().getToken());
+                                            id = jsonObject.getString("id");
+                                            name = jsonObject.getString("name");
+                                            if (mAuthTask == null && (!email.isEmpty()) && (!name.isEmpty()) && (!id.isEmpty()) && (!gender.isEmpty())) {
+                                                SharedPreferenceManager.setPreference("id",id);
+                                                mAuthTask = new UserLoginTask(email, "", name, "facebook",id, AccessToken.getCurrentAccessToken().getToken(), gender, getRegistrationId(getApplicationContext()));
                                                 mAuthTask.execute((Void) null);
                                             }
 
