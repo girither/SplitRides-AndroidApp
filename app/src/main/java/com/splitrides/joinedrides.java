@@ -14,8 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.foodpipe.android.helper.ConnectionDetector;
-import com.foodpipe.android.helper.JSONParser;
+import com.splitrides.android.helper.ConnectionDetector;
+import com.splitrides.android.helper.JSONParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;

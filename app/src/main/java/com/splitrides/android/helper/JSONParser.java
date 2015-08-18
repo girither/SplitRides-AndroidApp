@@ -1,4 +1,4 @@
-package com.foodpipe.android.helper;
+package com.splitrides.android.helper;
 import android.util.Log;
 
 import com.splitrides.SharedPreferenceManager;

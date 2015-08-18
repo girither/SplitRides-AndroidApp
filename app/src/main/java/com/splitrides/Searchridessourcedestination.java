@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.foodpipe.android.helper.ConnectionDetector;
+import com.splitrides.android.helper.ConnectionDetector;
 
 public class Searchridessourcedestination extends ActionBarActivity implements View.OnClickListener {
 

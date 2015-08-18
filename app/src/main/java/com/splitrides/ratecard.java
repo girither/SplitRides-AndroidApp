@@ -16,8 +16,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.foodpipe.android.helper.ConnectionDetector;
-import com.foodpipe.android.helper.JSONParser;
+import com.splitrides.android.helper.ConnectionDetector;
+import com.splitrides.android.helper.JSONParser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;

@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.foodpipe.android.helper.ConnectionDetector;
-import com.foodpipe.android.helper.JSONParser;
+import com.splitrides.android.helper.ConnectionDetector;
+import com.splitrides.android.helper.JSONParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;

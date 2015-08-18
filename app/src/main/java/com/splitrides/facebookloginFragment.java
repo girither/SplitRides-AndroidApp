@@ -10,7 +10,7 @@ import android.app.Activity;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.foodpipe.android.helper.ConnectionDetector;
+import com.splitrides.android.helper.ConnectionDetector;
 import com.google.android.gms.common.SignInButton;
 
 

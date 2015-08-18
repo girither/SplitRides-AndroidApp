@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.foodpipe.android.helper.JSONParser;
+import com.splitrides.android.helper.JSONParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;

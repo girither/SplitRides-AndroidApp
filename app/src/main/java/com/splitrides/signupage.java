@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.foodpipe.android.helper.ConnectionDetector;
+import com.splitrides.android.helper.ConnectionDetector;
 
 /**
  * Created by gbm on 4/7/15.

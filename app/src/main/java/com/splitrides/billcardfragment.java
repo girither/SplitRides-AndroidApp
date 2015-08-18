@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.foodpipe.android.helper.ConnectionDetector;
+import com.splitrides.android.helper.ConnectionDetector;
 
 /**
  * Created by gbm on 7/24/15.
