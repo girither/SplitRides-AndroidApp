@@ -7,6 +7,6 @@ public class mainurl {
 
     public static String geturl()
     {
-        return "https://radiant-peak-europe.herokuapp.com/";
+        return "http://radiant-peak-3095.herokuapp.com/";
     }
 }
