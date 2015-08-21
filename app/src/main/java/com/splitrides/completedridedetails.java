@@ -21,6 +21,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -220,29 +222,36 @@ public class completedridedetails extends ActionBarActivity {
         protected void onPostExecute(final completedrideobject completedridedataobject) {
             bar.setVisibility(View.GONE);
             detailform.setVisibility((completedridedataobject!=null)?View.VISIBLE:View.GONE);
-            if(completedridedataobject != null ){
-                base_fare.setText(getResources().getString(R.string.Rs)+" "+completedridedataobject.getBaseFare());
-                fare_distance.setText(getResources().getString(R.string.Rs)+" "+completedridedataobject.getPfareForDistanceTravelled());
-                fare_time.setText(getResources().getString(R.string.Rs)+" "+completedridedataobject.getFareForTimeSpent());
-                total_fare.setText(getResources().getString(R.string.Rs)+" "+completedridedataobject.getTotalFare());
-                String timeofrides_start = completedridedataobject.getRideStartedAt().split(" ")[1];
-                String timeofrides_end = completedridedataobject.getRideEndedAt().split(" ")[1];
-                ridestart_time.setText(timeofrides_start);
-                rideend_time.setText(timeofrides_end);
-                mGridView.setVisibility(!completedridedataobject.getListofsplitfare().isEmpty() ? View.VISIBLE : View.GONE);
-                mGridView_noresults.setVisibility(!completedridedataobject.getListofsplitfare().isEmpty() ? View.GONE : View.VISIBLE);
-                if(!completedridedataobject.getListofsplitfare().isEmpty()) {
-                    splitridelistadapter = new SplitRideAdapter(completedridedataobject.getListofsplitfare());
-                    mGridView.setAdapter(splitridelistadapter);
+            try {
+                if (completedridedataobject != null) {
+                    base_fare.setText(getResources().getString(R.string.Rs) + " " + completedridedataobject.getBaseFare());
+                    fare_distance.setText(getResources().getString(R.string.Rs) + " " + completedridedataobject.getPfareForDistanceTravelled());
+                    fare_time.setText(getResources().getString(R.string.Rs) + " " + completedridedataobject.getFareForTimeSpent());
+                    total_fare.setText(getResources().getString(R.string.Rs) + " " + completedridedataobject.getTotalFare());
+                    String timeofrides_start = completedridedataobject.getRideStartedAt().split(" ")[1];
+                    String timeofrides_end = completedridedataobject.getRideEndedAt().split(" ")[1];
+                    SimpleDateFormat inFormat = new SimpleDateFormat("hh:mm aa");
+                    SimpleDateFormat outFormat = new SimpleDateFormat("HH:mm");
+                    timeofrides_start = inFormat.format(outFormat.parse(timeofrides_start));
+                    timeofrides_end = inFormat.format(outFormat.parse(timeofrides_end));
+                    ridestart_time.setText(timeofrides_start);
+                    rideend_time.setText(timeofrides_end);
+                    mGridView.setVisibility(!completedridedataobject.getListofsplitfare().isEmpty() ? View.VISIBLE : View.GONE);
+                    mGridView_noresults.setVisibility(!completedridedataobject.getListofsplitfare().isEmpty() ? View.GONE : View.VISIBLE);
+                    if (!completedridedataobject.getListofsplitfare().isEmpty()) {
+                        splitridelistadapter = new SplitRideAdapter(completedridedataobject.getListofsplitfare());
+                        mGridView.setAdapter(splitridelistadapter);
+                    } else {
+                        List<ridedata> noresultsarray = new ArrayList<ridedata>();
+                        ridedata info = new ridedata(null, null, null);
+                        info.setNoresults("No rides shared currently.");
+                        noresultsarray.add(info);
+                        rideshare_noresults = new SampleAdapter_noresults(noresultsarray);
+                        mGridView_noresults.setAdapter(rideshare_noresults);
+                    }
                 }
-                else{
-                    List<ridedata> noresultsarray = new ArrayList<ridedata>();
-                    ridedata info = new ridedata(null,null,null);
-                    info.setNoresults("No rides shared currently.");
-                    noresultsarray.add(info);
-                    rideshare_noresults = new SampleAdapter_noresults(noresultsarray);
-                    mGridView_noresults.setAdapter(rideshare_noresults);
-                }
+            }
+            catch (ParseException ex){
             }
         }
 

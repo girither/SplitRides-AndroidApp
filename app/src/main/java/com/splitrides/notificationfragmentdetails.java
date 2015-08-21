@@ -35,6 +35,7 @@ import com.ms.square.android.expandabletextview.ExpandableTextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -388,42 +389,44 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
             bar.setVisibility(View.GONE);
             detailform.setVisibility((notificationdataobject!=null)?View.VISIBLE:View.GONE);
             if(notificationdataobject != null ){
-                globalnotificationdataobject = notificationdataobject;
-                ridefromheader_source_expander.setText(notificationdataobject.getSource());
-                ridefromheader_destination_expander.setText(notificationdataobject.getDestination());
-                String dateOfRides = notificationdataobject.getDate().split("T")[0];
-                String timeofrides = notificationdataobject.getDate().split("T")[1];
-                timeofrides = timeofrides.split(".000Z")[0];
-                Calendar cal = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String currentDate = sdf.format(cal.getTime());
-                Calendar nextdaycal = Calendar.getInstance();
-                nextdaycal.add(Calendar.DATE, 1);
-                String todayortomorrow;
-                SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
-                String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
-                if(currentDate.equals(dateOfRides))
-                {
-                    todayortomorrow = "Today        ";
+                try {
+                    globalnotificationdataobject = notificationdataobject;
+                    ridefromheader_source_expander.setText(notificationdataobject.getSource());
+                    ridefromheader_destination_expander.setText(notificationdataobject.getDestination());
+                    String dateOfRides = notificationdataobject.getDate().split("T")[0];
+                    String timeofrides = notificationdataobject.getDate().split("T")[1];
+                    SimpleDateFormat inFormat = new SimpleDateFormat("hh:mm aa");
+                    SimpleDateFormat outFormat = new SimpleDateFormat("HH:mm");
+                    timeofrides = inFormat.format(outFormat.parse(timeofrides));
+                    timeofrides = timeofrides.split(".000Z")[0];
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String currentDate = sdf.format(cal.getTime());
+                    Calendar nextdaycal = Calendar.getInstance();
+                    nextdaycal.add(Calendar.DATE, 1);
+                    String todayortomorrow;
+                    SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
+                    String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
+                    if (currentDate.equals(dateOfRides)) {
+                        todayortomorrow = "Today        ";
+                    } else if (tomorrowDate.equals(dateOfRides)) {
+                        todayortomorrow = "Tomorrow     ";
+                    } else {
+                        todayortomorrow = dateOfRides;
+                    }
+                    if (!(todayortomorrow.trim().equals("Today") || todayortomorrow.trim().equals("Tomorrow"))) {
+                        acceptrequest.setVisibility(View.GONE);
+                        rejectrequest.setVisibility(View.GONE);
+                        estimaterequest.setVisibility(View.GONE);
+                    }
+                    todayortomorrowheader.setText(todayortomorrow);
+                    timeofday.setText(timeofrides);
+                    customerlistadapter = new CustomerAdapter(notificationdataobject.getCustomerlistdata());
+                    mGridView.setAdapter(customerlistadapter);
                 }
-                else if(tomorrowDate.equals(dateOfRides))
-                {
-                    todayortomorrow = "Tomorrow     ";
+                catch (ParseException ex){
+
                 }
-                else
-                {
-                    todayortomorrow = dateOfRides;
-                }
-                if(!(todayortomorrow.trim().equals("Today") || todayortomorrow.trim().equals("Tomorrow")))
-                {
-                    acceptrequest.setVisibility(View.GONE);
-                    rejectrequest.setVisibility(View.GONE);
-                    estimaterequest.setVisibility(View.GONE);
-                }
-                todayortomorrowheader.setText(todayortomorrow);
-                timeofday.setText(timeofrides);
-                customerlistadapter = new CustomerAdapter(notificationdataobject.getCustomerlistdata());
-                mGridView.setAdapter(customerlistadapter);
             }
         }
 

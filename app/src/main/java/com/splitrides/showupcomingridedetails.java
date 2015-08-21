@@ -51,6 +51,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -831,13 +832,17 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         protected void onPostExecute(final ridedata ridedataobject) {
             individualridestask = null;
             bar.setVisibility(View.GONE);
-            detailform.setVisibility((ridedataobject!=null)?View.VISIBLE:View.GONE);
-            if(ridedataobject != null ){
+            detailform.setVisibility((ridedataobject != null) ? View.VISIBLE : View.GONE);
+            try {
+            if (ridedataobject != null) {
                 ridefromheader_source_expander.setText(ridedataobject.getSource());
                 ridefromheader_destination_expander.setText(ridedataobject.getDestination());
                 String dateOfRides = ridedataobject.getDate().split("T")[0];
                 String timeofrides = ridedataobject.getDate().split("T")[1];
                 timeofrides = timeofrides.split(".000Z")[0];
+                SimpleDateFormat inFormat = new SimpleDateFormat("hh:mm aa");
+                SimpleDateFormat outFormat = new SimpleDateFormat("HH:mm");
+                timeofrides = inFormat.format(outFormat.parse(timeofrides));
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 String currentDate = sdf.format(cal.getTime());
@@ -846,72 +851,63 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 String todayortomorrow;
                 SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
                 String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
-                if(currentDate.equals(dateOfRides))
-                {
+                if (currentDate.equals(dateOfRides)) {
                     todayortomorrow = "Today        ";
-                }
-                else if(tomorrowDate.equals(dateOfRides))
-                {
+                } else if (tomorrowDate.equals(dateOfRides)) {
                     todayortomorrow = "Tomorrow     ";
-                }
-                else
-                {
+                } else {
                     todayortomorrow = dateOfRides;
                 }
-                if(!(todayortomorrow.trim().equals("Today") || todayortomorrow.trim().equals("Tomorrow")))
-                {
+                if (!(todayortomorrow.trim().equals("Today") || todayortomorrow.trim().equals("Tomorrow"))) {
                     startride.setVisibility(View.GONE);
                     endride.setVisibility(View.GONE);
                     estimateride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
                     hideeditmenuitem.setVisible(false);
                 }
-                if(ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("notstarted") && ridedataobject.getRidestatus().equals("notstarted")){
+                if (ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("notstarted") && ridedataobject.getRidestatus().equals("notstarted")) {
                     endride.setVisibility(View.GONE);
-                    if(!(SharedPreferenceManager.getBooleanPreference("startrides"))){
+                    if (!(SharedPreferenceManager.getBooleanPreference("startrides"))) {
                         SharedPreferenceManager.setPreference("stoprides", true);
                     }
-                }
-                else if(ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("started") && ridedataobject.getRidestatus().equals("notstarted")){
+                } else if (ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("started") && ridedataobject.getRidestatus().equals("notstarted")) {
                     endride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
-                    if(!(SharedPreferenceManager.getBooleanPreference("startrides"))){
+                    if (!(SharedPreferenceManager.getBooleanPreference("startrides"))) {
                         SharedPreferenceManager.setPreference("stoprides", true);
                     }
-                }
-                else if((ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("started") && ridedataobject.getRidestatus().equals("ended"))||ridedataobject.getJoinedridestatus().equals("ended")){
+                } else if ((ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("started") && ridedataobject.getRidestatus().equals("ended")) || ridedataobject.getJoinedridestatus().equals("ended")) {
                     startride.setVisibility(View.GONE);
                     endride.setVisibility(View.GONE);
                     estimateride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
-                }
-                else if(ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("started") && ridedataobject.getRidestatus().equals("started")){
+                } else if (ridedataobject.getRidestatus() != null && ridedataobject.getJoinedridestatus().equals("started") && ridedataobject.getRidestatus().equals("started")) {
                     startride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
-                    if(SharedPreferenceManager.getBooleanPreference("startrides")){
+                    if (SharedPreferenceManager.getBooleanPreference("startrides")) {
                         SharedPreferenceManager.setPreference("stoprides", false);
-                    }
-                    else {
+                    } else {
                         SharedPreferenceManager.setPreference("startrides", true);
                         SharedPreferenceManager.setPreference("stoprides", false);
                     }
                 }
                 todayortomorrowheader.setText(todayortomorrow);
                 timeofday.setText(timeofrides);
-                if(ridedataobject.getRideFlag().equals("ride"))
-                {
+                if (ridedataobject.getRideFlag().equals("ride")) {
                     startride.setVisibility(View.GONE);
                     endride.setVisibility(View.GONE);
                     estimateride.setVisibility(View.GONE);
                     exitride.setVisibility(View.GONE);
-                }
-                else{
+                } else {
                     hideeditmenuitem.setVisible(false);
                 }
                 customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
                 mGridView.setAdapter(customerlistadapter);
                 customerlistadapter.notifyDataSetChanged();
             }
+        }
+        catch (ParseException ex){
+        }
         }
 
         @Override

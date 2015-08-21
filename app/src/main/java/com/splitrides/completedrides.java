@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -99,42 +100,46 @@ public class completedrides extends Fragment implements AdapterView.OnItemClickL
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.completedride_card_list,
                         container, false);
             }
-            String datetimeOfRides_start = mSamples.get(position).getRideStartedAt();
-            String dateOfRides_start = datetimeOfRides_start.split(" ")[0];
-            String timeofrides_start = datetimeOfRides_start.split(" ")[1];
-            String datetimeOfRides_end = mSamples.get(position).getRideStartedAt();
-            String timeofrides_end = datetimeOfRides_end.split(" ")[1];
-            Calendar cal = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String currentDate = sdf.format(cal.getTime());
-            Calendar nextdaycal = Calendar.getInstance();
-            nextdaycal.add(Calendar.DATE, 1);
-            SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
-            String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
-            if(currentDate.equals(dateOfRides_start))
-            {
-                todayortomorrow = "Today        ";
+            try {
+                String datetimeOfRides_start = mSamples.get(position).getRideStartedAt();
+                String dateOfRides_start = datetimeOfRides_start.split(" ")[0];
+                String timeofrides_start = datetimeOfRides_start.split(" ")[1];
+                String datetimeOfRides_end = mSamples.get(position).getRideStartedAt();
+                String timeofrides_end = datetimeOfRides_end.split(" ")[1];
+                SimpleDateFormat inFormat = new SimpleDateFormat("hh:mm aa");
+                SimpleDateFormat outFormat = new SimpleDateFormat("HH:mm");
+                timeofrides_start = inFormat.format(outFormat.parse(timeofrides_start));
+                timeofrides_end = inFormat.format(outFormat.parse(timeofrides_end));
+                Calendar cal = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String currentDate = sdf.format(cal.getTime());
+                Calendar nextdaycal = Calendar.getInstance();
+                nextdaycal.add(Calendar.DATE, 1);
+                SimpleDateFormat sdftomorrow = new SimpleDateFormat("yyyy-MM-dd");
+                String tomorrowDate = sdftomorrow.format(nextdaycal.getTime());
+                if (currentDate.equals(dateOfRides_start)) {
+                    todayortomorrow = "Today        ";
+                } else if (tomorrowDate.equals(dateOfRides_start)) {
+                    todayortomorrow = "Tomorrow";
+                } else {
+                    todayortomorrow = dateOfRides_start;
+                }
+                mSamples.get(position).setTodayortomorrow(todayortomorrow);
+                ((TextView) convertView.findViewById(R.id.day_header)).setText(todayortomorrow);
+                ((TextView) convertView.findViewById(R.id.start_time_value)).setText(
+                        timeofrides_start);
+                ((TextView) convertView.findViewById(R.id.base_fare_value)).setText(
+                        mSamples.get(position).getBaseFare());
+                ((TextView) convertView.findViewById(R.id.fare_distance_value)).setText(
+                        mSamples.get(position).getPfareForDistanceTravelled());
+                ((TextView) convertView.findViewById(R.id.fare_time_value)).setText(
+                        mSamples.get(position).getFareForTimeSpent());
+                ((TextView) convertView.findViewById(R.id.total_fare_value)).setText(
+                        mSamples.get(position).getTotalFare());
             }
-            else if(tomorrowDate.equals(dateOfRides_start))
-            {
-                todayortomorrow = "Tomorrow";
+            catch (ParseException ex){
+
             }
-            else
-            {
-                todayortomorrow = dateOfRides_start;
-            }
-            mSamples.get(position).setTodayortomorrow(todayortomorrow);
-            ((TextView) convertView.findViewById(R.id.day_header)).setText(todayortomorrow);
-            ((TextView) convertView.findViewById(R.id.start_time_value)).setText(
-                    timeofrides_start);
-            ((TextView) convertView.findViewById(R.id.base_fare_value)).setText(
-                    mSamples.get(position).getBaseFare());
-            ((TextView) convertView.findViewById(R.id.fare_distance_value)).setText(
-                    mSamples.get(position).getPfareForDistanceTravelled());
-            ((TextView) convertView.findViewById(R.id.fare_time_value)).setText(
-                    mSamples.get(position).getFareForTimeSpent());
-            ((TextView) convertView.findViewById(R.id.total_fare_value)).setText(
-                    mSamples.get(position).getTotalFare());
 
             return convertView;
         }

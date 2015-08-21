@@ -34,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -380,7 +381,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                             customerlistdata.add(customeradapterdata);
                         }
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata,ride.getString("jrId"));
-                        SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("ownerCustomerNumber"));
+                        SharedPreferenceManager.setPreference("owner_customernumber", ride.getString("ownerCustomerNumber"));
                     }
                     else if(jObj.has("ride")){
                         JSONObject ride = jObj.getJSONObject("ride");
@@ -409,7 +410,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         }*/
                         customerlistdata.add(customeradapterdata);
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata, ride.getString("jrId"));
-                        SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("customerNumber"));
+                        SharedPreferenceManager.setPreference("owner_customernumber", ride.getString("customerNumber"));
                     }
                   }
             } catch (JSONException e) {
@@ -424,28 +425,35 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
             individualridestask = null;
             bar.setVisibility(View.GONE);
             detailform.setVisibility((ridedataobject!=null)?View.VISIBLE:View.GONE);
-            if(ridedataobject != null ){
-                ridefromheader_source_expander.setText(ridedataobject.getSource());
-                ridefromheader_destination_expander.setText(ridedataobject.getDestination());
-                String dateOfRides = ridedataobject.getDate().split("T")[0];
-                String timeofrides = ridedataobject.getDate().split("T")[1];
-                timeofrides = timeofrides.split(".000Z")[0];
-                Calendar cal = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String currentDate = sdf.format(cal.getTime());
-                String todayortomorrow = (currentDate.equals(dateOfRides))?"Today":"Tomorrow";
-                todayortomorrowheader.setText(todayortomorrow);
-                timeofday.setText(timeofrides);
-                if (ridedataobject.getStatus() != null && (ridedataobject.getStatus().equals("requestsent") || ridedataobject.getStatus().equals("accepted")||ridedataobject.getStatus().equals("rejected"))) {
-                    requestalreadysent.setVisibility(View.VISIBLE);
-                    sendrequesttojoinride.setVisibility(View.GONE);
-                } else {
-                    requestalreadysent.setVisibility(View.GONE);
-                    sendrequesttojoinride.setVisibility(View.VISIBLE);
+            try {
+                if (ridedataobject != null) {
+                    ridefromheader_source_expander.setText(ridedataobject.getSource());
+                    ridefromheader_destination_expander.setText(ridedataobject.getDestination());
+                    String dateOfRides = ridedataobject.getDate().split("T")[0];
+                    String timeofrides = ridedataobject.getDate().split("T")[1];
+                    timeofrides = timeofrides.split(".000Z")[0];
+                    SimpleDateFormat inFormat = new SimpleDateFormat("hh:mm aa");
+                    SimpleDateFormat outFormat = new SimpleDateFormat("HH:mm");
+                    timeofrides = inFormat.format(outFormat.parse(timeofrides));
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String currentDate = sdf.format(cal.getTime());
+                    String todayortomorrow = (currentDate.equals(dateOfRides)) ? "Today" : "Tomorrow";
+                    todayortomorrowheader.setText(todayortomorrow);
+                    timeofday.setText(timeofrides);
+                    if (ridedataobject.getStatus() != null && (ridedataobject.getStatus().equals("requestsent") || ridedataobject.getStatus().equals("accepted") || ridedataobject.getStatus().equals("rejected"))) {
+                        requestalreadysent.setVisibility(View.VISIBLE);
+                        sendrequesttojoinride.setVisibility(View.GONE);
+                    } else {
+                        requestalreadysent.setVisibility(View.GONE);
+                        sendrequesttojoinride.setVisibility(View.VISIBLE);
+                    }
+                    customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
+                    mGridView.setAdapter(customerlistadapter);
+                    customerlistadapter.notifyDataSetChanged();
                 }
-                customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
-                mGridView.setAdapter(customerlistadapter);
-                customerlistadapter.notifyDataSetChanged();
+            }
+            catch (ParseException ex){
             }
         }
 
