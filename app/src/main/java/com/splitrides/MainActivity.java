@@ -154,7 +154,7 @@ public class MainActivity extends ActionBarActivity
            return;
        }
        showProgressLayout("", "Logging in...");
-       onregister();
+       //onregister();
        mSignInProgress = STATE_SIGN_IN;
        mGoogleApiClient.connect();
    }
@@ -230,7 +230,7 @@ public class MainActivity extends ActionBarActivity
     public void onFacebookLoginButtonClicked()
     {
         AccessToken token = AccessToken.getCurrentAccessToken();
-        onregister();
+        //onregister();
         if (token == null) {
             LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
             showProgressLayout("", "Logging in...");
@@ -303,7 +303,7 @@ public class MainActivity extends ActionBarActivity
             // perform the user login attempt.
 
 
-            mAuthTask = new UserLoginTask(Email,Password,Name,"local","","","male",getRegistrationId(getApplicationContext()));
+            mAuthTask = new UserLoginTask(Email,Password,Name,"local","","","male",SharedPreferenceManager.getPreference("registrationid"));
             mAuthTask.execute((Void) null);
         }
     }
@@ -385,7 +385,7 @@ public class MainActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferenceManager.setApplicationContext(getApplicationContext());
-        onregister();
+        //onregister();
         SharedPreferenceManager.setPreference("notificationcount", 0);
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
@@ -408,7 +408,7 @@ public class MainActivity extends ActionBarActivity
                                             name = jsonObject.getString("name");
                                             if (mAuthTask == null && (!email.isEmpty()) && (!name.isEmpty()) && (!id.isEmpty()) && (!gender.isEmpty())) {
                                                 SharedPreferenceManager.setPreference("id",id);
-                                                mAuthTask = new UserLoginTask(email, "", name, "facebook",id, AccessToken.getCurrentAccessToken().getToken(), gender, getRegistrationId(getApplicationContext()));
+                                                mAuthTask = new UserLoginTask(email, "", name, "facebook",id, AccessToken.getCurrentAccessToken().getToken(), gender,SharedPreferenceManager.getPreference("registrationid"));
                                                 mAuthTask.execute((Void) null);
                                             }
 
@@ -452,14 +452,16 @@ public class MainActivity extends ActionBarActivity
         transaction.commitAllowingStateLoss();
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        //mEmailView = (EditText) findViewById(R.id.enter_email);
 
-        //mPasswordView = (EditText) findViewById(R.id.enter_password);
         mEmailView_signup = (EditText) findViewById(R.id.enter_email_signup);
 
         mPasswordView_signup = (EditText) findViewById(R.id.enter_password_signup);
         mNameView_signup = (EditText) findViewById(R.id.enter_name_signup);
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
+        }
         ConnectionDetector cd = new ConnectionDetector(this.getApplicationContext());
 
         // Check if Internet present
@@ -1117,7 +1119,7 @@ public class MainActivity extends ActionBarActivity
             pDialog.dismiss();
             if(result!=null)
             {
-                mAuthTask = new UserLoginTask(mEmail,"",mName,"google",(mProfileImageUrl != null && mProfileImageUrl.length() > 0) ? mProfileImageUrl : "",result,mGender,getRegistrationId(getApplicationContext()));
+                mAuthTask = new UserLoginTask(mEmail,"",mName,"google",(mProfileImageUrl != null && mProfileImageUrl.length() > 0) ? mProfileImageUrl : "",result,mGender,SharedPreferenceManager.getPreference("registrationid"));
                 mAuthTask.execute((Void) null);
             }
             else

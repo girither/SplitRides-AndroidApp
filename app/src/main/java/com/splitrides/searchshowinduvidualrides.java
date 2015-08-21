@@ -359,7 +359,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         JSONArray customerdata = jObj.getJSONArray("builtDetails");
                         List<customer> customerlistdata = new ArrayList<customer>();
                         status = "";
-                        if(ride.has("requestMatrix")) {
+                        /*if(ride.has("requestMatrix")) {
                             if(!ride.isNull("requestMatrix")) {
                                 JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
                                 if (requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber"))) {
@@ -367,7 +367,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                                     status = requestobject.getString("status");
                                 }
                             }
-                        }
+                        }*/
                         for(int i=0; i<customerdata.length(); i++){
                             JSONObject customerindividualdata = customerdata.getJSONObject(i);
 
@@ -398,7 +398,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                         customer customeradapterdata = new customer(customerdata.getString("name"),customerdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString(),latlongbuilder_droppoint.toString(),customerdata.has("profileId")?customerdata.getString("profileId"):"",customerdata.getString("customerNumber"), friendsCount);
                         List<customer> customerlistdata = new ArrayList<customer>();
                         status = "";
-                        if(ride.has("requestMatrix")) {
+                        /*if(ride.has("requestMatrix")) {
                             if(!ride.isNull("requestMatrix")) {
                                 JSONObject requestmatrix = ride.getJSONObject("requestMatrix");
                                 if (requestmatrix.has(SharedPreferenceManager.getPreference("customerNumber")) && !requestmatrix.isNull(SharedPreferenceManager.getPreference("customerNumber"))) {
@@ -406,7 +406,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                                     status = requestobject.getString("status");
                                 }
                             }
-                        }
+                        }*/
                         customerlistdata.add(customeradapterdata);
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),status,customerlistdata, ride.getString("jrId"));
                         SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("customerNumber"));
@@ -443,10 +443,6 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
                     requestalreadysent.setVisibility(View.GONE);
                     sendrequesttojoinride.setVisibility(View.VISIBLE);
                 }
-                /*if(ridedataobject.getStatus() != null )
-                {
-                    // requestreject.setVisibility(View.VISIBLE);
-                }*/
                 customerlistadapter = new CustomerAdapter(ridedataobject.getCustomerlistdata());
                 mGridView.setAdapter(customerlistadapter);
                 customerlistadapter.notifyDataSetChanged();
