@@ -86,13 +86,28 @@
             android:layout_marginTop="15dp"
             android:orientation="horizontal">
 
+            <ImageView
+                android:id="@+id/click_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/clickicon" />
+
+            <TextView
+                android:id="@+id/click_here_label"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="7dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
 
             <TextView
                 android:id="@+id/joinedride_title"
                 style="@style/Widget.SampleDashboard.Item.MyRideTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="190dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="70dp"
                 />
         </LinearLayout>
 

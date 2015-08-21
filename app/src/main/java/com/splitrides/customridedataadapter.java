@@ -16,8 +16,10 @@ import java.util.List;
  * Created by gbm on 5/23/15.
  */
 public class customridedataadapter extends ArrayAdapter<ridedata> {
-    public customridedataadapter(Context context, List<ridedata> ridedatasarray) {
+    private String mclickdata;
+    public customridedataadapter(Context context, List<ridedata> ridedatasarray,String clickdata) {
         super(context, 0, ridedatasarray);
+        mclickdata = clickdata;
     }
 
 
@@ -35,6 +37,8 @@ public class customridedataadapter extends ArrayAdapter<ridedata> {
             TextView timeofride = (TextView) convertView.findViewById(R.id.time_title);
             TextView source = (TextView) convertView.findViewById(R.id.source_data);
             TextView destination = (TextView) convertView.findViewById(R.id.destination_data);
+            TextView clicklabeldata = (TextView) convertView.findViewById(R.id.click_here_label);
+            clicklabeldata.setText(mclickdata);
             TextView joinedride_label = (TextView) convertView.findViewById(R.id.joinedride_title);
             if (Ridedata.getRideFlag().equals("jride")) {
                 if (Ridedata.getJoinedridestatus().equals("started")) {

@@ -202,7 +202,7 @@ public class Showupcomingridesfragment extends SwipeRefreshListFragment {
             try {
                 if (getActivity() != null) {
                     if (!result.isEmpty()) {
-                        adapter = new customridedataadapter(getActivity(), result);
+                        adapter = new customridedataadapter(getActivity(), result,"Click to see details");
 
                         // Set the adapter between the ListView and its backing data.
                         setListAdapter(adapter);

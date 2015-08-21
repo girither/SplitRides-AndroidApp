@@ -197,7 +197,7 @@ public class searchyourridesfragment extends SwipeRefreshListFragment {
             try {
                 if (getActivity() != null) {
                     if (!ridedataArray.isEmpty()) {
-                        adapter = new customridedataadapter(getActivity(), ridedataArray);
+                        adapter = new customridedataadapter(getActivity(), ridedataArray,"Click to search");
 
                         // Set the adapter between the ListView and its backing data.
                         setListAdapter(adapter);
