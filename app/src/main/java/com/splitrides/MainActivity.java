@@ -407,8 +407,8 @@ public class MainActivity extends ActionBarActivity
                                             id = jsonObject.getString("id");
                                             name = jsonObject.getString("name");
                                             if (mAuthTask == null && (!email.isEmpty()) && (!name.isEmpty()) && (!id.isEmpty()) && (!gender.isEmpty())) {
-                                                SharedPreferenceManager.setPreference("id",id);
-                                                mAuthTask = new UserLoginTask(email, "", name, "facebook",id, AccessToken.getCurrentAccessToken().getToken(), gender,SharedPreferenceManager.getPreference("registrationid"));
+                                                SharedPreferenceManager.setPreference("id", id);
+                                                mAuthTask = new UserLoginTask(email, "", name, "facebook", id, AccessToken.getCurrentAccessToken().getToken(), gender, SharedPreferenceManager.getPreference("registrationid"));
                                                 mAuthTask.execute((Void) null);
                                             }
 
@@ -907,6 +907,11 @@ public class MainActivity extends ActionBarActivity
     }
     public void OnLoginAuthenticated() {
         showFragment(FRAGMENT_COUNT, false);
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
+        }
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(

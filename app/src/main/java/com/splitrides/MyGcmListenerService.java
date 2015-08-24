@@ -36,6 +36,7 @@ public class MyGcmListenerService extends GcmListenerService {
          */
         final int notificationID = (int) (Math.random() * 100000000);
         sendNotification(data,notificationID);
+        new updatenotificationtask(data.toString()).execute((Void) null);
     }
 
     // Put the message into a notification and post it.
@@ -210,6 +211,49 @@ public class MyGcmListenerService extends GcmListenerService {
             mBuilder.setContentIntent(contentIntent);
             mBuilder.setAutoCancel(true);
             mNotificationManager.notify(aNotificationID, mBuilder.build());
+        }
+    }
+
+    public class updatenotificationtask extends AsyncTask<Void, Void,Boolean> {
+        private String mnotification;
+
+        updatenotificationtask(String notification) {
+            mnotification = notification;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... param) {
+            try {
+                JSONObject params = new JSONObject();
+                params.put("notification",mnotification);
+                String json = jsonParser.makeHttpRequest(mainurl.geturl() +"writeNotificationToDB", "POST",
+                        params);
+
+
+
+                JSONObject jObj = new JSONObject(json);
+                if(jObj != null){
+                    String data = jObj.getString("success");
+                    return true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+
+            if(success){
+
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+
         }
     }
 

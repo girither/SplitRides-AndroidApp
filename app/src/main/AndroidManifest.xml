@@ -43,13 +43,12 @@
 
     <application
         android:name=".Splitrideapplication"
-        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD0MVSW3L--lF90TrA5AWdyMbsiZdMiFh8" />
+            android:value="AIzaSyAJslNnIMjEs8JoOacIT4rPqlHVrxMsmAY" />
 
         <activity
             android:name=".MainActivity"
