@@ -310,7 +310,7 @@ public class searchshowinduvidualrides extends ActionBarActivity implements View
         protected void onPostExecute(final ratecardobject data) {
             pDialog.dismiss();
             if(data != null){
-                DialogFragment rateFragment = new ratecardfragment(data);
+                DialogFragment rateFragment = new ratecardfragment(data,false);
                 rateFragment.show(getFragmentManager(), "ratepicker");
             }
         }

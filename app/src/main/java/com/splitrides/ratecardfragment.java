@@ -9,17 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.splitrides.ratecardobject;
-
 /**
  * Created by gbm on 7/4/15.
  */
 public class ratecardfragment extends DialogFragment {
 
     ratecardobject mRateText;
+    Boolean mhideunhidetitle;
 
-    public ratecardfragment(ratecardobject textView) {
+    public ratecardfragment(ratecardobject textView,Boolean hideunhidetitle) {
         mRateText = textView;
+        mhideunhidetitle = hideunhidetitle;
     }
 
 
@@ -34,6 +34,13 @@ public class ratecardfragment extends DialogFragment {
         View dialogView = inflater.inflate(R.layout.fragment_ratefragment, null);
 
         builder.setView(dialogView);
+        TextView title = (TextView)dialogView.findViewById(R.id.title_ratetext);
+        if(mhideunhidetitle){
+            title.setVisibility(View.GONE);
+        }
+        else {
+            title.setVisibility(View.VISIBLE);
+        }
         TextView rateText = (TextView)dialogView.findViewById(R.id.estimatecost_value);
         rateText.setText(getResources().getString(R.string.Rs)+" "+mRateText.getPrice());
         TextView ratedistance = (TextView)dialogView.findViewById(R.id.distance_value);

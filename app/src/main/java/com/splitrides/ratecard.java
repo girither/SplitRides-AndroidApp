@@ -342,7 +342,7 @@ public class ratecard  extends Fragment implements GoogleApiClient.OnConnectionF
         protected void onPostExecute(final ratecardobject data) {
             pDialog.dismiss();
             if(data != null){
-                DialogFragment rateFragment = new ratecardfragment(data);
+                DialogFragment rateFragment = new ratecardfragment(data,true);
                 rateFragment.show(getActivity().getFragmentManager(), "ratepicker");
             }
         }
