@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
@@ -74,8 +75,6 @@ public class MyGcmListenerService extends GcmListenerService {
 
             Intent getnotificationdetails = new Intent(this,notificationfragmentdetails.class);
             getnotificationdetails.putExtra("requestId", requestID);
-            //  getnotificationdetails.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-            //        Intent.FLAG_ACTIVITY_CLEAR_TASK);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,getnotificationdetails, PendingIntent.FLAG_CANCEL_CURRENT);
             String source = msg.getString("source");
             String destination =msg.getString("destination");
@@ -98,6 +97,8 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
             mNotificationManager.notify(aNotificationID, mBuilder.build());
+            Intent requesttojoinedride = new Intent("requesttojoinedridenotification");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(requesttojoinedride);
         }
         else if(data.equals("acceptedByTheOwner")){
             String ownerrideid = msg.getString("ownerrideid");

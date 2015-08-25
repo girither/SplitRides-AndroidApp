@@ -216,6 +216,10 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         switch(view.getId()) {
             case R.id.startride:
                 if(SharedPreferenceManager.getBooleanPreference("stoprides")) {
+                    if (mGoogleApiClient !=null) {
+                        mGoogleApiClient.disconnect();
+                        mGoogleApiClient = null;
+                    }
                     fetchlocation();
                 }
 
