@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender.SendIntentException;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -104,7 +107,7 @@ public class MainActivity extends ActionBarActivity
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     MenuItem hidemenuitem;
     String SENDER_ID = "544261498132";
-
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private boolean mSignInClicked;
     CallbackManager callbackManager;
     GoogleCloudMessaging gcm;
@@ -385,8 +388,6 @@ public class MainActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferenceManager.setApplicationContext(getApplicationContext());
-        //onregister();
-        SharedPreferenceManager.setPreference("notificationcount", 0);
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager,
@@ -462,6 +463,12 @@ public class MainActivity extends ActionBarActivity
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
         }
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                onDataChanged(SharedPreferenceManager.getIntPreference("notificationcount"));
+            }
+        };
         ConnectionDetector cd = new ConnectionDetector(this.getApplicationContext());
 
         // Check if Internet present
@@ -815,6 +822,8 @@ public class MainActivity extends ActionBarActivity
         SharedPreferenceManager.setApplicationContext(getApplicationContext());
         checkPlayServices();
         isResumed = true;
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter("requesttojoinedridenotification"));
     }
 
     @Override
@@ -867,8 +876,9 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onPause() {
-        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         isResumed = false;
+        super.onPause();
     }
     @Override
     protected void onResumeFragments() {

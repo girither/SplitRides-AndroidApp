@@ -1,13 +1,9 @@
 package com.splitrides;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +15,6 @@ import com.readystatesoftware.viewbadger.BadgeView;
 public class homepageX extends Fragment implements notificationfragment.OnDataChangedListener {
     private FragmentTabHost mTabHost;
     BadgeView badge;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -52,12 +47,6 @@ public class homepageX extends Fragment implements notificationfragment.OnDataCh
                 homepage.class, null);
         mTabHost.addTab(mTabHost.newTabSpec("NOTIFICATIONS").setIndicator(getTabIndicator(mTabHost.getContext(), "NOTIFICATIONS")),
                 notificationfragment.class, null);
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updatebadge(SharedPreferenceManager.getIntPreference("notificationcount"));
-            }
-        };
         return rootView;
 
     }
@@ -76,13 +65,10 @@ public class homepageX extends Fragment implements notificationfragment.OnDataCh
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter());
     }
 
     @Override
     public void onPause() {
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
 

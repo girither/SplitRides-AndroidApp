@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -526,6 +527,12 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
         protected void onPostExecute(final Boolean success) {
             pDialog.dismiss();
             if (success) {
+                int count = SharedPreferenceManager.getIntPreference("notificationcount");
+                if(count > 0) {
+                    SharedPreferenceManager.setPreference("notificationcount", count - 1);
+                }
+                Intent requesttojoinedride = new Intent("requesttojoinedridenotification");
+                LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(requesttojoinedride);
                 finish();
             } else {
                 Toast.makeText(notificationfragmentdetails.this,

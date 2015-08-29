@@ -30,7 +30,7 @@ public class MyGcmListenerService extends GcmListenerService {
          *     - Store message in local database.
          *     - Update UI.
          */
-
+        SharedPreferenceManager.setApplicationContext(getApplicationContext());
         /**
          * In some cases it may be useful to show a notification indicating to the user
          * that a message was received.
