@@ -362,28 +362,6 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
-    public void onregister(){
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(this);
-
-            try {
-                regid = getRegistrationId(getApplicationContext());
-
-                if (regid.isEmpty()) {
-                    registerInBackground();
-                }
-            } catch (Throwable e) {
-                Toast.makeText(getApplicationContext(),"exception happened: "+e.getClass().getName(),Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-
-
-        } else {
-           // Log.i(TAG, "No valid Google Play Services APK found.");
-        }
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

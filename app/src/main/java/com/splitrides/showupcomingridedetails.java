@@ -232,7 +232,6 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                                 public void onClick(DialogInterface dialog, int id) {
                                     SharedPreferenceManager.setPreference("startrides", false);
                                     SharedPreferenceManager.setPreference("stoprides", true);
-                                    stoplocationservice();
                                     String locationstring = SharedPreferenceManager.getPreference("locationstringdata");
                                     if (locationstring != null && !locationstring.isEmpty()) {
                                         new endridetask(SharedPreferenceManager.getPreference("started_jrride"),SharedPreferenceManager.getPreference("locationstringdata")).execute((Void) null);
@@ -536,6 +535,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
         private final String mRideId;
         private  final  String mlatlongstring;
+        public String message="";
 
 
 
@@ -571,12 +571,17 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
 
                 JSONObject jObj = new JSONObject(json);
                 if(jObj != null){
-                    data = new ratecardobject(jObj.getString("totalSharedFare"),jObj.getString("distanceTravelled"),jObj.getString("totalTimeSpent"));
+                    if(jObj.has("totalSharedFare")) {
+                        data = new ratecardobject(jObj.getString("totalSharedFare"),jObj.getString("distanceTravelled"),jObj.getString("totalTimeSpent"));
+                    }
+                    else if(jObj.has("failure")){
+                        message = jObj.getString("message");
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                message =  "Something went wrong while sending request. Please try again";
             }
-
             return data;
         }
 
@@ -584,6 +589,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
         protected void onPostExecute(final ratecardobject data) {
                 pDialog.dismiss();
                 if(data != null){
+                    stoplocationservice();
                     SharedPreferenceManager.setPreference("locationstringdata", "");
                     Intent billfragmentactivity = new Intent(getApplicationContext(),billcardfragment.class);
                     billfragmentactivity.putExtra("price",data.getPrice());
@@ -593,7 +599,7 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 }
             else{
                 Toast.makeText(showupcomingridedetails.this,
-                        "Something went wrong while sending request. Please try again", Toast.LENGTH_LONG).show();
+                        message, Toast.LENGTH_LONG).show();
             }
         }
 
