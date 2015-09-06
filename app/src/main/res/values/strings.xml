@@ -7,7 +7,8 @@
 
     <string name="action_signout">Sign out</string>
     <string name="Rs">\u20B9</string>
-
+    <string name="showcase_main_title">Welcome To Splitrides</string>
+    <string name="showcase_main_message">We find you travel buddies,\n Split rides and fares,\n Pay only for what you have travelled</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigationdraweractivity_title">Post your rides</string>

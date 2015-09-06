@@ -28,10 +28,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -40,8 +44,10 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.splitrides.android.helper.ConnectionDetector;
-import com.splitrides.android.helper.JSONParser;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -51,6 +57,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.splitrides.android.helper.ConnectionDetector;
+import com.splitrides.android.helper.JSONParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +71,8 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerCallbacks,
+        View.OnClickListener,
+        OnShowcaseEventListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,facebookloginFragment.OnGooglePlusButtonClicked,signupage.OnSignUpsButtonClicked, notificationfragment.OnDataChangedListener
 {
@@ -78,6 +88,7 @@ public class MainActivity extends ActionBarActivity
     private String personName="";
     private String email="";
     private String gender="";
+    int clickeditem =0;
     private String id ="";
     private String name="";
     private UserLoginTask mAuthTask = null;
@@ -111,6 +122,8 @@ public class MainActivity extends ActionBarActivity
     private boolean mSignInClicked;
     CallbackManager callbackManager;
     GoogleCloudMessaging gcm;
+    AccessTokenTracker accessTokenTracker;
+    ShowcaseView sv;
     //AtomicInteger msgId = new AtomicInteger();
 
     private String googleProfilePicUrl = "";
@@ -137,6 +150,58 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
+    public void onClick(View view) {
+        GridView mGridView = (GridView)findViewById(R.id.listgridview);
+        View targetView;
+        ViewTarget target;
+        int margin;
+        switch(clickeditem){
+            case 0:
+                targetView = mGridView.getChildAt(0);
+                target = new ViewTarget(targetView);
+                sv.setShowcase(target, true);
+                sv.setContentText("Tell us where you are going, when you are going,we will find companions traveling in the same direction.");
+                sv.setContentTitle("Post Ride:");
+                RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                margin= ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
+                lps.setMargins(440, 1070, margin, margin);
+                sv.setButtonPosition(lps);
+                break;
+            case 1:
+                targetView = mGridView.getChildAt(1);
+                target = new ViewTarget(targetView);
+                sv.setShowcase(target, true);
+                sv.setContentText("Search companions for the rides you posted,we show other travelers with similar ride as the one you posted");
+                sv.setContentTitle("Search your ride:");
+                RelativeLayout.LayoutParams lpssearch = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
+                lpssearch.setMargins(440, 1070, margin, margin);
+                sv.setButtonPosition(lpssearch);
+                sv.setShouldCentreText(false);
+                break;
+            case 2:
+                targetView = mGridView.getChildAt(2);
+                target = new ViewTarget(targetView);
+                sv.setShowcase(target, true);
+                sv.setContentText("Click here to see the rides that you have scheduled and are yet to happen");
+                sv.setContentTitle("Upcoming rides");
+                sv.setButtonText("OK Gotit");
+                RelativeLayout.LayoutParams lpsupcoming = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
+                lpsupcoming.setMargins(440, 370, margin, margin);
+                sv.setButtonPosition(lpsupcoming);
+                sv.setShouldCentreText(false);
+                break;
+            case 3:
+                sv.hide();
+                SharedPreferenceManager.setPreference("showhomepageftu",true);
+                break;
+
+        }
+        clickeditem++;
+    }
+
+
    @Override
    public void onsinuppageButtonClick() {
        attemptSignup();
@@ -157,7 +222,6 @@ public class MainActivity extends ActionBarActivity
            return;
        }
        showProgressLayout("", "Logging in...");
-       //onregister();
        mSignInProgress = STATE_SIGN_IN;
        mGoogleApiClient.connect();
    }
@@ -183,6 +247,20 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
+
+    @Override
+    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+
+    }
+
+    @Override
+    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+    }
+
+    @Override
+    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+    }
 
     @Override
     public void onStart() {
@@ -233,12 +311,14 @@ public class MainActivity extends ActionBarActivity
     public void onFacebookLoginButtonClicked()
     {
         AccessToken token = AccessToken.getCurrentAccessToken();
-        //onregister();
         if (token == null) {
             LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
             showProgressLayout("", "Logging in...");
         }
         else{
+            if (accessTokenTracker != null) {
+                accessTokenTracker.stopTracking();
+            }
             LoginManager.getInstance().logOut();
         }
     }
@@ -372,39 +452,55 @@ public class MainActivity extends ActionBarActivity
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(final LoginResult loginResult) {
-                        GraphRequest request = GraphRequest.newMeRequest(
-                                AccessToken.getCurrentAccessToken(),
-                                new GraphRequest.GraphJSONObjectCallback() {
-                                    @Override
-                                    public void onCompleted(
-                                            JSONObject jsonObject,
-                                            GraphResponse response) {
-                                        try {
-                                            dismissProgressDialog();
-                                            email = jsonObject.getString("email");
-                                            gender = jsonObject.getString("gender");
-                                            id = jsonObject.getString("id");
-                                            name = jsonObject.getString("name");
-                                            if (mAuthTask == null && (!email.isEmpty()) && (!name.isEmpty()) && (!id.isEmpty()) && (!gender.isEmpty())) {
-                                                SharedPreferenceManager.setPreference("id", id);
-                                                mAuthTask = new UserLoginTask(email, "", name, "facebook", id, AccessToken.getCurrentAccessToken().getToken(), gender, SharedPreferenceManager.getPreference("registrationid"));
-                                                mAuthTask.execute((Void) null);
-                                            }
+                        accessTokenTracker = new AccessTokenTracker() {
+                            @Override
+                            protected void onCurrentAccessTokenChanged(
+                                    AccessToken oldAccessToken,
+                                    final AccessToken currentAccessToken) {
+                                this.stopTracking();
+                                if(currentAccessToken != null) {
+                                    GraphRequest request = GraphRequest.newMeRequest(
+                                            currentAccessToken.getCurrentAccessToken(),
+                                            new GraphRequest.GraphJSONObjectCallback() {
+                                                @Override
+                                                public void onCompleted(
+                                                        JSONObject jsonObject,
+                                                        GraphResponse response) {
+                                                    try {
+                                                        dismissProgressDialog();
+                                                        email = jsonObject.getString("email");
+                                                        gender = jsonObject.getString("gender");
+                                                        id = jsonObject.getString("id");
+                                                        name = jsonObject.getString("name");
+                                                        if (mAuthTask == null && (!email.isEmpty()) && (!name.isEmpty()) && (!id.isEmpty()) && (!gender.isEmpty())) {
+                                                            SharedPreferenceManager.setPreference("id", id);
+                                                            mAuthTask = new UserLoginTask(email, "", name, "facebook", id, currentAccessToken.getCurrentAccessToken().getToken(), gender, SharedPreferenceManager.getPreference("registrationid"));
+                                                            mAuthTask.execute((Void) null);
+                                                        }
 
-                                        } catch (JSONException exe) {
+                                                    } catch (JSONException exe) {
 
-                                        }
-                                    }
-                                });
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "id,name,link,email,gender");
-                        request.setParameters(parameters);
-                        request.executeAsync();
+                                                    }
+                                                }
+                                            });
+                                    Bundle parameters = new Bundle();
+                                    parameters.putString("fields", "id,name,link,email,gender");
+                                    request.setParameters(parameters);
+                                    request.executeAsync();
+                                }
+                            }
+                        };
+                        accessTokenTracker.startTracking();
                     }
+
+
 
                     @Override
                     public void onCancel() {
                         dismissProgressDialog();
+                        if (accessTokenTracker != null) {
+                            accessTokenTracker.stopTracking();
+                        }
                         LoginManager.getInstance().logOut();
 
                     }
@@ -412,6 +508,9 @@ public class MainActivity extends ActionBarActivity
                     @Override
                     public void onError(FacebookException exception) {
                         dismissProgressDialog();
+                        if (accessTokenTracker != null) {
+                            accessTokenTracker.stopTracking();
+                        }
                         LoginManager.getInstance().logOut();
                     }
                 });
@@ -893,6 +992,25 @@ public class MainActivity extends ActionBarActivity
 
         }
     }
+    public void ftububble(){
+        if(!SharedPreferenceManager.getBooleanPreference("showhomepageftu")) {
+            RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        /*lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_LEFT);*/
+            int margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
+            lps.setMargins(440, 700, margin, margin);
+            ViewTarget target = new ViewTarget(R.id.tool_bar, this);
+            sv = new ShowcaseView.Builder(this, true)
+                    .setTarget(Target.NONE)
+                    .setContentTitle(R.string.showcase_main_title)
+                    .setContentText(R.string.showcase_main_message)
+                    .setStyle(R.style.CustomShowcaseTheme)
+                    .setOnClickListener(this)
+                    .build();
+            sv.setButtonPosition(lps);
+            sv.setShouldCentreText(true);
+        }
+    }
     public void OnLoginAuthenticated() {
         showFragment(FRAGMENT_COUNT, false);
         if (checkPlayServices()) {
@@ -921,12 +1039,12 @@ public class MainActivity extends ActionBarActivity
                         SharedPreferenceManager.setPreference("mIsSignedIn", false);
                         String profile = SharedPreferenceManager.getPreference("profile");
 
-                        if (profile.equals("facebook"))
-                        {
+                        if (profile.equals("facebook")) {
+                            if (accessTokenTracker != null) {
+                                accessTokenTracker.stopTracking();
+                            }
                             LoginManager.getInstance().logOut();
-                        }
-                        else if (profile.equals("google"))
-                        {
+                        } else if (profile.equals("google")) {
                             mGoogleApiClient.disconnect();
                         }
                     }
@@ -1030,16 +1148,19 @@ public class MainActivity extends ActionBarActivity
             pDialog.dismiss();
 
             if (success) {
-                //finish();
                 SharedPreferenceManager.setPreference("mIsSignedIn",true);
-                //hidemenuitem.setVisible(true);
+                ftububble();
                 invalidateOptionsMenu();
                 OnLoginAuthenticated();
+
             } else {
                 if(mProfile.equals("facebook")||mProfile.equals("google"))
                 {
                     if (mProfile.equals("facebook"))
                     {
+                        if (accessTokenTracker != null) {
+                            accessTokenTracker.stopTracking();
+                        }
                         LoginManager.getInstance().logOut();
                     }
                     if (mProfile.equals("google"))

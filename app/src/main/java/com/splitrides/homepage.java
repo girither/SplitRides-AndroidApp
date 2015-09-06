@@ -31,13 +31,11 @@ public class homepage extends Fragment implements AdapterView.OnItemClickListene
                 new Sample(R.string.showupcoming_title, R.string.showupcomingrides_description,
                         showupcomingridesactivity.class)
         };
-        mGridView = (GridView)view.findViewById(android.R.id.list);
+        mGridView = (GridView)view.findViewById(R.id.listgridview);
         mGridView.setAdapter(new SampleAdapter());
         mGridView.setOnItemClickListener(this);
-
         return view;
     }
-
 
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
@@ -60,7 +58,22 @@ public class homepage extends Fragment implements AdapterView.OnItemClickListene
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
     }
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
 
+      /*  new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                View targetView = mGridView.getChildAt(0);
+                ViewTarget target = new ViewTarget(targetView);
+                ShowcaseView sv  = new ShowcaseView.Builder(getActivity(), true)
+                        .setTarget(target)
+                        .setContentTitle("YOUR MESSAGE")
+                        .setStyle(R.style.CustomShowcaseTheme3)
+                        .build();
+            }
+        }, 5000);*/
+    }
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
