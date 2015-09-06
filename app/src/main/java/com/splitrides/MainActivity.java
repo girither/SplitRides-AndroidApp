@@ -157,40 +157,55 @@ public class MainActivity extends ActionBarActivity
         int margin;
         switch(clickeditem){
             case 0:
-                targetView = mGridView.getChildAt(0);
-                target = new ViewTarget(targetView);
-                sv.setShowcase(target, true);
-                sv.setContentText("Tell us where you are going, when you are going,we will find companions traveling in the same direction.");
-                sv.setContentTitle("Post Ride:");
-                RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                margin= ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
-                lps.setMargins(440, 1070, margin, margin);
-                sv.setButtonPosition(lps);
+                if(mGridView != null && mGridView.getChildAt(0) != null ) {
+                    targetView = mGridView.getChildAt(0);
+                    target = new ViewTarget(targetView);
+                    sv.setShowcase(target, true);
+                    sv.setContentText("Tell us where you are going, when you are going,we will find companions traveling in the same direction.");
+                    sv.setContentTitle("Post Ride:");
+                    RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
+                    lps.setMargins(440, 1070, margin, margin);
+                    sv.setButtonPosition(lps);
+                }
+                else{
+                    sv.hide();
+                }
                 break;
             case 1:
-                targetView = mGridView.getChildAt(1);
-                target = new ViewTarget(targetView);
-                sv.setShowcase(target, true);
-                sv.setContentText("Search companions for the rides you posted,we show other travelers with similar ride as the one you posted");
-                sv.setContentTitle("Search your ride:");
-                RelativeLayout.LayoutParams lpssearch = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
-                lpssearch.setMargins(440, 1070, margin, margin);
-                sv.setButtonPosition(lpssearch);
-                sv.setShouldCentreText(false);
+                if(mGridView != null && mGridView.getChildAt(1) != null ) {
+                    targetView = mGridView.getChildAt(1);
+                    target = new ViewTarget(targetView);
+                    sv.setShowcase(target, true);
+                    sv.setContentText("Search companions for the rides you posted,we show other travelers with similar ride as the one you posted");
+                    sv.setContentTitle("Search your ride:");
+                    RelativeLayout.LayoutParams lpssearch = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
+                    lpssearch.setMargins(440, 1070, margin, margin);
+                    sv.setButtonPosition(lpssearch);
+                    sv.setShouldCentreText(false);
+                }
+                else{
+                    sv.hide();
+                }
                 break;
             case 2:
-                targetView = mGridView.getChildAt(2);
-                target = new ViewTarget(targetView);
-                sv.setShowcase(target, true);
-                sv.setContentText("Click here to see the rides that you have scheduled and are yet to happen");
-                sv.setContentTitle("Upcoming rides");
-                sv.setButtonText("OK Gotit");
-                RelativeLayout.LayoutParams lpsupcoming = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
-                lpsupcoming.setMargins(440, 370, margin, margin);
-                sv.setButtonPosition(lpsupcoming);
-                sv.setShouldCentreText(false);
+                if(mGridView != null && mGridView.getChildAt(2) != null ) {
+                    targetView = mGridView.getChildAt(2);
+                    target = new ViewTarget(targetView);
+                    sv.setShowcase(target, true);
+                    sv.setContentText("Click here to see the rides that you have scheduled and are yet to happen");
+                    sv.setContentTitle("Upcoming rides");
+                    sv.setButtonText("OK Gotit");
+                    RelativeLayout.LayoutParams lpsupcoming = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
+                    lpsupcoming.setMargins(440, 370, margin, margin);
+                    sv.setButtonPosition(lpsupcoming);
+                    sv.setShouldCentreText(false);
+                }
+                else{
+                    sv.hide();
+                }
                 break;
             case 3:
                 sv.hide();
@@ -467,13 +482,13 @@ public class MainActivity extends ActionBarActivity
                                                         JSONObject jsonObject,
                                                         GraphResponse response) {
                                                     try {
-                                                        dismissProgressDialog();
                                                         email = jsonObject.getString("email");
                                                         gender = jsonObject.getString("gender");
                                                         id = jsonObject.getString("id");
                                                         name = jsonObject.getString("name");
                                                         if (mAuthTask == null && (!email.isEmpty()) && (!name.isEmpty()) && (!id.isEmpty()) && (!gender.isEmpty())) {
                                                             SharedPreferenceManager.setPreference("id", id);
+                                                            dismissProgressDialog();
                                                             mAuthTask = new UserLoginTask(email, "", name, "facebook", id, currentAccessToken.getCurrentAccessToken().getToken(), gender, SharedPreferenceManager.getPreference("registrationid"));
                                                             mAuthTask.execute((Void) null);
                                                         }
