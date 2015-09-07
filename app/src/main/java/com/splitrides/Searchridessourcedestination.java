@@ -23,11 +23,13 @@ public class Searchridessourcedestination extends ActionBarActivity implements V
 
     ShowcaseView sv;
     Button opengoogledirection;
+    int clickeditem =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searchridessourcedestination);
+        ftububble();
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -48,8 +50,11 @@ public class Searchridessourcedestination extends ActionBarActivity implements V
     public void ftububble(){
         if(!SharedPreferenceManager.getBooleanPreference("showsearchpageftu")) {
             RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
-            lps.setMargins(440, 700, margin, margin);
+            lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            int marginbottom = ((Number) (getResources().getDisplayMetrics().density * 50)).intValue();
+            int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+            lps.setMargins(0, 0, margin, marginbottom);
             ViewTarget target = new ViewTarget(R.id.tool_bar, this);
             sv = new ShowcaseView.Builder(this, true)
                     .setTarget(Target.NONE)
@@ -64,6 +69,31 @@ public class Searchridessourcedestination extends ActionBarActivity implements V
     }
 
     public void onClick(View view) {
+        View targetView;
+        ViewTarget target;
+        int margin,marginbottom;
+        if(!SharedPreferenceManager.getBooleanPreference("showsearchpageftu")) {
+            switch (clickeditem) {
+                case 0:
+                    target = new ViewTarget(R.id.open_google_directions, this);
+                    sv.setShowcase(target, true);
+                    sv.setContentText("Click to see the optimized route given by google");
+                    sv.setContentTitle("Check Directions");
+                    RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    marginbottom = ((Number) (getResources().getDisplayMetrics().density * 50)).intValue();
+                    margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+                    lps.setMargins(0, 0, margin, marginbottom);
+                    sv.setButtonPosition(lps);
+                    break;
+                case 1:
+                    sv.hide();
+                    SharedPreferenceManager.setPreference("showsearchpageftu", true);
+                    break;
+            }
+            clickeditem++;
+        }
         ConnectionDetector cd = new ConnectionDetector(Searchridessourcedestination.this.getApplicationContext());
 
         // Check if Internet present
