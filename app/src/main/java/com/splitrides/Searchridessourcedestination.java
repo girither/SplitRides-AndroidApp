@@ -59,7 +59,7 @@ public class Searchridessourcedestination extends ActionBarActivity implements V
             sv = new ShowcaseView.Builder(this, true)
                     .setTarget(Target.NONE)
                     .setContentTitle("Welcome to search page")
-                    .setContentText("Optimized routing by google and we get rides en-route selected by google")
+                    .setContentText("Optimized routing by google and we get \n rides en-route selected by google")
                     .setStyle(R.style.CustomShowcaseTheme)
                     .setOnClickListener(this)
                     .build();
