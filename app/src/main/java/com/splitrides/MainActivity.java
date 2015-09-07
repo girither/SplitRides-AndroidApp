@@ -154,7 +154,7 @@ public class MainActivity extends ActionBarActivity
         GridView mGridView = (GridView)findViewById(R.id.listgridview);
         View targetView;
         ViewTarget target;
-        int margin;
+        int margin,marginbottom;
         switch(clickeditem){
             case 0:
                 if(mGridView != null && mGridView.getChildAt(0) != null ) {
@@ -164,8 +164,11 @@ public class MainActivity extends ActionBarActivity
                     sv.setContentText("Tell us where you are going, when you are going,we will find companions traveling in the same direction.");
                     sv.setContentTitle("Post Ride:");
                     RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
-                    lps.setMargins(440, 1070, margin, margin);
+                    lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    marginbottom = ((Number) (getResources().getDisplayMetrics().density * 50)).intValue();
+                    margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+                    lps.setMargins(0, 0, margin, marginbottom);
                     sv.setButtonPosition(lps);
                 }
                 else{
@@ -180,8 +183,11 @@ public class MainActivity extends ActionBarActivity
                     sv.setContentText("Search companions for the rides you posted,we show other travelers with similar ride as the one you posted");
                     sv.setContentTitle("Search your ride:");
                     RelativeLayout.LayoutParams lpssearch = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
-                    lpssearch.setMargins(440, 1070, margin, margin);
+                    lpssearch.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    lpssearch.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    marginbottom = ((Number) (getResources().getDisplayMetrics().density * 50)).intValue();
+                    margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+                    lpssearch.setMargins(0, 0, margin, marginbottom);
                     sv.setButtonPosition(lpssearch);
                     sv.setShouldCentreText(false);
                 }
@@ -198,8 +204,11 @@ public class MainActivity extends ActionBarActivity
                     sv.setContentTitle("Upcoming rides");
                     sv.setButtonText("OK Gotit");
                     RelativeLayout.LayoutParams lpsupcoming = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
-                    lpsupcoming.setMargins(440, 370, margin, margin);
+                    lpsupcoming.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    lpsupcoming.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    marginbottom = ((Number) (getResources().getDisplayMetrics().density * 50)).intValue();
+                    margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+                    lpsupcoming.setMargins(0, 0, margin, marginbottom);
                     sv.setButtonPosition(lpsupcoming);
                     sv.setShouldCentreText(false);
                 }
@@ -1010,10 +1019,11 @@ public class MainActivity extends ActionBarActivity
     public void ftububble(){
         if(!SharedPreferenceManager.getBooleanPreference("showhomepageftu")) {
             RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        /*lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        lps.addRule(RelativeLayout.ALIGN_PARENT_LEFT);*/
-            int margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
-            lps.setMargins(440, 700, margin, margin);
+            lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            int marginbottom = ((Number) (getResources().getDisplayMetrics().density * 50)).intValue();
+            int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+            lps.setMargins(0, 0, margin, marginbottom);
             ViewTarget target = new ViewTarget(R.id.tool_bar, this);
             sv = new ShowcaseView.Builder(this, true)
                     .setTarget(Target.NONE)

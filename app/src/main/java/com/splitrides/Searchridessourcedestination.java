@@ -8,15 +8,20 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.splitrides.android.helper.ConnectionDetector;
 
 public class Searchridessourcedestination extends ActionBarActivity implements View.OnClickListener {
 
-
+    ShowcaseView sv;
     Button opengoogledirection;
 
     @Override
@@ -37,6 +42,24 @@ public class Searchridessourcedestination extends ActionBarActivity implements V
             SwipeRefreshListFragmentFragment fragment = new SwipeRefreshListFragmentFragment();
             transaction.replace(R.id.sample_content_fragment, fragment);
             transaction.commitAllowingStateLoss();
+        }
+    }
+
+    public void ftububble(){
+        if(!SharedPreferenceManager.getBooleanPreference("showsearchpageftu")) {
+            RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            int margin = ((Number) (getResources().getDisplayMetrics().density * 44)).intValue();
+            lps.setMargins(440, 700, margin, margin);
+            ViewTarget target = new ViewTarget(R.id.tool_bar, this);
+            sv = new ShowcaseView.Builder(this, true)
+                    .setTarget(Target.NONE)
+                    .setContentTitle("Welcome to search page")
+                    .setContentText("Optimized routing by google and we get rides en-route selected by google")
+                    .setStyle(R.style.CustomShowcaseTheme)
+                    .setOnClickListener(this)
+                    .build();
+            sv.setButtonPosition(lps);
+            sv.setShouldCentreText(true);
         }
     }
 
