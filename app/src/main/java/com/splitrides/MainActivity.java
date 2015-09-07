@@ -210,7 +210,7 @@ public class MainActivity extends ActionBarActivity
                     margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
                     lpsupcoming.setMargins(0, 0, margin, marginbottom);
                     sv.setButtonPosition(lpsupcoming);
-                    sv.setShouldCentreText(false);
+                    sv.setShouldCentreText(true);
                 }
                 else{
                     sv.hide();
