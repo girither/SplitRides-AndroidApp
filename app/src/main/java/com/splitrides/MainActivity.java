@@ -48,6 +48,17 @@ import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.linkedin.platform.APIHelper;
+import com.linkedin.platform.LISession;
+import com.linkedin.platform.LISessionManager;
+import com.linkedin.platform.errors.LIApiError;
+import com.linkedin.platform.errors.LIAuthError;
+import com.linkedin.platform.listeners.ApiListener;
+import com.linkedin.platform.listeners.ApiResponse;
+import com.linkedin.platform.listeners.AuthListener;
+import com.linkedin.platform.utils.Scope;
+import com.splitrides.android.helper.ConnectionDetector;
+import com.splitrides.android.helper.JSONParser;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -65,8 +76,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends ActionBarActivity
@@ -88,6 +102,9 @@ public class MainActivity extends ActionBarActivity
     private String personName="";
     private String email="";
     private String gender="";
+    private String birthDay = "";
+    private String educationHistory = "";
+    private String workHistory = "";
     int clickeditem =0;
     private String id ="";
     private String name="";
@@ -336,7 +353,7 @@ public class MainActivity extends ActionBarActivity
     {
         AccessToken token = AccessToken.getCurrentAccessToken();
         if (token == null) {
-            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
+            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email", "user_birthday", "user_education_history", "user_work_history"));
             showProgressLayout("", "Logging in...");
         }
         else{
@@ -345,6 +362,67 @@ public class MainActivity extends ActionBarActivity
             }
             LoginManager.getInstance().logOut();
         }
+    }
+
+    @Override
+    public void onLinkedInLoginButtonClicked() {
+        /*LISessionManager.getInstance(getApplicationContext()).init(this, buildScope(), new AuthListener() {
+            @Override
+            public void onAuthSuccess() {
+                LISession linkedInSession = LISessionManager.getInstance(getApplicationContext()).getSession();
+                com.linkedin.platform.AccessToken accessTkn = linkedInSession.getAccessToken();
+                saveUserLinkedInProfileDetail();
+                Toast.makeText(getApplicationContext(), "User successfully logged in", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAuthError(LIAuthError error) {
+                Log.e("Linkedin", "SignIn Failure");
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+            }
+        }, true);*/
+    }
+
+    /*
+    * This method has been used for saving linkedin profile data
+    * */
+    private void saveUserLinkedInProfileDetail() {
+        String url = "https://api.linkedin.com/v1/people/~";
+
+        APIHelper apiHelper = APIHelper.getInstance(getApplicationContext());
+        apiHelper.getRequest(this, url, new ApiListener() {
+            @Override
+            public void onApiSuccess(ApiResponse apiResponse) {
+                JSONObject jsonObject = apiResponse.getResponseDataAsJson();
+                try {
+                    gender = null;
+                    email = null;
+                    id = jsonObject.getString("id");
+                    name = jsonObject.getString("firstName") + " " + jsonObject.getString("lastName");
+                    /*if (mAuthTask == null && (!email.isEmpty()) && (!name.isEmpty()) && (!id.isEmpty()) && (!gender.isEmpty())) {*/
+                    if (mAuthTask == null && (!name.isEmpty()) && (!id.isEmpty())) {
+                        SharedPreferenceManager.setPreference("id", id);
+                        mAuthTask = new UserLoginTask(email, "", name, "linkedin", id, LISessionManager.getInstance(getApplicationContext()).getSession().getAccessToken().toString(), gender, SharedPreferenceManager.getPreference("registrationid"), "", "", "");
+                        mAuthTask.execute((Void) null);
+                    }
+                } catch (JSONException je) {
+                    Log.e("LinkedIn Error occured", "JSON has missing parameters");
+                }
+
+            }
+
+            @Override
+            public void onApiError(LIApiError liApiError) {
+                Log.e("LinkedIn Profile Error", liApiError.getApiErrorResponse().getMessage());
+            }
+        });
+    }
+
+    /*
+    * This method has been used for setting scope for linkedin app
+    * */
+    private static Scope buildScope() {
+        return Scope.build(Scope.R_BASICPROFILE, Scope.RW_COMPANY_ADMIN, Scope.R_EMAILADDRESS, Scope.W_SHARE);
     }
 
    @Override
@@ -410,7 +488,7 @@ public class MainActivity extends ActionBarActivity
             // perform the user login attempt.
 
 
-            mAuthTask = new UserLoginTask(Email,Password,Name,"local","","","male",SharedPreferenceManager.getPreference("registrationid"));
+            mAuthTask = new UserLoginTask(Email,Password,Name,"local","","","male",SharedPreferenceManager.getPreference("registrationid"), "", "", "");
             mAuthTask.execute((Void) null);
         }
     }
@@ -461,7 +539,7 @@ public class MainActivity extends ActionBarActivity
             // perform the user login attempt.
 
 
-            mAuthTask = new UserLoginTask(Email,Password,"","local","","","",getRegistrationId(getApplicationContext()));
+            mAuthTask = new UserLoginTask(Email,Password,"","local","","","",getRegistrationId(getApplicationContext()), "", "", "");
             mAuthTask.execute((Void) null);
         }
     }
@@ -495,20 +573,22 @@ public class MainActivity extends ActionBarActivity
                                                         gender = jsonObject.getString("gender");
                                                         id = jsonObject.getString("id");
                                                         name = jsonObject.getString("name");
+                                                        birthDay = jsonObject.has("birthday") ? jsonObject.getString("birthday") : "";
+                                                        workHistory = findLatestWorkHistoryFromFB(jsonObject);
+                                                        educationHistory = findLatestEducationFromFB(jsonObject);
                                                         if (mAuthTask == null && (!email.isEmpty()) && (!name.isEmpty()) && (!id.isEmpty()) && (!gender.isEmpty())) {
                                                             SharedPreferenceManager.setPreference("id", id);
                                                             dismissProgressDialog();
-                                                            mAuthTask = new UserLoginTask(email, "", name, "facebook", id, currentAccessToken.getCurrentAccessToken().getToken(), gender, SharedPreferenceManager.getPreference("registrationid"));
+                                                            mAuthTask = new UserLoginTask(email, "", name, "facebook", id, currentAccessToken.getCurrentAccessToken().getToken(), gender, SharedPreferenceManager.getPreference("registrationid"), birthDay, educationHistory, workHistory);
                                                             mAuthTask.execute((Void) null);
                                                         }
-
                                                     } catch (JSONException exe) {
 
                                                     }
                                                 }
                                             });
                                     Bundle parameters = new Bundle();
-                                    parameters.putString("fields", "id,name,link,email,gender");
+                                    parameters.putString("fields", "id,name,link,email,gender,birthday,education,work");
                                     request.setParameters(parameters);
                                     request.executeAsync();
                                 }
@@ -582,6 +662,95 @@ public class MainActivity extends ActionBarActivity
         }
         new getallnotificationtask().execute((Void) null);
 
+    }
+
+    /*
+    * This method has been used for getting user education history from Facebook
+    * */
+    private String findLatestEducationFromFB(JSONObject fbProfileObject) throws JSONException{
+        String userEducation = "";
+        JSONArray fbEducationArrayObject = fbProfileObject.has("education") ? fbProfileObject.getJSONArray("education") : null;
+
+        if(fbEducationArrayObject != null) {
+            Integer fbEducationCount = fbEducationArrayObject.length();
+            JSONObject educationObj = null, tempEduObj = null;
+            Integer latestGraduationYear = null, tempEduYear = null;
+
+            try {
+                for(int i = 0; i < fbEducationCount; i++) {
+                    tempEduObj = (JSONObject)fbEducationArrayObject.get(i);
+                    tempEduYear = tempEduObj.has("year") ? ((JSONObject) tempEduObj.get("year")).getInt("name") : null;
+                    if(educationObj != null) {
+                        if(latestGraduationYear != null && tempEduYear != null && latestGraduationYear < tempEduYear) {
+                            latestGraduationYear = tempEduYear;
+                            educationObj = tempEduObj;
+                        }
+                    } else {
+                        educationObj = tempEduObj;
+                        latestGraduationYear = tempEduYear;
+                    }
+                }
+
+                if(educationObj != null) {
+                    userEducation = ((JSONObject)educationObj.get("school")).getString("name");
+                    if(latestGraduationYear != null) {
+                        userEducation = userEducation + ", " + latestGraduationYear.toString();
+                    }
+                }
+            } catch (JSONException je) {
+                Log.e("Error occured", "Reading FB details of user");
+                userEducation = "";
+            }
+        }
+
+        return  userEducation;
+    }
+
+    /*
+    * This method has been used for getting user work details from Facebook
+    * */
+    private String findLatestWorkHistoryFromFB(JSONObject fbProfileObject) throws JSONException {
+        String latestWorkHistory = "";
+        JSONArray fbWorkArrayObject = fbProfileObject.has("work") ? fbProfileObject.getJSONArray("work") : null;
+
+        if(fbWorkArrayObject != null) {
+            Integer fbWorkHistoryCount = fbWorkArrayObject.length();
+            JSONObject workObj = null, tempWorkObj = null;
+            String latestWorkStartDate = null, tempWorkDate = null;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+            try {
+                for(int i = 0; i < fbWorkHistoryCount; i++) {
+                    tempWorkObj = (JSONObject)fbWorkArrayObject.get(i);
+                    tempWorkDate = tempWorkObj.has("start_date") ? tempWorkObj.getString("start_date") : null;
+                    if(workObj != null) {
+                        if(latestWorkStartDate!= null && tempWorkDate != null && (sdf.parse(latestWorkStartDate)).before(sdf.parse(tempWorkDate))) {
+                            latestWorkStartDate = tempWorkDate;
+                            workObj = tempWorkObj;
+                        }
+                    } else {
+                        workObj = tempWorkObj;
+                        latestWorkStartDate = tempWorkDate;
+                    }
+                }
+                if(workObj != null) {
+                    if(workObj.has("position")) {
+                        latestWorkHistory = latestWorkHistory + ((JSONObject)workObj.get("position")).getString("name") + " at ";
+                    }
+                    latestWorkHistory = latestWorkHistory + ((JSONObject)workObj.get("employer")).getString("name");
+
+                    if(latestWorkStartDate != null) {
+                        latestWorkHistory = latestWorkHistory + " since " + latestWorkStartDate;
+                    }
+                }
+            } catch (JSONException je) {
+                je.printStackTrace();
+            } catch (ParseException pe) {
+                pe.printStackTrace();
+            }
+        }
+
+        return  latestWorkHistory;
     }
 
     public class getallnotificationtask extends AsyncTask<Void, Void, List<notificationdata>> {
@@ -931,6 +1100,7 @@ public class MainActivity extends ActionBarActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        LISessionManager.getInstance(getApplicationContext()).onActivityResult(this, requestCode, resultCode, data);
         switch (requestCode) {
             case RC_SIGN_IN:
                 if (resultCode == RESULT_OK) {
@@ -1092,8 +1262,14 @@ public class MainActivity extends ActionBarActivity
         private final String accessToken;
         private final String mgender;
         private final String mgcmid;
+        private final String mBirthDate;
+        private final String mEducationDetails;
+        private final String mWorkDetails;
 
-        UserLoginTask(String email, String password,String name,String profile,String profileId,String accesstoken,String gender,String gcmid) {
+        UserLoginTask(String email, String password, String name,
+                      String profile, String profileId, String accesstoken,
+                      String gender, String gcmid, String birthday,
+                      String educationDetails, String workDetails) {
             mEmail = email;
             mPassword = password;
             mName = name;
@@ -1102,6 +1278,9 @@ public class MainActivity extends ActionBarActivity
             accessToken = accesstoken;
             mgender = gender;
             mgcmid = gcmid;
+            mBirthDate = birthday;
+            mEducationDetails = educationDetails;
+            mWorkDetails = workDetails;
         }
         @Override
         protected void onPreExecute() {
@@ -1122,6 +1301,7 @@ public class MainActivity extends ActionBarActivity
             params.add(new BasicNameValuePair("email", mEmail));
             params.add(new BasicNameValuePair("password", mPassword));
             params.add(new BasicNameValuePair("profile", mProfile));*/
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
             try {
             JSONObject params = new JSONObject();
             params.put("name", mName);
@@ -1132,6 +1312,9 @@ public class MainActivity extends ActionBarActivity
                 params.put("gender",mgender);
                 params.put("gcmId",mgcmid);
                 params.put("profileId",mProfileId);
+                params.put("birthday", sdf.parse(mBirthDate));
+                params.put("educationHistory", mEducationDetails);
+                params.put("workHistory", mWorkDetails);
 
 
 
@@ -1162,6 +1345,8 @@ public class MainActivity extends ActionBarActivity
 
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (ParseException pe) {
+                pe.printStackTrace();
             }
 
             return false;
@@ -1179,7 +1364,7 @@ public class MainActivity extends ActionBarActivity
                 OnLoginAuthenticated();
 
             } else {
-                if(mProfile.equals("facebook")||mProfile.equals("google"))
+                if(mProfile.equals("facebook")||mProfile.equals("google") || mProfile.equals("linkedin"))
                 {
                     if (mProfile.equals("facebook"))
                     {
@@ -1191,6 +1376,9 @@ public class MainActivity extends ActionBarActivity
                     if (mProfile.equals("google"))
                     {
                         mGoogleApiClient.disconnect();
+                    }
+                    if(mProfile.equals("linked")) {
+                        LISessionManager.getInstance(getApplicationContext()).clearSession();
                     }
                     Toast.makeText(MainActivity.this,
                             "failed", Toast.LENGTH_LONG).show();
@@ -1258,7 +1446,7 @@ public class MainActivity extends ActionBarActivity
             pDialog.dismiss();
             if(result!=null)
             {
-                mAuthTask = new UserLoginTask(mEmail,"",mName,"google",(mProfileImageUrl != null && mProfileImageUrl.length() > 0) ? mProfileImageUrl : "",result,mGender,SharedPreferenceManager.getPreference("registrationid"));
+                mAuthTask = new UserLoginTask(mEmail,"",mName,"google",(mProfileImageUrl != null && mProfileImageUrl.length() > 0) ? mProfileImageUrl : "",result,mGender,SharedPreferenceManager.getPreference("registrationid"), "", "", "");
                 mAuthTask.execute((Void) null);
             }
             else

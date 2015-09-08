@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.app.Activity;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.splitrides.android.helper.ConnectionDetector;
@@ -32,12 +33,16 @@ public class facebookloginFragment extends Fragment implements View.OnClickListe
                 container, false);
         Button authButton = (Button)view.findViewById(R.id.facebook_button);
         SignInButton mSignInButton = (SignInButton)view.findViewById(R.id.sign_in_button);
+
+        //ImageButton linkedInButton = (ImageButton)view.findViewById(R.id.linkedin_button);
         //TextView signUplink = (TextView)view.findViewById(R.id.signup_link);
         //Button loginButton = (Button)view.findViewById(R.id.login_button);
         //loginButton.setOnClickListener(this);
         authButton.setOnClickListener(this);
         //signUplink.setOnClickListener(this);
         mSignInButton.setOnClickListener(this);
+
+        //linkedInButton.setOnClickListener(this);
         return view;
     }
     @Override
@@ -66,11 +71,14 @@ public class facebookloginFragment extends Fragment implements View.OnClickListe
         }
         switch(view.getId()) {
             case R.id.sign_in_button:
-            ((OnGooglePlusButtonClicked) activity).onButtonClick();
-            break;
+                ((OnGooglePlusButtonClicked) activity).onButtonClick();
+                break;
             case R.id.facebook_button:
                 ((OnGooglePlusButtonClicked) activity).onFacebookLoginButtonClicked();
                 break;
+            /*case R.id.linkedin_button:
+                ((OnGooglePlusButtonClicked) activity).onLinkedInLoginButtonClicked();*/
+
         }
     }
     public interface OnGooglePlusButtonClicked {
@@ -78,6 +86,7 @@ public class facebookloginFragment extends Fragment implements View.OnClickListe
         public void onsignupButtonClicked();
         public void onLoginButtonClicked();
         public void onFacebookLoginButtonClicked();
+        public void onLinkedInLoginButtonClicked();
     }
 
 

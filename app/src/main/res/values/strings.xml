@@ -25,4 +25,5 @@
     <string name="valid_field_required">Please enter a valid area name from the dropdown</string>
     <string name="error_field_required">This field is required</string>
     <string name="common_signin_button_text_long">SIGN IN WITH GOOGLE+</string>
+    <string name="common_signin_linkedin_button_text_long">SIGN IN WITH LinkedIn</string>
 </resources>
