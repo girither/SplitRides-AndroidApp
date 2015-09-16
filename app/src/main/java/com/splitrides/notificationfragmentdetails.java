@@ -280,6 +280,24 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                 }
             }
 
+            //Work History Details
+            TextView workHistoryView = (TextView)convertView.findViewById(R.id.workHistory);
+            TextView workHistoryLabel = (TextView)convertView.findViewById(R.id.work_label);
+            if(mSamples.get(position).getWorkHistory() != null && mSamples.get(position).getWorkHistory().trim().length() > 0) {
+                workHistoryView.setText(mSamples.get(position).getWorkHistory());
+            } else {
+                workHistoryView.setText("No Work Data");
+            }
+
+            //Education History Details
+            TextView educationHistoryView = (TextView)convertView.findViewById(R.id.educationHistory);
+            TextView educationHistoryLabel = (TextView)convertView.findViewById(R.id.education_label);
+            if(mSamples.get(position).getEducationHistory() != null && mSamples.get(position).getEducationHistory().trim().length() > 0) {
+                educationHistoryView.setText(mSamples.get(position).getEducationHistory());
+            } else {
+                educationHistoryView.setText("No Education Data");
+            }
+
             final String latlongposition = mSamples.get(position).getLatLong();
             final String droplatlongposition = mSamples.get(position).getDropLatlong();
             ((Button)convertView.findViewById(R.id.see_pickup_point)).setOnClickListener(new View.OnClickListener() {
@@ -343,6 +361,8 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
             notificationdata info = null;
             Integer friendsCount = 0;
             String userProfileId = null;
+            String userWorkHistory = "";
+            String userEducationHistory = "";
 
             try {
                 JSONObject params = new JSONObject();
@@ -370,8 +390,11 @@ public class notificationfragmentdetails extends ActionBarActivity implements Vi
                         friendsCount = getMutualFriendsCount(userProfileId);
                     }
 
+                    userEducationHistory = customerindividualdata.has("educationHistory") ? customerindividualdata.getString("educationHistory") : "";
+                    userWorkHistory = customerindividualdata.has("workHistory") ? customerindividualdata.getString("workHistory") : "";
+
                     List<customer> customerlistdata = new ArrayList<customer>();
-                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"), friendsCount);
+                    customer customeradapterdata = new customer(customerindividualdata.getString("name"),customerindividualdata.getString("email"),ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"), friendsCount, userWorkHistory, userEducationHistory);
                     customerlistdata.add(customeradapterdata);
                     info = new notificationdata(ride.getString("source"), ride.getString("destination"), ride.getString("date"),customerlistdata,ride.getString("rideId"),ownerrideid);
                     SharedPreferenceManager.setPreference("owner_customernumber",ride.getString("customerNumber"));

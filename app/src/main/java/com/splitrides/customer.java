@@ -61,7 +61,9 @@ public class customer {
         this.customernumber = customernumber;
     }
 
-    public customer(String customerName, String customerEmail, String customerPhoneNumber,String latLong,String droplatlong,String profileId, String customernumber, Integer mutualFriendsCount) {
+    public customer(String customerName, String customerEmail, String customerPhoneNumber,
+                    String latLong, String droplatlong, String profileId,
+                    String customernumber, Integer mutualFriendsCount, String workHistory, String educationHistory) {
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.customerPhoneNumber = customerPhoneNumber;
@@ -70,6 +72,8 @@ public class customer {
         this.profileId = profileId;
         this.customernumber = customernumber;
         this.mutualFriendsCount = mutualFriendsCount;
+        this.educationHistory = educationHistory;
+        this.workHistory = workHistory;
     }
 
     public void setCustomerPhoneNumber(String customerPhoneNumber) {
@@ -102,5 +106,25 @@ public class customer {
 
     public Integer getMutualFriendsCount() {
         return mutualFriendsCount;
+    }
+
+    public String workHistory;
+
+    public String educationHistory;
+
+    public String getWorkHistory() {
+        return workHistory;
+    }
+
+    public void setWorkHistory(String workHistory) {
+        this.workHistory = workHistory;
+    }
+
+    public String getEducationHistory() {
+        return educationHistory;
+    }
+
+    public void setEducationHistory(String educationHistory) {
+        this.educationHistory = educationHistory;
     }
 }

@@ -334,6 +334,24 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                 }
             }
 
+            //Work History Details
+            TextView workHistoryView = (TextView)convertView.findViewById(R.id.workHistory);
+            TextView workHistoryLabel = (TextView)convertView.findViewById(R.id.work_label);
+            if(mSamples.get(position).getWorkHistory() != null && mSamples.get(position).getWorkHistory().trim().length() > 0) {
+                workHistoryView.setText(mSamples.get(position).getWorkHistory());
+            } else {
+                workHistoryView.setText("No Work Data");
+            }
+
+            //Education History Details
+            TextView educationHistoryView = (TextView)convertView.findViewById(R.id.educationHistory);
+            TextView educationHistoryLabel = (TextView)convertView.findViewById(R.id.education_label);
+            if(mSamples.get(position).getEducationHistory() != null && mSamples.get(position).getEducationHistory().trim().length() > 0) {
+                educationHistoryView.setText(mSamples.get(position).getEducationHistory());
+            } else {
+                educationHistoryView.setText("No Education Data");
+            }
+
             final String latlongposition = mSamples.get(position).getLatLong();
             final String droplatlongposition = mSamples.get(position).getDropLatlong();
             ((Button)convertView.findViewById(R.id.see_pickup_point)).setOnClickListener(new View.OnClickListener() {
@@ -778,6 +796,8 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
             String status = null;
             Integer friendsCount = 0;
             String userProfileId = null;
+            String userWorkHistory = "";
+            String userEducationHistory = "";
 
             try {
                 JSONObject params = new JSONObject();
@@ -810,7 +830,10 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                             if(!userProfileId.equals("") && !userProfileId.startsWith("http")) {
                                 friendsCount = getMutualFriendsCount(userProfileId);
                             }
-                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"), friendsCount);
+
+                            userEducationHistory = customerindividualdata.has("educationHistory") ? customerindividualdata.getString("educationHistory") : "";
+                            userWorkHistory = customerindividualdata.has("workHistory") ? customerindividualdata.getString("workHistory") : "";
+                            customer customeradapterdata = new customer(customerindividualdata.getString("name"), customerindividualdata.getString("email"), customerindividualdata.getString("phoneNumber"), customerindividualdata.getString("pickUplatLng"),customerindividualdata.getString("customersDropLatLngMatrix"),customerindividualdata.has("profileId")?customerindividualdata.getString("profileId"):"",customerindividualdata.getString("customerNumber"), friendsCount, userWorkHistory, userEducationHistory);
                             customerlistdata.add(customeradapterdata);
                         }
                         info = new ridedata(ride.getString("source"), ride.getString("destination"), ride.getString("date"), customerlistdata,"jride",ride.getString("jrId"),status,ride.getString("status"));
@@ -823,6 +846,10 @@ public class showupcomingridedetails extends ActionBarActivity implements View.O
                         latlongbuilder.append(ride.getString("pickUpLat")).append(",").append(ride.getString("pickUpLng"));
                         StringBuilder latlongbuilder_droppoint = new StringBuilder();
                         latlongbuilder_droppoint.append(ride.getString("dropLat")).append(",").append(ride.getString("dropLng"));
+
+                        userEducationHistory = customerdata.has("educationHistory") ? customerdata.getString("educationHistory") : "";
+                        userWorkHistory = customerdata.has("workHistory") ? customerdata.getString("workHistory") : "";
+
                         customer customeradapterdata = new customer(customerdata.getString("name"), customerdata.getString("email"), ride.getString("phoneNumber"),latlongbuilder.toString() ,latlongbuilder_droppoint.toString(),customerdata.has("profileId")?customerdata.getString("profileId"):"",customerdata.getString("customerNumber"));
                         List<customer> customerlistdata = new ArrayList<customer>();
                         customerlistdata.add(customeradapterdata);

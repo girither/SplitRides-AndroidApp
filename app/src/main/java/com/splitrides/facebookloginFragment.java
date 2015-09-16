@@ -32,7 +32,7 @@ public class facebookloginFragment extends Fragment implements View.OnClickListe
         View view = inflater.inflate(R.layout.fragment_facebooklogin,
                 container, false);
         Button authButton = (Button)view.findViewById(R.id.facebook_button);
-        SignInButton mSignInButton = (SignInButton)view.findViewById(R.id.sign_in_button);
+        //SignInButton mSignInButton = (SignInButton)view.findViewById(R.id.sign_in_button);
 
         //ImageButton linkedInButton = (ImageButton)view.findViewById(R.id.linkedin_button);
         //TextView signUplink = (TextView)view.findViewById(R.id.signup_link);
@@ -40,7 +40,7 @@ public class facebookloginFragment extends Fragment implements View.OnClickListe
         //loginButton.setOnClickListener(this);
         authButton.setOnClickListener(this);
         //signUplink.setOnClickListener(this);
-        mSignInButton.setOnClickListener(this);
+        //mSignInButton.setOnClickListener(this);
 
         //linkedInButton.setOnClickListener(this);
         return view;
@@ -70,9 +70,9 @@ public class facebookloginFragment extends Fragment implements View.OnClickListe
             return;
         }
         switch(view.getId()) {
-            case R.id.sign_in_button:
+            /*case R.id.sign_in_button:
                 ((OnGooglePlusButtonClicked) activity).onButtonClick();
-                break;
+                break;*/
             case R.id.facebook_button:
                 ((OnGooglePlusButtonClicked) activity).onFacebookLoginButtonClicked();
                 break;
