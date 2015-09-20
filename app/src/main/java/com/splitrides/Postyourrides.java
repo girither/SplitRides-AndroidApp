@@ -20,8 +20,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.splitrides.android.helper.ConnectionDetector;
-import com.splitrides.android.helper.JSONParser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -35,6 +33,10 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.SphericalUtil;
+import com.splitrides.android.helper.ConnectionDetector;
+import com.splitrides.android.helper.JSONParser;
+import com.splitrides.appcallback.AppCallback;
+import com.splitrides.util.SMSOTPValidation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +50,7 @@ import java.util.List;
 
 
 public class Postyourrides extends ActionBarActivity
-        implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,AdapterView.OnItemSelectedListener,View.OnClickListener {
+        implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,AdapterView.OnItemSelectedListener,View.OnClickListener, AppCallback {
 
     /**
      * GoogleApiClient wraps our service connection to Google Play Services and provides access
@@ -86,6 +88,11 @@ public class Postyourrides extends ActionBarActivity
 
     private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
             new LatLng(12.89201, 77.58905), new LatLng(12.97232, 77.59480));
+
+    /*This variable has been used for enabling sms OTP validation for user phone number
+    * from which user is posting ride
+    * */
+    private static final boolean isSMSOTPValidationEnabled = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -550,12 +557,17 @@ public class Postyourrides extends ActionBarActivity
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mvalidateplacesTask = new validateplacesapi(hiddenRideID,source,destination,phonenumber,currentDate,timeclock,Double.toString(sourcelat),Double.toString(sourcelong),Double.toString(destinationlat),Double.toString(destinationlong),latlong,latlong_droppoint);
-            mvalidateplacesTask.execute((Void) null);
 
+            if(isSMSOTPValidationEnabled) {
+                Object[] params = new Object[1];
+                params[0] = phonenumber;
+                SMSOTPValidation smsOTPValidation = new SMSOTPValidation(this);
+                smsOTPValidation.execute(params);
+            } else {
+                this.successActivityCallback();
+            }
         }
     }
-
 
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new TimePickerFragment(settimetextView,settimetextViewhidden,currentDate);
@@ -568,6 +580,22 @@ public class Postyourrides extends ActionBarActivity
         mAdapter.setGoogleApiClient(null);
 
     }
+
+    @Override
+    public void successActivityCallback() {
+        mvalidateplacesTask = new validateplacesapi( hiddenRideID, mAutocompleteView.getText().toString(),
+                mAutocompleteView_destination.getText().toString(), mPhonenumber.getText().toString(), currentDate,
+                settimetextViewhidden.getText().toString(), Double.toString(sourcelat), Double.toString(sourcelong),
+                Double.toString(destinationlat), Double.toString(destinationlong), setlatlongtextView.getText().toString(),
+                setlatlongtextView_droppoint.getText().toString());
+        mvalidateplacesTask.execute((Void) null);
+    }
+
+    @Override
+    public void failureActivityCallback() {
+        //TODO: provide logic to handle failure of async task
+    }
+
     public class Postyouridetask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mRideId;
