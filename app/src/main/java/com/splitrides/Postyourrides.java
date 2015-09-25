@@ -92,7 +92,7 @@ public class Postyourrides extends ActionBarActivity
     /*This variable has been used for enabling sms OTP validation for user phone number
     * from which user is posting ride
     * */
-    private static final boolean isSMSOTPValidationEnabled = true;
+    private static final boolean isSMSOTPValidationEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
